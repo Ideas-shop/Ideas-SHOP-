@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+<html lang="En">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ideas SHOP App</title>
+    <!-- Font Awesome Icon Library -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            background-color: #f4f4f9;
+        }
+
+        /* --- Header --- */
+        .header {
+            background-color: #3f51b5; /* Android primary color */
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 10px 15px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        .header-left {
+            display: flex;
+            align-items: center;
+        }
+
+        .header-title {
+            margin-left: 15px;
+            font-size: 20px;
+            font-weight: bold;
+        }
+
+        .header-title .slogan {
+            font-size: 10px;
+            display: block;
+            margin-top: -3px;
+        }
+
+        .icon-btn {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 20px;
+            cursor: pointer;
+            padding: 10px;
+        }
+
+        .center-logo {
+            text-align: center;
+            margin: 20px 0;
+        }
+
+        .center-logo img {
+            max-width: 150px;
+            height: auto;
+        }
+
+        /* --- Search Bar --- */
+        .search-container {
+            padding: 10px 15px;
+        }
+
+        .search-bar {
+            background-color: white;
+            border: 1px solid #ddd;
+            border-radius: 25px;
+            padding: 10px 15px;
+            display: flex;
+            align-items: center;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+
+        .search-bar input {
+            border: none;
+            outline: none;
+            flex-grow: 1;
+            margin-left: 10px;
+            font-size: 16px;
+        }
+
+        .search-icon {
+            color: #888;
+        }
+
+        /* --- Categories --- */
+        .category-section {
+            padding: 15px;
+        }
+
+        .category-title {
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 15px;
+            color: #333;
+        }
+
+        .category-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 15px;
+        }
+
+        .category-item {
+            text-align: center;
+            background-color: white;
+            padding: 15px 10px;
+            border-radius: 10px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            transition: transform 0.2s;
+        }
+
+        .category-item:active {
+            transform: scale(0.95);
+        }
+
+        .category-item img {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            margin-bottom: 10px;
+            object-fit: cover;
+        }
+
+        .category-item p {
+            margin: 0;
+            font-size: 14px;
+            color: #555;
+        }
+
+        /* --- Drawer Menu --- */
+        .drawer {
+            height: 100%;
+            width: 0;
+            position: fixed;
+            z-index: 100;
+            top: 0;
+            left: 0;
+            background-color: white;
+            overflow-x: hidden;
+            transition: width 0.3s;
+            box-shadow: 2px 0 5px rgba(0,0,0,0.2);
+        }
+
+        .drawer-header {
+            background-color: #3f51b5;
+            color: white;
+            padding: 30px 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .drawer-logo img {
+            max-width: 80px;
+            border-radius: 50%;
+            margin-bottom: 10px;
+        }
+
+        .drawer-title {
+            font-size: 20px;
+            font-weight: bold;
+        }
+
+        .drawer-links a {
+            padding: 15px 20px;
+            text-decoration: none;
+            font-size: 16px;
+            color: #333;
+            display: flex;
+            align-items: center;
+            border-bottom: 1px solid #eee;
+        }
+
+        .drawer-links a i {
+            margin-right: 20px;
+            color: #555;
+            width: 20px;
+            text-align: center;
+        }
+
+        .drawer-links a:hover {
+            background-color: #f1f1f1;
+        }
+
+        .close-btn {
+            position: absolute;
+            top: 15px;
+            right: 20px;
+            font-size: 25px;
+            color: white;
+            cursor: pointer;
+        }
+
+        /* --- Overlay --- */
+        .overlay {
+            display: none;
+            position: fixed;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            background-color: rgba(0,0,0,0.5);
+            z-index: 90;
+        }
+
+        /* --- Bottom Navigation --- */
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+            background-color: white;
+            display: flex;
+            justify-content: space-around;
+            padding: 10px 0;
+            box-shadow: 0 -2px 5px rgba(0,0,0,0.1);
+            z-index: 80;
+        }
+
+        .nav-item {
+            text-align: center;
+            color: #888;
+            cursor: pointer;
+            flex-grow: 1;
+        }
+
+        .nav-item.active {
+            color: #3f51b5;
+        }
+
+        .nav-item i {
+            font-size: 20px;
+        }
+
+        .nav-item p {
+            margin: 3px 0 0;
+            font-size: 12px;
+        }
+
+        /* Main Content Padding for Bottom Nav */
+        main {
+            padding-bottom: 70px;
+        }
+
+    </style>
+</head>
+<body>
+
+    <!-- Header with 3-dot menu and Logo Name -->
+    <header class="header">
+        <div class="header-left">
+            <button class="icon-btn" onclick="openDrawer()">
+                <i class="fas fa-bars"></i> <!-- 3-dot style bars -->
+            </button>
+            <div class="header-title">
+                Ideas SHOP
+                <span class="slogan">MAKE LIFE MEANINGFUL</span>
+            </div>
+        </div>
+        <button class="icon-btn">
+            <i class="fas fa-search"></i>
+        </button>
+    </header>
+
+    <!-- Center Logo Image -->
+    <div class="center-logo">
+        <img src="logo.png" alt="Ideas SHOP Logo">
+    </div>
+
+    <!-- Main Content -->
+    <main>
+        <!-- Search Bar -->
+        <div class="search-container">
+            <div class="search-bar">
+                <i class="fas fa-search search-icon"></i>
+                <input type="text" placeholder="সার্চ করুন...">
+            </div>
+        </div>
+
+        <!-- Popular Categories Section -->
+        <section class="category-section">
+            <div class="category-title">পপুলার ক্যাটেগরি</div>
+            <div class="category-grid">
+                <!-- Shirt -->
+                <div class="category-item">
+                    <img src="images (31).jpeg" alt="Shirt">
+                    <p>শার্ট</p>
+                </div>
+                <!-- Pant -->
+                <div class="category-item">
+                    <img src="images (32).jpeg" alt="প্যান্ট">
+                    <p>প্যান্ট</p>
+                </div>
+                <!-- T-Shirt -->
+                <div class="category-item">
+                    <img src="images (33).jpeg" alt="টি-শার্ট">
+                    <p>টি-শার্ট</p>
+                </div>
+                <!-- Watch -->
+                <div class="category-item">
+                    <img src="images (34).jpeg" alt="ঘড়ি">
+                    <p>ঘড়ি</p>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Drawer Navigation Menu -->
+    <div id="myDrawer" class="drawer">
+        <span class="close-btn" onclick="closeDrawer()">&times;</span>
+        <div class="drawer-header">
+            <div class="drawer-logo">
+                <img src="logo.png" alt="Ideas SHOP Mini Logo">
+            </div>
+            <div class="drawer-title">Ideas SHOP</div>
+        </div>
+        <div class="drawer-links">
+            <a href="home.html"><i class="fas fa-home"></i> হোম</a>
+            <a href="category.html"><i class="fas fa-th-large"></i> ক্যাটেগরি</a>
+            <a href="order.html"><i class="fas fa-shopping-bag"></i> মাই অর্ডার</a>
+            <a href="help.html"><i class="fas fa-question-circle"></i> হেল্প</a>
+        <a href="https://www.facebook.com/share/18mjVpaJiV/" target="_blank" style="text-decoration: none; padding: 12px 15px; display: flex; align-items: center; border-bottom: 1px solid #eee;">
+    <i class="fab fa-facebook" style="font-size: 18px; color: #1877F2; margin-right: 12px;"></i>
+    <p style="margin: 0; font-size: 14px; font-weight: bold; color: #333;">ফেসবুক পেজ</p>
+</a>
+<div style="position: absolute; bottom: 15px; left: 0; width: 100%; text-align: center; border-top: 1px solid #eee; padding-top: 10px;">
+    <p style="margin: 0; font-size: 11px; color: #aaa; letter-spacing: 0.5px;">Version 1.0.0</p>
+    <p style="margin: 3px 0 0 0; font-size: 12px; color: #888; font-weight: 500;">
+        Developed by <span style="color: #3f51b5; font-weight: bold;">MD Nabil</span>
+    </p>
+</div>
+
+ 
+  </div>
+    </div>
+
+    <!-- Overlay when Drawer is Open -->
+    <div id="overlay" class="overlay" onclick="closeDrawer()"></div>
+    <footer class="bottom-nav">
+        <a href="home.html" class="nav-item active" style="text-decoration: none;">
+            <i class="fas fa-home"></i>
+            <p>হোম</p>
+        </a>
+        
+        <a href="category.html" class="nav-item" style="text-decoration: none;">
+            <i class="fas fa-th-large"></i>
+            <p>ক্যাটেগরি</p>
+        </a>
+        
+        <a href="order.html" class="nav-item" style="text-decoration: none;">
+            <i class="fas fa-shopping-bag"></i>
+            <p>অর্ডার</p>
+        </a>
+        
+        <a href="profile .html" class="nav-item" style="text-decoration: none;">
+            <i class="fas fa-user"></i>
+            <p>প্রোফাইল</p>
+        </a>
+    </footer>
+
+
+    <!-- JavaScript for Drawer Menu -->
+    <script>
+        function openDrawer() {
+            document.getElementById("myDrawer").style.width = "250px";
+            document.getElementById("overlay").style.display = "block";
+        }
+
+        function closeDrawer() {
+            document.getElementById("myDrawer").style.width = "0";
+            document.getElementById("overlay").style.display = "none";
+        }
+    </script>
+
+</body>
+</html>
