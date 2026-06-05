@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ideas SHOP - ট্র্যাক মাই অর্ডার</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0; padding: 0; background-color: #f7f7fa; color: #333;
+        }
+
+        /* হেডার ডিজাইন */
+        .header {
+            background-color: #3f51b5; color: white; display: flex; align-items: center;
+            padding: 15px; box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        .header i { font-size: 20px; margin-right: 15px; cursor: pointer; }
+        .header-title { font-size: 18px; font-weight: bold; }
+
+        /* মূল অংশ */
+        .container {
+            padding: 30px 20px; text-align: center; margin-top: 20px;
+        }
+        .track-icon {
+            font-size: 60px; color: #ff5722; margin-bottom: 15px;
+        }
+        .title { font-size: 20px; font-weight: bold; margin-bottom: 10px; color: #3f51b5; }
+        .subtitle { font-size: 14px; color: #666; margin-bottom: 25px; line-height: 1.5; }
+
+        /* ইনপুট ও বাটন */
+        .input-box {
+            width: 100%; padding: 15px; border: 1px solid #ddd; border-radius: 8px;
+            font-size: 16px; margin-bottom: 20px; box-sizing: border-box; text-align: center;
+            outline: none;
+        }
+        .input-box:focus { border-color: #3f51b5; }
+
+        .btn-track {
+            background-color: #3f51b5; color: white; border: none; padding: 15px;
+            border-radius: 8px; width: 100%; font-size: 16px; font-weight: bold;
+            cursor: pointer; box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+    </style>
+</head>
+<body>
+
+    <header class="header">
+        <i class="fas fa-arrow-left" onclick="history.back()"></i>
+        <div class="header-title">অর্ডার ট্র্যাক করুন</div>
+    </header>
+
+    <div class="container">
+        <i class="fas fa-shipping-fast track-icon"></i>
+        <div class="title">আপনার অর্ডারের অবস্থা জানুন</div>
+        <div class="subtitle">অর্ডার করার সময় আপনি যে মোবাইল নম্বরটি ব্যবহার করেছিলেন, সেটি নিচে দিন।</div>
+        
+        <input type="number" id="trackPhone" class="input-box" placeholder="আপনার মোবাইল নম্বর দিন">
+        
+        <button class="btn-track" onclick="trackMyOrder()">ট্র্যাক করুন</button>
+    </div>
+
+    <script>
+        // হোয়াটসঅ্যাপে ট্র্যাকিং মেসেজ পাঠানোর ফাংশন
+        function trackMyOrder() {
+            let phone = document.getElementById('trackPhone').value;
+
+            if (phone === "") {
+                alert("অনুগ্রহ করে আপনার মোবাইল নম্বরটি লিখুন!");
+                return;
+            }
+
+            let adminWhatsAppNumber = "8801936617023"; // আপনার হোয়াটসঅ্যাপ নম্বর
+
+            let message = "*অর্ডার আপডেট জানতে চাই!*\n\n";
+            message += "আমি আমার অর্ডারের বর্তমান অবস্থা জানতে চাচ্ছি।\n";
+            message += "📱 *আমার মোবাইল নম্বর:* " + phone;
+
+            let whatsappURL = "https://wa.me/" + adminWhatsAppNumber + "?text=" + encodeURIComponent(message);
+            
+            // কাস্টমারকে হোয়াটসঅ্যাপে নিয়ে যাবে
+            window.location.href = whatsappURL;
+        }
+    </script>
+
+</body>
+</html>
