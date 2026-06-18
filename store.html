@@ -1,0 +1,524 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>All Stores - Ideas SHOP</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
+
+        body {
+            background-color: #f5f6fa;
+            padding-bottom: 20px;
+        }
+
+        /* --- Header Section (Navy Blue) --- */
+        .top-header {
+            background-color: #0b1e36;
+            color: #ffffff;
+            padding: 15px 20px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+        }
+        .top-header i { font-size: 20px; cursor: pointer; }
+        .top-header h3 { font-size: 18px; font-weight: bold; flex: 1; }
+
+        /* --- Banner Slider --- */
+        .slider-container {
+            width: 100%;
+            height: 150px;
+            overflow: hidden;
+            position: relative;
+            margin-bottom: 15px;
+            background: #ddd;
+        }
+        .slider-wrapper {
+            display: flex;
+            width: 300%;
+            height: 100%;
+            transition: transform 0.5s ease-in-out;
+        }
+        .slide {
+            width: 100%;
+            height: 100%;
+            background-size: cover;
+            background-position: center;
+        }
+
+        /* --- Filter Buttons --- */
+        .filter-section {
+            display: flex;
+            gap: 10px;
+            padding: 0 15px;
+            margin-bottom: 15px;
+            overflow-x: auto;
+            scrollbar-width: none;
+        }
+        .filter-section::-webkit-scrollbar { display: none; }
+        
+        .filter-btn {
+            background: #ffffff;
+            color: #333;
+            border: 1px solid #dcdde1;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: bold;
+            white-space: nowrap;
+            cursor: pointer;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+            transition: 0.3s;
+        }
+        .filter-btn.active {
+            background: #0b1e36;
+            color: #ffffff;
+            border-color: #0b1e36;
+        }
+
+        /* --- Search Bar --- */
+        .search-container {
+            padding: 0 15px;
+            margin-bottom: 15px;
+        }
+        .search-box {
+            display: flex;
+            align-items: center;
+            background: #ffffff;
+            border: 1px solid #dcdde1;
+            border-radius: 25px;
+            padding: 10px 15px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+        .search-box i { color: #7f8c8d; margin-right: 10px; }
+        .search-box input {
+            border: none;
+            outline: none;
+            width: 100%;
+            font-size: 15px;
+            background: transparent;
+        }
+
+        /* --- Store List --- */
+        .store-list-container {
+            padding: 0 15px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        
+        .store-card {
+            background: #ffffff;
+            border-radius: 12px;
+            padding: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+        }
+
+        .store-info-left {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .store-logo {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid #f1f2f6;
+        }
+
+        .store-details h4 {
+            font-size: 15px;
+            color: #2c3e50;
+            margin-bottom: 3px;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .verified-tick {
+            color: #1da1f2;
+            font-size: 14px;
+        }
+
+        .store-details p {
+            font-size: 12px;
+            color: #7f8c8d;
+        }
+
+        .visit-store-btn {
+            background: #f1f2f6;
+            color: #0b1e36;
+            border: none;
+            padding: 6px 12px;
+            border-radius: 8px;
+            font-size: 12px;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            cursor: pointer;
+            text-decoration: none;
+        }
+        
+        .no-result {
+            text-align: center;
+            color: #7f8c8d;
+            margin-top: 20px;
+            font-size: 14px;
+            display: none;
+        }
+
+        /* --- Bottom Navigation --- */
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            background-color: #ffffff;
+            display: flex;
+            justify-content: space-around;
+            padding: 10px 0;
+            box-shadow: 0 -2px 10px rgba(0,0,0,0.1);
+            z-index: 1000;
+        }
+        .bottom-nav .nav-item {
+            text-decoration: none;
+            color: #7f8c8d;
+            text-align: center;
+            font-size: 12px;
+        }
+        .bottom-nav .nav-item i {
+            font-size: 20px;
+            margin-bottom: 5px;
+            display: block;
+        }
+        .bottom-nav .nav-item.active {
+            color: #0b1e36; /* আপনার থিমের নেভি ব্লু কালার */
+            font-weight: bold;
+        }
+
+        /* লাস্ট স্টোর যেন ফুটারের নিচে ঢাকা না পড়ে যায় তাই বডিতে প্যাডিং যোগ করা হলো */
+        body {
+            padding-bottom: 70px !important; 
+        }
+
+        /* --- Premium Custom Preloader CSS --- */
+        .page-loader {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: #ffffff;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 99999;
+            transition: opacity 0.4s ease, visibility 0.4s ease;
+        }
+
+        .loader-content {
+            text-align: center;
+        }
+
+        /* লাইট জ্বলছে এবং নিভছে (Glowing Animation) */
+        .idea-bulb {
+            font-size: 70px;
+            color: #dcdde1; /* নিভানো অবস্থার কালার (হালকা ধূসর) */
+            animation: light-glow 1.5s infinite alternate ease-in-out;
+            margin-bottom: 20px;
+        }
+
+        @keyframes light-glow {
+            0% {
+                color: #dcdde1;
+                text-shadow: none;
+                transform: scale(1);
+            }
+            100% {
+                color: #ffca28; /* জ্বলন্ত অবস্থার কালার (হলুদ) */
+                text-shadow: 0 0 15px rgba(255, 202, 40, 0.6), 
+                             0 0 30px rgba(255, 193, 7, 0.8), 
+                             0 0 50px rgba(255, 179, 0, 1);
+                transform: scale(1.05); /* জ্বললে একটু বড় হবে */
+            }
+        }
+
+        /* নৌকার ঢেউয়ের মতো টেক্সট অ্যানিমেশন */
+        .wavy-text {
+            position: relative;
+            display: flex;
+            justify-content: center;
+        }
+
+        .wavy-text span {
+            position: relative;
+            display: inline-block;
+            font-size: 22px;
+            font-weight: 800;
+            color: #0b1e36; /* আপনার থিমের নেভি ব্লু কালার */
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            animation: wave-anim 1.5s infinite ease-in-out;
+            /* প্রতিটি অক্ষরে আলাদা আলাদা সময়ে অ্যানিমেশন শুরু হবে, তাই ঢেউয়ের মতো মনে হবে */
+            animation-delay: calc(0.1s * var(--i)); 
+        }
+
+        @keyframes wave-anim {
+            0%, 100% {
+                transform: translateY(0);
+            }
+            50% {
+                transform: translateY(-15px); /* পানির ঢেউয়ের মতো উপরে উঠবে */
+                color: #ffca28; /* ঢেউয়ের সাথে সাথে লেখার কালারও একটু চেঞ্জ হবে */
+            }
+        }
+
+
+    </style>
+</head>
+
+    <div id="page-loader" class="page-loader">
+        <div class="loader-content">
+            <i class="fas fa-lightbulb idea-bulb"></i>
+            
+            <div class="wavy-text">
+                <span style="--i:1;">L</span>
+                <span style="--i:2;">o</span>
+                <span style="--i:3;">a</span>
+                <span style="--i:4;">d</span>
+                <span style="--i:5;">i</span>
+                <span style="--i:6;">n</span>
+                <span style="--i:7;">g</span>
+                <span style="--i:8;">.</span>
+                <span style="--i:9;">.</span>
+                <span style="--i:10;">.</span>
+            </div>
+        </div>
+    </div>
+
+
+<body>
+
+    <header class="top-header">
+        <i class="fas fa-arrow-left" onclick="history.back()"></i>
+        <h3>Stores</h3>
+    </header>
+
+    <div class="slider-container">
+        <div class="slider-wrapper" id="sliderWrapper">
+            <div class="slide" style="background-image: url('https://images.unsplash.com/photo-1607082348824-0a96f2a4b9da?auto=format&fit=crop&w=600&q=80');"></div>
+            <div class="slide" style="background-image: url('https://images.unsplash.com/photo-1607082350899-7e105aa886ae?auto=format&fit=crop&w=600&q=80');"></div>
+            <div class="slide" style="background-image: url('https://images.unsplash.com/photo-1472851294608-062f824d29cc?auto=format&fit=crop&w=600&q=80');"></div>
+        </div>
+    </div>
+
+    <div class="filter-section">
+        <button class="filter-btn active" onclick="filterStores('all', this)">সব স্টোর</button>
+        <button class="filter-btn" onclick="filterStores('verified', this)">ভেরিফাইড স্টোরস</button>
+        <button class="filter-btn" onclick="filterStores('recommended', this)">রিকমেন্ডেড</button>
+        <button class="filter-btn" onclick="filterStores('normal', this)">নরমাল স্টোর</button>
+    </div>
+
+    <div class="search-container">
+        <div class="search-box">
+            <i class="fas fa-search"></i>
+            <input type="text" id="searchInput" placeholder="স্টোরের নাম লিখে খুঁজুন..." onkeyup="searchStores()">
+        </div>
+    </div>
+
+    <div class="store-list-container" id="storeList">
+        </div>
+    <div class="no-result" id="noResultMsg">কোনো স্টোর পাওয়া যায়নি!</div>
+
+  <!-- Bottom Navigation -->
+       <footer class="bottom-nav">
+        <a href="home.html" class="nav-item"><i class="fas fa-home"></i><p>Home</p></a>
+        <a href="category.html" class="nav-item"><i class="fas fa-th-large"></i><p>Category</p></a>
+        <a href="order.html" class="nav-item"><i class="fas fa-shopping-bag"></i><p>Order</p></a>
+        <a href="store.html" class="nav-item active"><i class="fas fa-store"></i><p>Store</p></a>
+        <a href="profile.html" class="nav-item"><i class="fas fa-user"></i><p>Profile</p></a>
+    </footer>
+
+
+    <script>
+        // --- ১. ব্যানার স্লাইডার ---
+        let currentSlide = 0;
+        const sliderWrapper = document.getElementById('sliderWrapper');
+        setInterval(() => {
+            currentSlide = (currentSlide + 1) % 3;
+            sliderWrapper.style.transform = `translateX(-${currentSlide * 33.33}%)`;
+        }, 3000);
+
+        // --- ২. ৫০টি স্টোরের মেইন লিস্ট (এখানে আপনি সহজে এডিট করতে পারবেন) ---
+        // type: "verified" (ভেরিফাইড), "recommended" (রিকমেন্ডেড), "normal" (সাধারণ)
+        // verified: true (টিক চিহ্ন দেখাবে), false (টিক দেখাবে না)
+      
+       const stores = [
+            { id: 1, name: "মেগা ফ্যাশন হাউজ", desc: "সেরা মানের জামাকাপড়", type: "verified", verified: true, image: "https://via.placeholder.com/50", link: "store1.html" },
+            { id: 21, name: "ফ্যাশন বাজার", desc: "বাজেট ফ্রেন্ডলি পোশাক", type: "recommended", verified: false, image: "https://via.placeholder.com/50", link: "store21.html" },
+            { id: 36, name: "দেশি কালেকশন", desc: "হাতে বোনা শাড়ি ও থ্রি-পিস", type: "normal", verified: false, image: "https://via.placeholder.com/50", link: "store36.html" },
+            { id: 2, name: "গ্যাজেট জোন", desc: "অরিজিনাল ইলেকট্রনিক্স আইটেম", type: "verified", verified: true, image: "https://via.placeholder.com/50", link: "store2.html" },
+            { id: 22, name: "ইলেক্ট্রো মার্ট", desc: "হোম অ্যাপ্লায়েন্স", type: "recommended", verified: false, image: "https://via.placeholder.com/50", link: "store22.html" },
+            { id: 37, name: "পাওয়ার ব্যাংক বিডি", desc: "চার্জার ও ব্যাটারি আইটেম", type: "normal", verified: false, image: "https://via.placeholder.com/50", link: "store37.html" },
+            { id: 3, name: "বিউটি কর্নার", desc: "সব ধরনের কসমেটিক্স", type: "verified", verified: true, image: "https://via.placeholder.com/50", link: "store3.html" },
+            { id: 4, name: "স্মার্ট লাইফ", desc: "লাইফস্টাইল প্রোডাক্টস", type: "verified", verified: true, image: "https://via.placeholder.com/50", link: "store4.html" },
+            { id: 23, name: "কসমেটিক গ্লো", desc: "স্কিন কেয়ার প্রোডাক্ট", type: "recommended", verified: false, image: "https://via.placeholder.com/50", link: "store23.html" },
+            { id: 38, name: "সিল্ক মেলা", desc: "খাঁটি সিল্কের কাপড়", type: "normal", verified: false, image: "https://via.placeholder.com/50", link: "store38.html" },
+            { id: 5, name: "বুক লাভার্স", desc: "সব রকমের নতুন বই", type: "verified", verified: true, image: "https://via.placeholder.com/50", link: "store5.html" },
+            { id: 6, name: "স্পোর্টস গ্যালারি", desc: "খেলার যাবতীয় সামগ্রী", type: "verified", verified: true, image: "https://via.placeholder.com/50", link: "store6.html" },
+            { id: 24, name: "হালকা রাইড", desc: "সাইকেল এবং এক্সেসরিজ", type: "recommended", verified: false, image: "https://via.placeholder.com/50", link: "store24.html" },
+            { id: 39, name: "অনলাইন শপ ৩৬", desc: "বিভিন্ন গ্যাজেট সামগ্রী", type: "normal", verified: false, image: "https://via.placeholder.com/50", link: "store39.html" },
+            { id: 7, name: "ফুটওয়্যার হাব", desc: "আরামদায়ক জুতো ও স্যান্ডেল", type: "verified", verified: true, image: "https://via.placeholder.com/50", link: "store7.html" },
+            { id: 25, name: "নোটবুক ডিপো", desc: "খাতা এবং স্টেশনারি", type: "recommended", verified: false, image: "https://via.placeholder.com/50", link: "store25.html" },
+            { id: 40, name: "গিফট গ্যালারি", desc: "জন্মদিনের উপহার সামগ্রী", type: "normal", verified: false, image: "https://via.placeholder.com/50", link: "store40.html" },
+            { id: 8, name: "অনলাইন সুপারমার্ট", desc: "নিত্যপ্রয়োজনীয় গ্রোসারি", type: "verified", verified: true, image: "https://via.placeholder.com/50", link: "store8.html" },
+            { id: 9, name: "কিডস জোন", desc: "বাচ্চাদের খেলনা ও পোশাক", type: "verified", verified: true, image: "https://via.placeholder.com/50", link: "store9.html" },
+            { id: 26, name: "সান রাইজ", desc: "গ্রোসারি ও ডেইলি নিডস", type: "recommended", verified: false, image: "https://via.placeholder.com/50", link: "store26.html" },
+            { id: 41, name: "হেঁশেল ঘর", desc: "ঐতিহ্যবাহী মশলাপাতি", type: "normal", verified: false, image: "https://via.placeholder.com/50", link: "store41.html" },
+            { id: 10, name: "ট্রেন্ডি কালেকশন", desc: "আধুনিক ফ্যাশন ডিজাইন", type: "verified", verified: true, image: "https://via.placeholder.com/50", link: "store10.html" },
+            { id: 27, name: "বেবি কেয়ার", desc: "নবজাতকদের যত্ন সামগ্রী", type: "recommended", verified: false, image: "https://via.placeholder.com/50", link: "store27.html" },
+            { id: 42, name: "ফ্যাশন পয়েন্ট", desc: "মেয়েদের আধুনিক থ্রি-পিস", type: "normal", verified: false, image: "https://via.placeholder.com/50", link: "store42.html" },
+            { id: 11, name: "ওয়াচ কিংডম", desc: "ব্র্যান্ডেড হাত ঘড়ি", type: "verified", verified: true, image: "https://via.placeholder.com/50", link: "store11.html" },
+            { id: 12, name: "হোম ডেকোর বিডি", desc: "ঘর সাজানোর আকর্ষণীয় জিনিস", type: "verified", verified: true, image: "https://via.placeholder.com/50", link: "store12.html" },
+            { id: 28, name: "স্মার্ট ওয়াচ বিডি", desc: "বাজেট স্মার্টওয়াচ", type: "recommended", verified: false, image: "https://via.placeholder.com/50", link: "store28.html" },
+            { id: 43, name: "মেমোরি কার্ড কর্নার", desc: "স্টোরেজ ও পেনড্রাইভ", type: "normal", verified: false, image: "https://via.placeholder.com/50", link: "store43.html" },
+            { id: 13, name: "মোবাইল প্লাস", desc: "স্মার্টফোন এবং এক্সেসরিজ", type: "verified", verified: true, image: "https://via.placeholder.com/50", link: "store13.html" },
+            { id: 29, name: "কিচেন কুইন", desc: "রান্নাঘরের আধুনিক জিনিসপত্র", type: "recommended", verified: false, image: "https://via.placeholder.com/50", link: "store29.html" },
+            { id: 44, name: "আর্ট অ্যান্ড ক্রাফট", desc: "হাতে তৈরি শোপিস", type: "normal", verified: false, image: "https://via.placeholder.com/50", link: "store44.html" },
+            { id: 14, name: "লেদার ক্রাফট", desc: "খাঁটি চামড়ার ব্যাগ ও ওয়ালেট", type: "verified", verified: true, image: "https://via.placeholder.com/50", link: "store14.html" },
+            { id: 15, name: "ফিটনেস শপ", desc: "ব্যায়ামের সব ধরণের ইনস্ট্রুমেন্ট", type: "verified", verified: true, image: "https://via.placeholder.com/50", link: "store15.html" },
+            { id: 30, name: "লাইটিং ওয়ার্ল্ড", desc: "ফ্যান্সি লাইট এবং ঝাড়বাতি", type: "recommended", verified: false, image: "https://via.placeholder.com/50", link: "store30.html" },
+            { id: 45, name: "জুয়েলারি বক্স", desc: "মেয়েদের গহনা সেট", type: "normal", verified: false, image: "https://via.placeholder.com/50", link: "store45.html" },
+            { id: 16, name: "চশমা ঘর", desc: "প্রিমিয়াম সানগ্লাস ও ফ্রেম", type: "verified", verified: true, image: "https://via.placeholder.com/50", link: "store16.html" },
+            { id: 31, name: "ক্লথিং ক্লাব", desc: "ছেলেদের টি-শার্ট ও জিন্স", type: "recommended", verified: false, image: "https://via.placeholder.com/50", link: "store31.html" },
+            { id: 46, name: "ফিটনেস ফার্স্ট", desc: "প্রোটিন সাপ্লিমেন্ট", type: "normal", verified: false, image: "https://via.placeholder.com/50", link: "store46.html" },
+            { id: 17, name: "মিউজিক স্টোর", desc: "বাদ্যযন্ত্র এবং হেডফোন", type: "verified", verified: true, image: "https://via.placeholder.com/50", link: "store17.html" },
+            { id: 18, name: "ফুড কর্নার", desc: "শুকনো খাবার এবং স্ন্যাক্স", type: "verified", verified: true, image: "https://via.placeholder.com/50", link: "store18.html" },
+            { id: 32, name: "পারফিউম গ্যালারি", desc: "লং লাস্টিং সুগন্ধি", type: "recommended", verified: false, image: "https://via.placeholder.com/50", link: "store32.html" },
+            { id: 47, name: "টয় শপ", desc: "বাচ্চাদের প্লাস্টিক খেলনা", type: "normal", verified: false, image: "https://via.placeholder.com/50", link: "store47.html" },
+            { id: 19, name: "টুলস অ্যান্ড হার্ডওয়্যার", desc: "প্রয়োজনীয় সব যন্ত্রপাতি", type: "verified", verified: true, image: "https://via.placeholder.com/50", link: "store19.html" },
+            { id: 33, name: "ব্যাগ প্যাক", desc: "ট্রাভেল এবং স্কুল ব্যাগ", type: "recommended", verified: false, image: "https://via.placeholder.com/50", link: "store33.html" },
+            { id: 48, name: "মোবাইল কভার মার্ট", desc: "স্টাইলিশ ব্যাক কভার", type: "normal", verified: false, image: "https://via.placeholder.com/50", link: "store48.html" },
+            { id: 20, name: "ডিজিটাল আর্ট শপ", desc: "ওয়াল আর্ট এবং ফ্রেম", type: "verified", verified: true, image: "https://via.placeholder.com/50", link: "store20.html" },
+            { id: 34, name: "গ্রীন প্ল্যান্টস", desc: "ইনডোর ও আউটডোর গাছপালা", type: "recommended", verified: false, image: "https://via.placeholder.com/50", link: "store34.html" },
+            { id: 49, name: "শার্ট কর্নার", desc: "ক্যাজুয়াল ও ফরমাল শার্ট", type: "normal", verified: false, image: "https://via.placeholder.com/50", link: "store49.html" },
+            { id: 35, name: "একুয়া জোন", desc: "রঙিন মাছ ও একুরিয়াম", type: "recommended", verified: false, image: "https://via.placeholder.com/50", link: "store35.html" },
+            { id: 50, name: "বিডি পাইকারি বাজার", desc: "পাইকারি রেটে সব প্রোডাক্ট", type: "normal", verified: false, image: "https://via.placeholder.com/50", link: "store50.html" }
+        ];
+
+        // --- ৩. স্টোরগুলো স্ক্রিনে দেখানোর ফাংশন ---
+        const storeListContainer = document.getElementById('storeList');
+        const noResultMsg = document.getElementById('noResultMsg');
+
+        function displayStores(storeArray) {
+            storeListContainer.innerHTML = '';
+            
+            if(storeArray.length === 0) {
+                noResultMsg.style.display = 'block';
+            } else {
+                noResultMsg.style.display = 'none';
+                
+                storeArray.forEach(store => {
+                    const storeHTML = `
+                        <div class="store-card">
+                            <div class="store-info-left">
+                                <img src="${store.image}" class="store-logo" alt="${store.name}">
+                                <div class="store-details">
+                                    <h4>
+                                        ${store.name} 
+                                        ${store.verified ? '<i class="fas fa-check-circle verified-tick"></i>' : ''}
+                                    </h4>
+                                    <p>${store.desc}</p>
+                                </div>
+                            </div>
+                            <a href="${store.link}" class="visit-store-btn">
+                                <i class="fas fa-store"></i> Store
+                            </a>
+                        </div>
+                    `;
+                    storeListContainer.insertAdjacentHTML('beforeend', storeHTML);
+                });
+            }
+        }
+
+        // শুরুতে সব দেখাবে
+        displayStores(stores);
+
+        // --- ৪. ক্যাটাগরি ফিল্টার লজিক ---
+        let currentFilter = 'all';
+
+        function filterStores(type, btnElement) {
+            document.querySelectorAll('.filter-btn').forEach(btn => btn.classList.remove('active'));
+            btnElement.classList.add('active');
+
+            currentFilter = type;
+            document.getElementById('searchInput').value = '';
+            
+            let filteredStores = stores;
+            if (type !== 'all') {
+                filteredStores = stores.filter(store => store.type === type);
+            }
+            displayStores(filteredStores);
+        }
+
+        // --- ৫. লাইভ সার্চ লজিক ---
+        function searchStores() {
+            const searchText = document.getElementById('searchInput').value.toLowerCase();
+            let baseStores = currentFilter === 'all' ? stores : stores.filter(store => store.type === currentFilter);
+            const searchedStores = baseStores.filter(store => store.name.toLowerCase().includes(searchText));
+            displayStores(searchedStores);
+        }
+
+        // লোডার হাইড করার মেইন ফাংশন
+        function hideLoader() {
+            const loader = document.getElementById('page-loader');
+            if(loader) {
+                loader.style.opacity = '0'; // আগে আস্তে করে অদৃশ্য হবে
+                setTimeout(() => {
+                    loader.style.display = 'none'; // তারপর জায়গা ছেড়ে দেবে
+                }, 400);
+            }
+        }
+
+        // ১. পেজ পুরোপুরি লোড হয়ে গেলে লোডার সরিয়ে ফেলবে
+        window.addEventListener('load', function() {
+            hideLoader();
+        });
+
+        // ২. ফেইলসেফ: কোনো কারণে পেজ আটকে গেলে ৩ সেকেন্ড পর অটোমেটিক লোডার বন্ধ হয়ে যাবে
+        setTimeout(function() {
+            hideLoader();
+        }, 3000);
+
+        // ৩. নিচের মেনুতে (Home, Store ইত্যাদিতে) ক্লিক করলে আবার লোডার দেখাবে
+        document.querySelectorAll('.bottom-nav a').forEach(link => {
+            link.addEventListener('click', function() {
+                const loader = document.getElementById('page-loader');
+                if(loader) {
+                    loader.style.display = 'flex';
+                    loader.style.opacity = '1';
+                }
+            });
+        });
+ 
+    </script>
+</body>
+</html>
