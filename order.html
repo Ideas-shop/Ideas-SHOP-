@@ -321,7 +321,7 @@
         <p>আপনার অর্ডারটি আমরা গ্রহণ করেছি</p>
         <div class="order-id-box">
             <span id="modalOrderId"></span>
-            <button class="copy-btn" id="copyBtn" onclick="copyOrderId()">
+            <button class="copy-btn" id="copyBtn" onclick="copyOrderId(event)">
                 <i class="fas fa-copy"></i> Copy
             </button>
         </div>
@@ -578,7 +578,28 @@ function closeSuccessModal() {
     document.getElementById('successOverlay').style.display = 'none';
     window.location.href = "https://ideasshopinfo.sheetdb.app";
 }
+unction copyOrderId(event) {
+    event.stopPropagation();   // <-- এই লাইনটা নতুন যুক্ত করো
+    let orderId = document.getElementById('modalOrderId').innerText;
+    let btn = document.getElementById('copyBtn');
 
+    function showCopiedAndRedirect() {
+        btn.innerHTML = '<i class="fas fa-check"></i> Copied';
+        btn.classList.add('copied');
+
+        setTimeout(() => {
+            window.location.href = "thankyou.html";
+        }, 800);
+    }
+
+    if (navigator.clipboard && window.isSecureContext) {
+        navigator.clipboard.writeText(orderId).then(showCopiedAndRedirect).catch(() => {
+            fallbackCopy(orderId, showCopiedAndRedirect);
+        });
+    } else {
+        fallbackCopy(orderId, showCopiedAndRedirect);
+    }
+}
 function copyOrderId() {
     let orderId = document.getElementById('modalOrderId').innerText;
     let btn = document.getElementById('copyBtn');
