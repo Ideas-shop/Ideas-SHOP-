@@ -581,16 +581,39 @@ function closeSuccessModal() {
 
 function copyOrderId() {
     let orderId = document.getElementById('modalOrderId').innerText;
-    navigator.clipboard.writeText(orderId).then(() => {
-        let btn = document.getElementById('copyBtn');
+    let btn = document.getElementById('copyBtn');
+
+    function showCopiedAndRedirect() {
         btn.innerHTML = '<i class="fas fa-check"></i> Copied';
         btn.classList.add('copied');
+
         setTimeout(() => {
-            btn.innerHTML = '<i class="fas fa-copy"></i> Copy';
-            btn.classList.remove('copied');
-        }, 2000);
-    });
-}   
+            window.location.href = "thankyou.html";
+        }, 800);
+    }
+
+    if (navigator.clipboard && window.isSecureContext) {
+        navigator.clipboard.writeText(orderId).then(showCopiedAndRedirect).catch(() => {
+            fallbackCopy(orderId, showCopiedAndRedirect);
+        });
+    } else {
+        fallbackCopy(orderId, showCopiedAndRedirect);
+    }
+}
+
+function fallbackCopy(text, callback) {
+    let tempInput = document.createElement("input");
+    tempInput.value = text;
+    document.body.appendChild(tempInput);
+    tempInput.select();
+    try {
+        document.execCommand("copy");
+        callback();
+    } catch (err) {
+        alert("কপি করতে সমস্যা হয়েছে, ম্যানুয়ালি কপি করুন: " + text);
+    }
+    document.body.removeChild(tempInput);
+}
     
     </script>
 </body>
