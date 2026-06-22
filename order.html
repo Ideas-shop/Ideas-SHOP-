@@ -578,7 +578,7 @@ function closeSuccessModal() {
     document.getElementById('successOverlay').style.display = 'none';
     window.location.href = "https://ideasshopinfo.sheetdb.app";
 }
-unction copyOrderId(event) {
+unction function copyOrderId(event) {
     event.stopPropagation();   // <-- এই লাইনটা নতুন যুক্ত করো
     let orderId = document.getElementById('modalOrderId').innerText;
     let btn = document.getElementById('copyBtn');
@@ -593,27 +593,7 @@ unction copyOrderId(event) {
     }
 
 }
-function copyOrderId() {
-    let orderId = document.getElementById('modalOrderId').innerText;
-    let btn = document.getElementById('copyBtn');
 
-    function showCopiedAndRedirect() {
-        btn.innerHTML = '<i class="fas fa-check"></i> Copied';
-        btn.classList.add('copied');
-
-        setTimeout(() => {
-            window.location.href = "thankyou.html";
-        }, 800);
-    }
-
-    if (navigator.clipboard && window.isSecureContext) {
-        navigator.clipboard.writeText(orderId).then(showCopiedAndRedirect).catch(() => {
-            fallbackCopy(orderId, showCopiedAndRedirect);
-        });
-    } else {
-        fallbackCopy(orderId, showCopiedAndRedirect);
-    }
-}
 
 function fallbackCopy(text, callback) {
     let tempInput = document.createElement("input");
