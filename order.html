@@ -592,13 +592,6 @@ unction copyOrderId(event) {
         }, 800);
     }
 
-    if (navigator.clipboard && window.isSecureContext) {
-        navigator.clipboard.writeText(orderId).then(showCopiedAndRedirect).catch(() => {
-            fallbackCopy(orderId, showCopiedAndRedirect);
-        });
-    } else {
-        fallbackCopy(orderId, showCopiedAndRedirect);
-    }
 }
 function copyOrderId() {
     let orderId = document.getElementById('modalOrderId').innerText;
