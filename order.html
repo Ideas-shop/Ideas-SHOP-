@@ -174,6 +174,46 @@
         .nav-item.active { color: #3f51b5; transform: translateY(-2px); }
         .nav-item i { font-size: 22px; margin-bottom: 4px; }
         .nav-item p { margin: 0; font-size: 12px; font-weight: 600; }
+
+    /* --- Success Modal --- */
+.success-overlay {
+    position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+    background: rgba(0,0,0,0.5); display: none;
+    justify-content: center; align-items: center; z-index: 9999;
+    animation: fadeIn 0.3s ease;
+}
+.success-box {
+    background: white; border-radius: 20px; padding: 30px 25px;
+    width: 85%; max-width: 320px; text-align: center;
+    box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+    animation: popUp 0.4s ease;
+}
+@keyframes popUp {
+    from { transform: scale(0.7); opacity: 0; }
+    to { transform: scale(1); opacity: 1; }
+}
+.success-icon {
+    font-size: 60px; color: #4CAF50; margin-bottom: 10px;
+}
+.success-box h2 { margin: 10px 0 5px; color: #333; font-size: 18px; }
+.success-box p { color: #777; font-size: 13px; margin-bottom: 15px; }
+.order-id-box {
+    display: flex; align-items: center; justify-content: space-between;
+    background: #f5f5f9; border: 1px dashed #3f51b5; border-radius: 10px;
+    padding: 10px 14px; margin-bottom: 18px;
+}
+.order-id-box span { font-weight: 700; color: #3f51b5; font-size: 14px; }
+.copy-btn {
+    background: #3f51b5; color: white; border: none; border-radius: 8px;
+    padding: 6px 10px; font-size: 13px; cursor: pointer;
+}
+.copy-btn.copied { background: #4CAF50; }
+.success-close-btn {
+    background: linear-gradient(135deg, #3f51b5, #5c6bc0); color: white;
+    border: none; width: 100%; padding: 12px; border-radius: 10px;
+    font-weight: 700; font-size: 14px; cursor: pointer;
+}
+    
     </style>
 </head>
 
@@ -272,7 +312,24 @@
         <a href="category.html" class="nav-item"><i class="fas fa-th-large"></i> <p>ক্যাটাগরি</p></a>
         <a href="order.html" class="nav-item active"><i class="fas fa-shopping-bag"></i> <p>অর্ডার</p></a>
         <a href="store.html" class="nav-item"><i class="fas fa-store"></i><p>Store</p></a>
-        <a href="profile.html" class="nav-item"><i class="fas fa-user"></i> <p>প্রোফাইল</p></a>
+        <a href="profile.html" class="nav-item"><i class="fas fa-user"></i> <p>প্রোফাইল</p><
+
+   <div class="success-overlay" id="successOverlay">
+    <div class="success-box">
+        <i class="fas fa-check-circle success-icon"></i>
+        <h2>অর্ডার সফল হয়েছে!</h2>
+        <p>আপনার অর্ডারটি আমরা গ্রহণ করেছি</p>
+        <div class="order-id-box">
+            <span id="modalOrderId"></span>
+            <button class="copy-btn" id="copyBtn" onclick="copyOrderId()">
+                <i class="fas fa-copy"></i> Copy
+            </button>
+        </div>
+        <button class="success-close-btn" onclick="closeSuccessModal()">ঠিক আছে</button>
+    </div>
+</div> 
+    
+    
     </footer>
 
     <script>
@@ -466,13 +523,9 @@
             .then(response => response.json())
             .then(result => {
                 if(result.created === 1) {
-                    alert("🎉 অভিনন্দন! আপনার অর্ডারটি সফলভাবে সম্পন্ন হয়েছে। \nঅর্ডার আইডি: " + premiumOrderID);
-                    
-                    // লোকাল স্টোরেজ থেকে কার্ট ক্লিয়ার করা
+                 
                     localStorage.removeItem('myCart');
-                    
-                    // ⚠️ এখানে আপনার Softr ট্র্যাকিং ওয়েবসাইটের লিংকটি বসিয়ে দিবেন
-                    window.location.href = "https://ideasshopinfo.sheetdb.app"; 
+                    showSuccessModal(premiumOrderID);
                 } else {
                     alert("দুঃখিত, কারিগরি সমস্যার কারণে অর্ডারটি নেওয়া যায়নি। আবার চেষ্টা করুন।");
                     orderBtn.disabled = false;
@@ -514,6 +567,31 @@
                 }
             });
         });
+
+    
+ function showSuccessModal(orderId) {
+    document.getElementById('modalOrderId').innerText = orderId;
+    document.getElementById('successOverlay').style.display = 'flex';
+}
+
+function closeSuccessModal() {
+    document.getElementById('successOverlay').style.display = 'none';
+    window.location.href = "https://ideasshopinfo.sheetdb.app";
+}
+
+function copyOrderId() {
+    let orderId = document.getElementById('modalOrderId').innerText;
+    navigator.clipboard.writeText(orderId).then(() => {
+        let btn = document.getElementById('copyBtn');
+        btn.innerHTML = '<i class="fas fa-check"></i> Copied';
+        btn.classList.add('copied');
+        setTimeout(() => {
+            btn.innerHTML = '<i class="fas fa-copy"></i> Copy';
+            btn.classList.remove('copied');
+        }, 2000);
+    });
+}   
+    
     </script>
 </body>
 </html>
