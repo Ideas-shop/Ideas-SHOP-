@@ -242,7 +242,28 @@
             padding: 12px 0; box-shadow: 0 -4px 15px rgba(0,0,0,0.05); z-index: 100;
             border-top-left-radius: 20px; border-top-right-radius: 20px;
         }
-        
+        /* ১. লেখার নিচের দাগ (Underline) দূর করা এবং টেক্সট অ্যালাইনমেন্ট ঠিক করা */
+.nav-item {
+    text-decoration: none !important; /* আন্ডারলাইন চিরতরে দূর করবে */
+    display: flex;
+    flex-direction: column; /* আইকনের নিচে লেখা দেখাবে */
+    align-items: center;
+    color: #512da8; /* আইকন ও লেখার বেসিক পার্পল কালার (আপনার থিম অনুযায়ী পরিবর্তন করতে পারেন) */
+}
+
+/* ২. <p> ট্যাগের বাড়তি ডিফল্ট মার্জিন বা স্পেস দূর করা */
+.nav-item p {
+    margin: 0 !important;   /* বাড়তি সব খালি জায়গা কেটে দেবে */
+    padding: 0;
+    font-size: 12px;        /* লেখার সাইজ একটু ছোট ও সুন্দর করবে */
+    margin-top: 4px;        /* আইকন থেকে লেখার মাঝখানে হালকা ও সুন্দর একটি গ্যাপ দেবে */
+    font-weight: 500;
+}
+
+/* ৩. মাউস নিলে বা অ্যাক্টিভ থাকলে যাতে কালার সুন্দর দেখায় (ঐচ্ছিক) */
+.nav-item:hover, .nav-item.active {
+    color: #311b92; /* একটু গাঢ় পার্পল কালার হবে */
+}
     
     </style>
 </head>
