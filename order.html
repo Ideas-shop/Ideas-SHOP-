@@ -213,7 +213,67 @@
     border: none; width: 100%; padding: 12px; border-radius: 10px;
     font-weight: 700; font-size: 14px; cursor: pointer;
 }
-    
+
+    /* --- Confirm Order Modal --- */
+    .confirm-overlay {
+        position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+        background: rgba(0,0,0,0.55); display: none;
+        justify-content: center; align-items: center; z-index: 9998;
+        animation: fadeIn 0.3s ease;
+    }
+    .confirm-box {
+        background: white; border-radius: 20px; padding: 26px 22px;
+        width: 88%; max-width: 360px;
+        box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+        animation: popUp 0.35s ease;
+        max-height: 85vh; overflow-y: auto;
+    }
+    .confirm-header { text-align: center; margin-bottom: 14px; }
+    .confirm-icon {
+        font-size: 46px; color: #ff9800; margin-bottom: 8px;
+        animation: light-glow 1.5s infinite alternate ease-in-out;
+    }
+    .confirm-box h2 { margin: 0 0 4px; color: #333; font-size: 17px; }
+    .confirm-box .confirm-subtitle { color: #888; font-size: 12.5px; margin: 0; }
+
+    .confirm-details {
+        background: #f7f8fc; border: 1px solid #ececf5; border-radius: 12px;
+        padding: 14px 14px; margin: 14px 0; font-size: 13.5px;
+    }
+    .confirm-details .crow {
+        display: flex; justify-content: space-between; gap: 10px;
+        padding: 6px 0; border-bottom: 1px dashed #e3e3ee;
+    }
+    .confirm-details .crow:last-child { border-bottom: none; }
+    .confirm-details .crow .clabel { color: #888; flex-shrink: 0; }
+    .confirm-details .crow .cvalue { color: #2b2b2b; font-weight: 600; text-align: right; }
+    .confirm-details .citems { color: #2b2b2b; font-weight: 600; text-align: right; white-space: pre-line; }
+
+    .confirm-warning {
+        display: flex; align-items: flex-start; gap: 8px;
+        background: #fff7e6; border: 1px solid #ffe2a8; border-radius: 10px;
+        padding: 10px 12px; margin-bottom: 16px; font-size: 12.5px; color: #8a5a00;
+        line-height: 1.4;
+    }
+    .confirm-warning i { font-size: 15px; margin-top: 2px; color: #ff9800; flex-shrink: 0; }
+
+    .confirm-actions { display: flex; gap: 10px; }
+    .confirm-actions button {
+        flex: 1; border: none; border-radius: 12px; padding: 13px 8px;
+        font-size: 14px; font-weight: 700; cursor: pointer;
+        display: flex; align-items: center; justify-content: center; gap: 6px;
+        transition: 0.2s;
+    }
+    .btn-recheck {
+        background: #f0f1f7; color: #555;
+    }
+    .btn-recheck:active { background: #e4e5ee; }
+    .btn-confirm-final {
+        background: linear-gradient(135deg, #3f51b5, #5c6bc0); color: white;
+        box-shadow: 0 6px 14px rgba(63, 81, 181, 0.3);
+    }
+    .btn-confirm-final:active { transform: scale(0.97); }
+
     </style>
 </head>
 
@@ -314,6 +374,39 @@
         <a href="store.html" class="nav-item"><i class="fas fa-store"></i><p>Store</p></a>
         <a href="profile.html" class="nav-item"><i class="fas fa-user"></i> <p>প্রোফাইল</p></a>
     </footer>
+
+    <!-- অর্ডার কনফার্মেশন এলার্ট মডাল -->
+    <div class="confirm-overlay" id="confirmOverlay">
+        <div class="confirm-box">
+            <div class="confirm-header">
+                <i class="fas fa-exclamation-circle confirm-icon"></i>
+                <h2>আপনার তথ্য একবার যাচাই করুন</h2>
+                <p class="confirm-subtitle">অর্ডার সম্পন্ন করার আগে নিচের তথ্যগুলো ভালোভাবে দেখে নিন</p>
+            </div>
+
+            <div class="confirm-details">
+                <div class="crow"><span class="clabel">নাম</span><span class="cvalue" id="confName"></span></div>
+                <div class="crow"><span class="clabel">মোবাইল নম্বর</span><span class="cvalue" id="confPhone"></span></div>
+                <div class="crow"><span class="clabel">ঠিকানা</span><span class="cvalue" id="confAddress"></span></div>
+                <div class="crow"><span class="clabel">প্রোডাক্ট</span><span class="citems" id="confItems"></span></div>
+                <div class="crow"><span class="clabel">সর্বমোট বিল</span><span class="cvalue" id="confTotal" style="color:#3f51b5;"></span></div>
+            </div>
+
+            <div class="confirm-warning">
+                <i class="fas fa-info-circle"></i>
+                <span>অনুগ্রহ করে নাম, মোবাইল নম্বর ও ঠিকানা সঠিক কিনা নিশ্চিত হোন। ভুল তথ্যে অর্ডার দিলে ডেলিভারিতে সমস্যা হতে পারে এবং এটি এড়াতে অর্ডার কনফার্ম করার আগে আমরা আপনাকে একবার চেক করার সুযোগ দিচ্ছি।</span>
+            </div>
+
+            <div class="confirm-actions">
+                <button class="btn-recheck" onclick="closeConfirmModal()">
+                    <i class="fas fa-edit"></i> আরেকবার চেক করি
+                </button>
+                <button class="btn-confirm-final" onclick="confirmFinalOrder()">
+                    <i class="fas fa-check-circle"></i> তথ্য সঠিক, কনফার্ম করুন
+                </button>
+            </div>
+        </div>
+    </div>
 
     <div class="success-overlay" id="successOverlay">
         <div class="success-box">
@@ -467,6 +560,46 @@
 
             let fullAddress = address + ", " + district + ", " + division;
 
+            let subTotalText = document.getElementById("subTotal").innerText;
+            let deliveryText = document.getElementById("deliveryCharge").innerText;
+            let grandTotalText = document.getElementById("grandTotal").innerText;
+
+            let itemsListText = selectedItems.map((item, i) => `${i+1}. ${item.name} (Qty: ${item.qty})`).join("\n");
+
+            // মডালে তথ্য বসানো
+            document.getElementById('confName').innerText = name;
+            document.getElementById('confPhone').innerText = phone;
+            document.getElementById('confAddress').innerText = fullAddress;
+            document.getElementById('confItems').innerText = itemsListText;
+            document.getElementById('confTotal').innerText = grandTotalText;
+
+            // কনফার্মেশন এলার্ট মডাল দেখানো হচ্ছে, এখনো অর্ডার সাবমিট হয়নি
+            document.getElementById('confirmOverlay').style.display = 'flex';
+        }
+
+        function closeConfirmModal() {
+            document.getElementById('confirmOverlay').style.display = 'none';
+        }
+
+        function confirmFinalOrder() {
+            document.getElementById('confirmOverlay').style.display = 'none';
+
+            let name = document.getElementById('orderName').value.trim();
+            let phone = document.getElementById('orderPhone').value.trim();
+            let division = document.getElementById('divisionSelect').value;
+            let district = document.getElementById('districtSelect').value;
+            let address = document.getElementById('orderAddress').value.trim();
+
+            let checkboxes = document.querySelectorAll('.item-check');
+            let selectedItems = [];
+            checkboxes.forEach(box => {
+                if (box.checked) {
+                    let index = box.getAttribute('data-index');
+                    selectedItems.push(cart[index]);
+                }
+            });
+
+            let fullAddress = address + ", " + district + ", " + division;
             let subTotalText = document.getElementById("subTotal").innerText;
             let deliveryText = document.getElementById("deliveryCharge").innerText;
             let grandTotalText = document.getElementById("grandTotal").innerText;

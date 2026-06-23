@@ -528,7 +528,7 @@
             document.getElementById('biodataModal').style.display = 'flex';
         }
 
-        // --- অর্ডার হিস্ট্রি দেখানোর ফাংশন ---
+            // --- অর্ডার হিস্ট্রি দেখানোর ফাংশন ---
         function showOrderHistory() {
             let orderHistory = JSON.parse(localStorage.getItem('orderHistory')) || [];
             let container = document.getElementById('orderHistoryList');
@@ -540,13 +540,20 @@
                 orderHistory.forEach(function(order, orderIndex) {
                     let itemsHtml = "";
                     order.items.forEach(function(item, itemIndex) {
+                        
+                        // --- এখানে হাইফেন ওয়ান (-1) রিমুভ করার জাদুকরী লজিক ---
+                        let cleanCode = item.code;
+                        if (cleanCode && cleanCode.endsWith("-1")) {
+                            cleanCode = cleanCode.slice(0, -2); // শেষের '-1' কেটে বাদ দিয়ে দেবে
+                        }
+
                         itemsHtml += `
                             <div class="oh-item-row">
                                 <div class="oh-item-info">
                                     <p>${item.name}</p>
-                                    <span>Qty: ${item.qty} | কোড: ${item.code}</span>
+                                    <span>Qty: ${item.qty} | কোড: ${cleanCode}</span>
                                 </div>
-                                <button class="oh-copy-btn" onclick="copyProductCode(this, '${item.code}')">
+                                <button class="oh-copy-btn" onclick="copyProductCode(this, '${cleanCode}')">
                                     <i class="fas fa-copy"></i> কপি
                                 </button>
                             </div>

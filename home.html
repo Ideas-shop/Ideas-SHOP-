@@ -313,6 +313,24 @@
             }
         }
 
+.header-profile-link {
+    display: inline-block;
+    text-decoration: none;
+}
+
+.header-profile-img {
+    width: 35px;          /* আপনার হেডার অনুযায়ী সাইজ ছোট-বড় করতে পারেন */
+    height: 35px;
+    border-radius: 50%;   /* এই লাইনটি ছবিকে গোল করবে */
+    object-fit: cover;    /* ছবি যেন চ্যাপ্টা না হয়ে সুন্দরভাবে ফিট হয় */
+    border: 2px solid #ffffff; /* ছবির চারপাশে একটা সুন্দর সাদা বর্ডার দেবে */
+    box-shadow: 0px 2px 5px rgba(0,0,0,0.1); /* হালকা শ্যাডো */
+}
+
+/* কার্ট মেনু আইটেমটিকে রিলেটিভ করতে হবে যেন ডটটি এর ভেতরেই থাকে */
+.cart-nav {
+    position: relative;
+}
 
 
      </style>
@@ -350,7 +368,10 @@
                 <span class="slogan">MAKE LIFE MEANINGFUL</span>
             </div>
         </div>
-        <button class="icon-btn" onclick="focusSearch()"><i class="fas fa-search"></i></button>
+        <button class="icon-btn" onclick="focusSearch()"><a href="profile.html" class="header-profile-link">
+    <img src="profile0.jpg" id="headerProfilePic" alt="Profile" class="header-profile-img">
+</a>
+
     </header>
 
     <main>
@@ -553,7 +574,7 @@
     <footer class="bottom-nav">
         <a href="home.html" class="nav-item active"><i class="fas fa-home"></i><p>Home</p></a>
         <a href="category.html" class="nav-item"><i class="fas fa-th-large"></i><p>Category</p></a>
-        <a href="order.html" class="nav-item"><i class="fas fa-shopping-bag"></i><p>Cart</p></a>
+        <a href="order.html" class="nav-item"><i class="fas fa-shopping-bag"></i><p>Order</p></a>
         <a href="store.html" class="nav-item"><i class="fas fa-store"></i><p>Store</p></a>
         <a href="profile.html" class="nav-item"><i class="fas fa-user"></i><p>Profile</p></a>
         
@@ -752,7 +773,18 @@
         }
 
 
-     
+     // হোমপেজের window.onload বা স্ক্রিপ্টের শুরুতে এটা যোগ করুন
+let savedImg = localStorage.getItem('userProfileImage');
+const defaultImage = "profile0.jpg";
+
+if (savedImg) {
+    document.getElementById('headerProfilePic').src = savedImg;
+} else {
+    document.getElementById('headerProfilePic').src = defaultImage;
+}
+
+
+
     </script>
 </body>
 </html>
