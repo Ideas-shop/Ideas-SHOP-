@@ -52,20 +52,34 @@
         .mySlides { display: none; width: 100%; height: 180px; object-fit: cover; animation: fadeEffect 1.5s; }
         @keyframes fadeEffect { from {opacity: .4} to {opacity: 1} }
 
-        /* --- Categories --- */
-        .category-section { padding: 10px 15px; }
+        /* --- Shortcut Menu (Replaced Category) --- */
+        .shortcut-section { padding: 10px 15px; }
         .section-title { font-size: 18px; font-weight: 700; margin-bottom: 15px; color: #333; }
         
-        .category-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; }
-        .category-item {
-            text-align: center; background-color: white; padding: 15px 5px;
-            border-radius: 15px; box-shadow: 0 4px 10px rgba(0,0,0,0.04);
-            cursor: pointer; transition: transform 0.2s;
+        .shortcut-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; }
+        .shortcut-item {
+            text-align: center; background-color: white; padding: 12px 5px;
+            border-radius: 14px; box-shadow: 0 4px 10px rgba(63, 81, 181, 0.08);
+            border: 1px solid #e0e6ed; cursor: pointer; transition: transform 0.2s;
+            text-decoration: none; display: flex; flex-direction: column; align-items: center; justify-content: center;
         }
-        .category-item:active { transform: scale(0.95); }
-        .category-item img { width: 50px; height: 50px; border-radius: 50%; margin-bottom: 8px; object-fit: cover; border: 2px solid #f0f2f5; }
-        .category-item p { margin: 0; font-size: 13px; color: #555; font-weight: 600; }
+        .shortcut-item:active { transform: scale(0.95); box-shadow: 0 2px 5px rgba(63, 81, 181, 0.15); }
+        .shortcut-icon {
+            font-size: 26px;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .shortcut-item p { margin: 0; font-size: 11.5px; color: #333; font-weight: 700; line-height: 1.3; }
+        
+        /* আইকনের সুন্দর কালার (স্ক্রিনশটের মত আকর্ষণীয় করার জন্য) */
+        .icon-order { color: #d32f2f; }
+        .icon-track { color: #ed6c02; }
+        .icon-chat { color: #0288d1; }
+        .icon-account { color: #4527a0; }
 
+      
         /* --- Product Grid --- */
         .trending-section { padding: 10px 15px; }
         .product-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; }
@@ -413,28 +427,33 @@
             </div>
         </div>
 
-        <!-- Categories Section -->
-        <section class="category-section">
-            <div class="section-title">পপুলার ক্যাটাগরি</div>
-            <div class="category-grid">
-                <div class="category-item" onclick="quickSearch('শার্ট')">
-                    <img src="images (31).jpeg" alt="Shirt" onerror="this.src='https://via.placeholder.com/100'">
-                    <p>শার্ট</p>
-                </div>
-                <div class="category-item" onclick="quickSearch('প্যান্ট')">
-                    <img src="images (32).jpeg" alt="প্যান্ট" onerror="this.src='https://via.placeholder.com/100'">
-                    <p>প্যান্ট</p>
-                </div>
-                <div class="category-item" onclick="quickSearch('টি-শার্ট')">
-                    <img src="images (33).jpeg" alt="টি-শার্ট" onerror="this.src='https://via.placeholder.com/100'">
-                    <p>টি-শার্ট</p>
-                </div>
-                <div class="category-item" onclick="quickSearch('ঘড়ি')">
-                    <img src="images (34).jpeg" alt="ঘড়ি" onerror="this.src='https://via.placeholder.com/100'">
-                    <p>ঘড়ি</p>
-                </div>
+               <section class="shortcut-section">
+            <div class="section-title">Shortcut Menu</div>
+            <div class="shortcut-grid">
+                
+                <a href="historyorder.html" class="shortcut-item">
+                    <div class="shortcut-icon icon-order"><i class="fas fa-file-invoice"></i></div>
+                    <p>Order<br>History</p>
+                </a>
+                
+                <a href="Orderpageinfo (1).html" class="shortcut-item">
+                    <div class="shortcut-icon icon-track"><i class="fas fa-box-open"></i></div>
+                    <p>Track Your<br>Order</p>
+                </a>
+                
+                <a href="IdeasSHOPChat.html" class="shortcut-item">
+                    <div class="shortcut-icon icon-chat"><i class="fas fa-comments"></i></div>
+                    <p>Shop<br>Chat</p>
+                </a>
+                
+                <a href="profile.html" class="shortcut-item">
+                    <div class="shortcut-icon icon-account"><i class="fas fa-user-cog"></i></div>
+                    <p>Account &<br>Settings</p>
+                </a>
+                
             </div>
         </section>
+
 
         <!-- Trending Products Section -->
         <div class="trending-section">
