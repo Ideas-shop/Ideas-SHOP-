@@ -284,6 +284,27 @@
         .nav-item i { font-size: 19px; }
         .nav-item p { margin: 3px 0 0; font-size: 11px; }
 
+        /* --- Cart Notification Red Dot --- */
+        .nav-icon-wrap { position: relative; display: inline-block; }
+        .nav-badge-dot {
+            position: absolute;
+            top: -3px;
+            right: -6px;
+            width: 9px;
+            height: 9px;
+            background-color: #ff3b30;
+            border: 1.5px solid #ffffff;
+            border-radius: 50%;
+            display: none;
+            animation: badgePulse 1.4s infinite;
+        }
+        .nav-badge-dot.show { display: block; }
+        @keyframes badgePulse {
+            0% { box-shadow: 0 0 0 0 rgba(255,59,48,0.6); }
+            70% { box-shadow: 0 0 0 5px rgba(255,59,48,0); }
+            100% { box-shadow: 0 0 0 0 rgba(255,59,48,0); }
+        }
+
 .search-container {
     background-color: white;
     padding: 10px 15px;
@@ -872,7 +893,7 @@
     <footer class="bottom-nav">
         <a href="home.html" class="nav-item"><i class="fas fa-home"></i> <p>হোম</p></a>
         <a href="category.html" class="nav-item active"><i class="fas fa-th-large"></i> <p>ক্যাটেগরি</p></a>
-        <a href="order.html" class="nav-item"><i class="fas fa-shopping-bag"></i> <p>অর্ডার</p></a>
+        <a href="order.html" class="nav-item"><span class="nav-icon-wrap"><i class="fas fa-shopping-bag"></i><span class="nav-badge-dot" id="orderNavBadge"></span></span> <p>অর্ডার</p></a>
          <a href="store.html" class="nav-item"><i class="fas fa-store"></i><p>Store</p></a>
         <a href="profile.html" class="nav-item"><i class="fas fa-user"></i> <p>প্রোফাইল</p></a>
     </footer>
@@ -981,6 +1002,7 @@
 
             // আপডেট হওয়া কার্ট আবার সেভ করা
             localStorage.setItem('myCart', JSON.stringify(cart));
+            updateCartBadge();
             
             // বাটনের স্টাইল চেঞ্জ করে কনফার্মেশন দেওয়া
             const cartBtn = document.getElementById('addToCartBtn');
@@ -1002,6 +1024,18 @@
                 toast.classList.remove('show');
             }, 3000);
         }
+
+        function updateCartBadge() {
+            let badge = document.getElementById('orderNavBadge');
+            if (!badge) return;
+            let savedCart = JSON.parse(localStorage.getItem('myCart')) || [];
+            if (savedCart.length > 0) {
+                badge.classList.add('show');
+            } else {
+                badge.classList.remove('show');
+            }
+        }
+        updateCartBadge();
  
         // লোডার হাইড করার মেইন ফাংশন
         function hideLoader() {

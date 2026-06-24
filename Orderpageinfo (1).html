@@ -293,6 +293,118 @@
     font-weight: 700; /* অ্যাক্টিভ লেখার ফন্ট একটু মোটা হবে */
 }
 
+/* --- Cart Notification Red Dot --- */
+.nav-icon-wrap { position: relative; display: inline-block; }
+.nav-badge-dot {
+    position: absolute;
+    top: -3px;
+    right: -6px;
+    width: 9px;
+    height: 9px;
+    background-color: #ff3b30;
+    border: 1.5px solid #ffffff;
+    border-radius: 50%;
+    display: none;
+    animation: badgePulse 1.4s infinite;
+}
+.nav-badge-dot.show { display: block; }
+@keyframes badgePulse {
+    0% { box-shadow: 0 0 0 0 rgba(255,59,48,0.6); }
+    70% { box-shadow: 0 0 0 5px rgba(255,59,48,0); }
+    100% { box-shadow: 0 0 0 0 rgba(255,59,48,0); }
+}
+
+/* --- Status Update Entrance Effect --- */
+@keyframes statusPopIn {
+    0% { opacity: 0; transform: translateY(10px) scale(0.98); }
+    60% { opacity: 1; transform: translateY(-2px) scale(1.01); }
+    100% { opacity: 1; transform: translateY(0) scale(1); }
+}
+.status-animate {
+    animation: statusPopIn 0.5s ease;
+}
+
+@keyframes stepPop {
+    0% { transform: scale(0.7); }
+    50% { transform: scale(1.25); }
+    100% { transform: scale(1); }
+}
+.step.active {
+    animation: stepPop 0.45s ease;
+}
+
+/* --- Customer Order Info Card --- */
+.order-info-card {
+    display: none;
+    margin-top: 22px;
+    text-align: left;
+    background: linear-gradient(145deg, #ffffff, #f7faf8);
+    border: 1px solid #e7efe9;
+    border-radius: 14px;
+    padding: 18px 18px 14px;
+    box-shadow: 0 6px 18px rgba(40, 167, 69, 0.07);
+    opacity: 0;
+    transform: translateY(14px);
+}
+.order-info-card.show {
+    display: block;
+    animation: cardSlideIn 0.5s ease forwards;
+}
+@keyframes cardSlideIn {
+    from { opacity: 0; transform: translateY(14px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+.order-info-card h4 {
+    font-size: 14px;
+    color: #28a745;
+    font-weight: 700;
+    margin-bottom: 12px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+.order-info-card h4 i { font-size: 14px; }
+.info-row {
+    display: flex;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 9px 0;
+    border-bottom: 1px dashed #e3ebe5;
+    font-size: 13.5px;
+}
+.info-row:last-child { border-bottom: none; }
+.info-row .info-label {
+    color: #8a9590;
+    flex-shrink: 0;
+    font-weight: 500;
+}
+.info-row .info-value {
+    color: #232b27;
+    font-weight: 700;
+    text-align: right;
+    word-break: break-word;
+}
+
+/* --- Promo Banner (কাস্টমারদের জন্য মেসেজ/অফার ছবি) --- */
+.promo-banner {
+    width: 100%;
+    margin-bottom: 18px;
+    border-radius: 14px;
+    overflow: hidden;
+    box-shadow: 0 6px 16px rgba(0,0,0,0.08);
+    line-height: 0;
+}
+.promo-banner img {
+    width: 100%;
+    height: auto;
+    display: block;
+    object-fit: cover;
+    transition: transform 0.4s ease;
+}
+.promo-banner:hover img {
+    transform: scale(1.02);
+}
+
     
     </style>
 </head>
@@ -300,13 +412,23 @@
 
 <div class="tracking-container">
     <h2>আপনার অর্ডার ট্র্যাক করুন</h2>
-    
+
+
     <div class="search-box">
         <input type="text" id="orderInput" placeholder="অর্ডার আইডি (যেমন: KST1001)">
         <button onclick="trackOrder()">Track</button>
     </div>
 
     <p id="loadingMsg" class="loading-text">খোঁজা হচ্ছে, অপেক্ষা করুন...</p>
+
+    <div id="orderInfoCard" class="order-info-card">
+        <h4><i class="fas fa-receipt"></i> অর্ডার তথ্য</h4>
+        <div class="info-row"><span class="info-label">অর্ডার আইডি</span><span class="info-value" id="infoOrderId">-</span></div>
+        <div class="info-row"><span class="info-label">নাম</span><span class="info-value" id="infoName">-</span></div>
+        <div class="info-row"><span class="info-label">মোবাইল নম্বর</span><span class="info-value" id="infoMobile">-</span></div>
+        <div class="info-row"><span class="info-label">ঠিকানা</span><span class="info-value" id="infoAddress">-</span></div>
+        <div class="info-row"><span class="info-label">অর্ডারের সময়</span><span class="info-value" id="infoDate">-</span></div>
+    </div>
 
     <div id="regularTracking">
         <div class="progress-track">
@@ -319,11 +441,12 @@
     </div>
 
     <div id="cancelTracking" class="canceled-box">
-        <h3>❌ অর্ডারটি ক্যানসেল করা হয়েছে!</h3>
+        <h3>❌ অর্ডারটি ক্যানসেল করা হয়েছে!</h3>
         <p><strong>কারণ:</strong> <span id="cancelReasonText"></span></p>
     </div>
 
 </div>
+
 
 <div id="toastNotification" class="toast">
     <span class="toast-icon" id="toastIcon">✓</span>
@@ -344,6 +467,7 @@
         document.getElementById('regularTracking').style.display = 'block';
         resetSteps("খোঁজা হচ্ছে, অপেক্ষা করুন...");
         document.getElementById('loadingMsg').style.display = 'block';
+        hideOrderInfo();
 
         // ⚠️ গুরুত্বপূর্ণ: এখানে "আপনার_API_ID_এখানে" এর জায়গায় আপনার আসল SheetDB API ID/URL বসান, নাহলে ট্র্যাকিং কাজ করবে না
         const sheetdbUrl = `https://sheetdb.io/api/v1/g5k93bim98aob/search?${new URLSearchParams({'Order ID': orderId})}`;
@@ -361,6 +485,9 @@
                     const status = order.Status; 
                     const cancelReason = order.CancelReason;
 
+                    // ⚠️ এক্সট্রা API রিকোয়েস্ট ছাড়াই, একই রেসপন্স থেকে কাস্টমারের তথ্য বসানো হলো
+                    fillOrderInfo(order);
+
                     const normalizedStatus = (status || "").trim().toLowerCase();
                     if (normalizedStatus === "canceled" || normalizedStatus === "cancelled") {
                         document.getElementById('regularTracking').style.display = 'none';
@@ -372,6 +499,7 @@
                     }
                 } else {
                     resetSteps("আপনার অর্ডার আইডি লিখে Track বাটনে চাপুন");
+                    hideOrderInfo();
                     showToast("দুঃখিত! এই আইডি দিয়ে কোনো অর্ডার পাওয়া যায়নি।", "error");
                 }
             })
@@ -379,8 +507,30 @@
                 console.error('Error fetching data:', error);
                 document.getElementById('loadingMsg').style.display = 'none';
                 resetSteps("আপনার অর্ডার আইডি লিখে Track বাটনে চাপুন");
+                hideOrderInfo();
                 showToast("সার্ভার এরর! দয়া করে কিছুক্ষণ পর আবার চেষ্টা করুন।", "error");
             });
+    }
+
+    // কাস্টমারের তথ্য (নাম, নম্বর, ঠিকানা, অর্ডারের সময়) সুন্দর কার্ডে দেখানো — একই API রেসপন্স থেকেই, এক্সট্রা রিকোয়েস্ট লাগে না
+    function fillOrderInfo(order) {
+        const card = document.getElementById('orderInfoCard');
+
+        document.getElementById('infoOrderId').innerText = order["Order ID"] || "-";
+        document.getElementById('infoName').innerText = order.Name || "-";
+        document.getElementById('infoMobile').innerText = order.Mobile || "-";
+        document.getElementById('infoAddress').innerText = order.Address || "-";
+        document.getElementById('infoDate').innerText = order["Order Date"] || "-";
+
+        // রিফ্রেশ করে আবার সুন্দর স্লাইড-ইন ইফেক্ট চালানো
+        card.classList.remove('show');
+        void card.offsetWidth; // রিফ্লো ফোর্স করা, যাতে অ্যানিমেশন রিস্টার্ট হয়
+        card.classList.add('show');
+    }
+
+    function hideOrderInfo() {
+        const card = document.getElementById('orderInfoCard');
+        card.classList.remove('show');
     }
 
     function resetSteps(neutralMessage) {
@@ -428,6 +578,11 @@
         }
 
         msgEl.innerText = message;
+
+        // স্ট্যাটাস আপডেটে সুন্দর পপ-ইন ইফেক্ট
+        msgEl.classList.remove('status-animate');
+        void msgEl.offsetWidth;
+        msgEl.classList.add('status-animate');
     }
 
     function showToast(message, type) {
@@ -444,12 +599,25 @@
             toast.className = 'toast';
         }, 3000);
     }
-</script>
 
+    // কার্টে প্রোডাক্ট থাকলে "Cart" আইকনে রেড ডট দেখানো হবে
+    function updateCartBadge() {
+        let badge = document.getElementById('orderNavBadge');
+        if (!badge) return;
+        let savedCart = JSON.parse(localStorage.getItem('myCart')) || [];
+        if (savedCart.length > 0) {
+            badge.classList.add('show');
+        } else {
+            badge.classList.remove('show');
+        }
+    }
+    updateCartBadge();
+</script>
+   
    <footer class="bottom-nav">
         <a href="home.html" class="nav-item"><i class="fas fa-home"></i> <p>Home</p></a>
         <a href="category.html" class="nav-item"><i class="fas fa-th-large"></i> <p>Category</p></a>
-        <a href="order.html" class="nav-item"><i class="fas fa-shopping-bag"></i> <p>Cart</p></a>
+        <a href="order.html" class="nav-item"><span class="nav-icon-wrap"><i class="fas fa-shopping-bag"></i><span class="nav-badge-dot" id="orderNavBadge"></span></span> <p>Cart</p></a>
         <a href="store.html" class="nav-item"><i class="fas fa-store"></i><p>Store</p></a>
         <a href="profile.html" class="nav-item active"><i class="fas fa-user"></i> <p>Profile</p></a>
     </footer>
