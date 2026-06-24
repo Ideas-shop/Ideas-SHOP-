@@ -1,0 +1,459 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Order Tracking</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        /* সব এলিমেন্টের সাইজ ঠিক রাখার জন্য */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            background: linear-gradient(160deg, #f4f7f6 0%, #eef3f1 100%);
+            padding: 15px;
+            font-family: 'Segoe UI', Arial, sans-serif;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        .tracking-container {
+            width: 100%;
+            max-width: 480px;
+            margin: 20px auto;
+            padding: 32px 22px;
+            background: #fff;
+            border-radius: 16px;
+            box-shadow: 0 8px 30px rgba(0,0,0,0.08);
+            text-align: center;
+        }
+
+        .tracking-container h2 {
+            margin-bottom: 26px;
+            font-size: 21px;
+            color: #222;
+            font-weight: 700;
+        }
+
+        .search-box {
+            display: flex;
+            flex-wrap: nowrap;
+            gap: 10px;
+            margin-bottom: 32px;
+            align-items: center;
+            width: 100%;
+        }
+
+        .search-box input {
+            flex: 1 1 auto;
+            min-width: 0;
+            height: 48px;
+            padding: 10px 14px;
+            border: 1.5px solid #dadfe2;
+            border-radius: 8px;
+            font-size: 14px;
+            outline: none;
+            transition: border-color 0.25s;
+        }
+
+        .search-box input:focus {
+            border-color: #28a745;
+            box-shadow: 0 0 0 3px rgba(40, 167, 69, 0.12);
+        }
+
+        .search-box button {
+            flex: 0 0 auto;
+            height: 48px;
+            padding: 0 18px;
+            background: #28a745;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 15px;
+            font-weight: 700;
+            transition: background 0.25s, transform 0.15s;
+            white-space: nowrap;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            box-shadow: 0 4px 10px rgba(40, 167, 69, 0.25);
+        }
+
+        .search-box button:hover {
+            background: #218838;
+        }
+        .search-box button:active {
+            transform: scale(0.97);
+        }
+
+        .progress-track {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: relative;
+            margin-bottom: 36px;
+            padding: 0 6px;
+        }
+
+        .progress-track::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 16px;
+            right: 16px;
+            height: 4px;
+            background: #eef0f0;
+            z-index: 1;
+            transform: translateY(-50%);
+            border-radius: 4px;
+        }
+
+        .step {
+            position: relative;
+            z-index: 2;
+            background: #eef0f0;
+            color: #9aa1a1;
+            width: 34px;
+            height: 34px;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 14px;
+            font-weight: 700;
+            transition: 0.4s;
+            border: 3px solid #fff;
+        }
+
+        .step-label {
+            position: absolute;
+            top: 42px;
+            font-size: 11.5px;
+            color: #777;
+            white-space: nowrap;
+            font-weight: 500;
+        }
+
+        .step.active {
+            background: #28a745;
+            color: white;
+            box-shadow: 0 0 0 4px rgba(40, 167, 69, 0.15);
+        }
+        .step.active .step-label {
+            color: #28a745;
+            font-weight: 700;
+        }
+
+        #statusMessage {
+            margin-top: 28px;
+            padding: 12px 16px;
+            border-radius: 10px;
+            background: #f3faf5;
+            color: #28a745;
+            font-weight: 600;
+            font-size: 14px;
+            line-height: 1.5;
+        }
+        #statusMessage.neutral {
+            background: #f4f6f6;
+            color: #777;
+            font-weight: 500;
+        }
+
+        .canceled-box {
+            display: none;
+            padding: 22px 18px;
+            background: #fff1f1;
+            border: 1px solid #ffd9d9;
+            border-radius: 12px;
+            color: #c92a2a;
+            margin-top: 24px;
+        }
+
+        .canceled-box h3 {
+            margin: 0 0 10px 0;
+            font-size: 17px;
+        }
+
+        .loading-text {
+            color: #777;
+            font-style: italic;
+            display: none;
+            margin-bottom: 15px;
+            font-size: 13.5px;
+        }
+
+        @media (max-width: 360px) {
+            .step-label {
+                font-size: 10px;
+            }
+            .search-box button {
+                padding: 0 14px;
+                font-size: 14px;
+            }
+        }
+
+        /* --- Professional Toast Notification --- */
+        .toast {
+            position: fixed;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%) translateY(20px);
+            background-color: #323232;
+            color: white;
+            padding: 14px 22px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 14px;
+            font-weight: 500;
+            z-index: 999;
+            box-shadow: 0 6px 20px rgba(0,0,0,0.25);
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.35s ease, transform 0.35s ease;
+            max-width: 90%;
+            text-align: left;
+        }
+        .toast.show {
+            opacity: 1;
+            transform: translateX(-50%) translateY(0);
+            pointer-events: auto;
+        }
+        .toast.success { background-color: #28a745; }
+        .toast.error { background-color: #d9534f; }
+        .toast .toast-icon {
+            font-size: 18px;
+            flex-shrink: 0;
+            font-weight: bold;
+        }
+    
+     /* --- Premium App-Themed Bottom Navigation Menu --- */
+.bottom-nav {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    background-color: #ffffff;
+    display: flex;
+    justify-content: space-around;
+    padding: 10px 0;
+    /* আপনার থিমের সাথে ম্যাচিং হালকা পার্পল গ্লো শ্যাডো */
+    box-shadow: 0 -5px 25px rgba(81, 45, 168, 0.06); 
+    z-index: 100;
+    border-top-left-radius: 20px;
+    border-top-right-radius: 20px;
+    border-top: 1px solid #f3e8ff; /* হালকা পার্পল বর্ডার লাইন */
+}
+
+.nav-item {
+    text-decoration: none !important; 
+    display: flex;
+    flex-direction: column; 
+    align-items: center;
+    color: #88909d; /* শুধু এই লাইনটি পরিবর্তন করুন (এটি স্ক্রিনশটের গ্রে কালার) */
+}
+
+
+.nav-item i {
+    font-size: 19px;
+    margin-bottom: 4px;
+    transition: transform 0.2s ease;
+}
+
+.nav-item p {
+    margin: 0 !important;
+    padding: 0;
+    font-size: 11px;
+    font-weight: 500;
+}
+
+/* মাউস নিলে বা আঙুল দিয়ে টাচ করলে হালকা ইন্টারঅ্যাকশন */
+.nav-item:hover {
+    color: #8c73c4;
+}
+
+.nav-item:hover i {
+    transform: translateY(-2px);
+}
+
+/* অ্যাক্টিভ বা সিলেক্টেড বাটনের জন্য আপনার অ্যাপের সিগনেচার ডিপ পার্পল কালার */
+.nav-item.active {
+    color: #512da8; /* স্ক্রিনশটের মূল পার্পল কালার */
+}
+
+.nav-item.active p {
+    font-weight: 700; /* অ্যাক্টিভ লেখার ফন্ট একটু মোটা হবে */
+}
+
+    
+    </style>
+</head>
+<body>
+
+<div class="tracking-container">
+    <h2>আপনার অর্ডার ট্র্যাক করুন</h2>
+    
+    <div class="search-box">
+        <input type="text" id="orderInput" placeholder="অর্ডার আইডি (যেমন: KST1001)">
+        <button onclick="trackOrder()">Track</button>
+    </div>
+
+    <p id="loadingMsg" class="loading-text">খোঁজা হচ্ছে, অপেক্ষা করুন...</p>
+
+    <div id="regularTracking">
+        <div class="progress-track">
+            <div class="step" id="step-Pending">1<span class="step-label">Pending</span></div>
+            <div class="step" id="step-Processing">2<span class="step-label">Processing</span></div>
+            <div class="step" id="step-Shipped">3<span class="step-label">Shipped</span></div>
+            <div class="step" id="step-Delivered">4<span class="step-label">Delivered</span></div>
+        </div>
+        <p id="statusMessage" class="neutral">আপনার অর্ডার আইডি লিখে Track বাটনে চাপুন</p>
+    </div>
+
+    <div id="cancelTracking" class="canceled-box">
+        <h3>❌ অর্ডারটি ক্যানসেল করা হয়েছে!</h3>
+        <p><strong>কারণ:</strong> <span id="cancelReasonText"></span></p>
+    </div>
+
+</div>
+
+<div id="toastNotification" class="toast">
+    <span class="toast-icon" id="toastIcon">✓</span>
+    <span id="toastMessage"></span>
+</div>
+
+<script>
+    function trackOrder() {
+        const orderId = document.getElementById('orderInput').value.trim();
+        
+        if (orderId === "") {
+            showToast("দয়া করে আপনার অর্ডার আইডি দিন!", "error");
+            return;
+        }
+
+        // UI রিসেট করা (প্রগ্রেস বার সবসময় দেখানো থাকে, শুধু একটিভ স্টেট রিসেট হয়)
+        document.getElementById('cancelTracking').style.display = 'none';
+        document.getElementById('regularTracking').style.display = 'block';
+        resetSteps("খোঁজা হচ্ছে, অপেক্ষা করুন...");
+        document.getElementById('loadingMsg').style.display = 'block';
+
+        // ⚠️ গুরুত্বপূর্ণ: এখানে "আপনার_API_ID_এখানে" এর জায়গায় আপনার আসল SheetDB API ID/URL বসান, নাহলে ট্র্যাকিং কাজ করবে না
+        const sheetdbUrl = `https://sheetdb.io/api/v1/g5k93bim98aob/search?${new URLSearchParams({'Order ID': orderId})}`;
+
+        fetch(sheetdbUrl)
+            .then(response => {
+                if (!response.ok) { throw new Error('HTTP ' + response.status); }
+                return response.json();
+            })
+            .then(data => {
+                document.getElementById('loadingMsg').style.display = 'none';
+
+                if (data.length > 0) {
+                    const order = data[0]; 
+                    const status = order.Status; 
+                    const cancelReason = order.CancelReason;
+
+                    const normalizedStatus = (status || "").trim().toLowerCase();
+                    if (normalizedStatus === "canceled" || normalizedStatus === "cancelled") {
+                        document.getElementById('regularTracking').style.display = 'none';
+                        document.getElementById('cancelTracking').style.display = 'block';
+                        document.getElementById('cancelReasonText').innerText = cancelReason || "কোনো কারণ উল্লেখ করা হয়নি।";
+                    } else {
+                        document.getElementById('regularTracking').style.display = 'block';
+                        updateProgressBar(status);
+                    }
+                } else {
+                    resetSteps("আপনার অর্ডার আইডি লিখে Track বাটনে চাপুন");
+                    showToast("দুঃখিত! এই আইডি দিয়ে কোনো অর্ডার পাওয়া যায়নি।", "error");
+                }
+            })
+            .catch(error => {
+                console.error('Error fetching data:', error);
+                document.getElementById('loadingMsg').style.display = 'none';
+                resetSteps("আপনার অর্ডার আইডি লিখে Track বাটনে চাপুন");
+                showToast("সার্ভার এরর! দয়া করে কিছুক্ষণ পর আবার চেষ্টা করুন।", "error");
+            });
+    }
+
+    function resetSteps(neutralMessage) {
+        const steps = ['Pending', 'Processing', 'Shipped', 'Delivered'];
+        steps.forEach(s => document.getElementById(`step-${s}`).classList.remove('active'));
+        const msgEl = document.getElementById('statusMessage');
+        msgEl.innerText = neutralMessage || "";
+        msgEl.classList.add('neutral');
+    }
+
+    function updateProgressBar(rawStatus) {
+        const steps = ['Pending', 'Processing', 'Shipped', 'Delivered'];
+        steps.forEach(s => document.getElementById(`step-${s}`).classList.remove('active'));
+
+        // শিটে স্ট্যাটাসের আগে/পরে স্পেস বা ছোট-বড় হাতের অক্ষরের তফাৎ থাকলেও মেলানোর জন্য
+        const status = (rawStatus || "").trim().toLowerCase();
+
+        let message = "";
+        const msgEl = document.getElementById('statusMessage');
+        msgEl.classList.remove('neutral');
+
+        if (status === "pending") {
+            document.getElementById('step-Pending').classList.add('active');
+            message = "আপনার অর্ডারটি গৃহীত হয়েছে। আমরা খুব দ্রুত কাজ শুরু করবো।";
+        } 
+        else if (status === "processing") {
+            document.getElementById('step-Pending').classList.add('active');
+            document.getElementById('step-Processing').classList.add('active');
+            message = "আপনার অর্ডারটি বর্তমানে প্যাকেজিং করা হচ্ছে।";
+        } 
+        else if (status === "shipped") {
+            document.getElementById('step-Pending').classList.add('active');
+            document.getElementById('step-Processing').classList.add('active');
+            document.getElementById('step-Shipped').classList.add('active');
+            message = "আপনার অর্ডারটি কুরিয়ারে দেওয়া হয়েছে। খুব শীঘ্রই পেয়ে যাবেন!";
+        } 
+        else if (status === "delivered") {
+            steps.forEach(s => document.getElementById(`step-${s}`).classList.add('active'));
+            message = "আপনার অর্ডারটি সফলভাবে ডেলিভারি সম্পন্ন হয়েছে! ধন্যবাদ।";
+        }
+        else {
+            msgEl.classList.add('neutral');
+            message = "এই অর্ডারের সর্বশেষ স্ট্যাটাস: " + (rawStatus || "অজানা") + "। বিস্তারিত জানতে আমাদের সাথে যোগাযোগ করুন।";
+            showToast("স্ট্যাটাস সনাক্ত করা যায়নি, সাপোর্টে যোগাযোগ করুন।", "error");
+        }
+
+        msgEl.innerText = message;
+    }
+
+    function showToast(message, type) {
+        const toast = document.getElementById('toastNotification');
+        const icon = document.getElementById('toastIcon');
+        const msg = document.getElementById('toastMessage');
+
+        msg.innerText = message;
+        icon.innerText = (type === 'error') ? '✕' : '✓';
+        toast.className = 'toast show ' + (type || '');
+
+        clearTimeout(window._toastTimer);
+        window._toastTimer = setTimeout(() => {
+            toast.className = 'toast';
+        }, 3000);
+    }
+</script>
+
+   <footer class="bottom-nav">
+        <a href="home.html" class="nav-item"><i class="fas fa-home"></i> <p>Home</p></a>
+        <a href="category.html" class="nav-item"><i class="fas fa-th-large"></i> <p>Category</p></a>
+        <a href="order.html" class="nav-item"><i class="fas fa-shopping-bag"></i> <p>Cart</p></a>
+        <a href="store.html" class="nav-item"><i class="fas fa-store"></i><p>Store</p></a>
+        <a href="profile.html" class="nav-item active"><i class="fas fa-user"></i> <p>Profile</p></a>
+    </footer>
+
+
+</body>
+</html>
