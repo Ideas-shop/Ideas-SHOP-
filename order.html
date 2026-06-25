@@ -57,20 +57,87 @@
             padding-bottom: 10px;
         }
 
-        /* --- Cart Section --- */
-        .cart-item {
+        /* --- Cart Section (Accordion Style) --- */
+        .cart-item-card {
+            border: 1px solid #f0f0f0;
+            border-radius: 14px;
+            margin-bottom: 10px;
+            overflow: hidden;
+            transition: box-shadow 0.2s ease;
+        }
+        .cart-item-card:last-child { margin-bottom: 0; }
+
+        .cart-item-header {
             display: flex;
             align-items: center;
             justify-content: space-between;
-            padding: 12px 0;
-            border-bottom: 1px dashed #eee;
+            padding: 10px;
+            gap: 8px;
+            cursor: pointer;
+            background-color: #fff;
         }
-        .cart-item:last-child { border-bottom: none; }
-        .cart-item-left { display: flex; align-items: center; gap: 10px; }
-        .item-details p { margin: 0; font-size: 14px; font-weight: 600; }
+        .cart-item-left { display: flex; align-items: center; gap: 10px; min-width: 0; flex: 1; }
+
+        .cart-item-thumb {
+            width: 46px; height: 46px; border-radius: 10px; object-fit: cover;
+            background-color: #f1f1f1; flex-shrink: 0;
+        }
+
+        .item-details { min-width: 0; }
+        .item-details p {
+            margin: 0; font-size: 13.5px; font-weight: 600;
+            overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 150px;
+        }
         .item-details span { font-size: 12px; color: #777; }
+
+        .cart-item-right { display: flex; align-items: center; gap: 10px; flex-shrink: 0; }
         .delete-btn { color: #ff4d4d; background: none; border: none; font-size: 16px; cursor: pointer; }
-        
+        .toggle-icon {
+            color: #999; font-size: 13px; transition: transform 0.3s ease;
+        }
+        .cart-item-card.open .toggle-icon { transform: rotate(180deg); color: #3f51b5; }
+
+        .cart-item-body {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease;
+            background-color: #fafbff;
+            border-top: 1px solid transparent;
+        }
+        .cart-item-card.open .cart-item-body {
+            border-top: 1px dashed #eee;
+        }
+
+        .cart-item-body-inner {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 12px 10px;
+            gap: 10px;
+        }
+
+        .cart-item-img-large {
+            width: 64px; height: 64px; border-radius: 12px; object-fit: cover;
+            background-color: #f1f1f1; flex-shrink: 0;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+        }
+
+        .cart-item-info-col p { margin: 0 0 4px 0; font-size: 13px; font-weight: 600; color: #333; }
+        .cart-item-info-col span { font-size: 12px; color: #777; }
+
+        .qty-stepper {
+            display: flex; align-items: center; gap: 10px;
+            background-color: #fff; border: 1px solid #e0e0e0; border-radius: 30px;
+            padding: 4px 6px; flex-shrink: 0;
+        }
+        .qty-stepper button {
+            width: 26px; height: 26px; border-radius: 50%; border: none;
+            background-color: #3f51b5; color: white; font-size: 14px; font-weight: 700;
+            display: flex; align-items: center; justify-content: center; cursor: pointer;
+        }
+        .qty-stepper button:disabled { background-color: #c5c8e8; cursor: not-allowed; }
+        .qty-stepper span { font-size: 14px; font-weight: 700; min-width: 18px; text-align: center; }
+
         .empty-cart { text-align: center; color: #999; font-size: 14px; padding: 10px 0; }
 
         /* --- Custom Checkbox --- */
@@ -98,6 +165,38 @@
         /* --- Order Summary --- */
         .summary-row { display: flex; justify-content: space-between; font-size: 14px; margin-bottom: 8px; color: #555; }
         .summary-total { font-size: 16px; font-weight: 700; color: #333; border-top: 1px solid #eee; padding-top: 10px; margin-top: 10px; }
+
+        /* --- Frozen / Sticky Total Price Card ---
+             যাতে কার্ট আইটেম বিস্তারিত (accordion) খোলা হলে পেজ বড় হয়ে গেলেও
+             টোটাল প্রাইস সবসময় স্ক্রিনে স্টিকি অবস্থায় দেখা যায় */
+        .summary-card-sticky {
+            position: sticky;
+            bottom: 78px;
+            z-index: 50;
+            box-shadow: 0 -6px 18px rgba(0,0,0,0.08);
+            padding: 14px 16px;
+        }
+        .summary-card-sticky h3 {
+            font-size: 14px;
+            margin-bottom: 8px;
+            padding-bottom: 7px;
+        }
+        .summary-card-sticky .summary-row {
+            font-size: 13px;
+            margin-bottom: 5px;
+        }
+        .summary-card-sticky .summary-total {
+            font-size: 14.5px;
+            padding-top: 7px;
+            margin-top: 6px;
+        }
+        .summary-card-sticky .order-btn {
+            padding: 12px;
+            font-size: 14px;
+            margin-top: 6px;
+            border-radius: 10px;
+        }
+        .summary-card-sticky .order-btn i { font-size: 16px !important; }
 
         /* --- Professional Submit Button --- */
         .order-btn {
@@ -364,7 +463,7 @@
             </div>
         </div>
 
-        <div class="card">
+        <div class="card summary-card-sticky">
             <h3><i class="fas fa-receipt"></i> পেমেন্ট সামারি</h3>
             <div class="summary-row">
                 <span>প্রোডাক্টের দাম:</span>
@@ -458,6 +557,18 @@
         };
 
         let cart = JSON.parse(localStorage.getItem('myCart')) || [];
+
+        // --- ছবি লোড না হলে (broken link) দেখানোর জন্য লোকাল প্লেসহোল্ডার ---
+        const NO_IMAGE_PLACEHOLDER = 'data:image/svg+xml;utf8,' + encodeURIComponent(`
+            <svg xmlns="http://www.w3.org/2000/svg" width="200" height="200" viewBox="0 0 200 200">
+                <rect width="200" height="200" fill="#f1f5f9"/>
+                <g fill="#cbd5e1">
+                    <path d="M60 72h80a6 6 0 0 1 6 6v56a6 6 0 0 1-6 6H60a6 6 0 0 1-6-6V78a6 6 0 0 1 6-6z" fill="none" stroke="#cbd5e1" stroke-width="4"/>
+                    <circle cx="78" cy="90" r="7"/>
+                    <path d="M60 122l24-22 18 16 28-26 30 28v10a6 6 0 0 1-6 6H60z"/>
+                </g>
+            </svg>
+        `);
         
         function loadDivisions() {
             let divSelect = document.getElementById("divisionSelect");
@@ -490,21 +601,80 @@
             }
 
             cart.forEach((item, index) => {
+                let imgSrc = item.image || NO_IMAGE_PLACEHOLDER;
+                let lineTotal = item.price * item.qty;
                 let html = `
-                    <div class="cart-item">
-                        <div class="cart-item-left">
-                            <input type="checkbox" class="item-check" onchange="calculateTotal()" checked data-index="${index}">
-                            <div class="item-details">
-                                <p>${item.name}</p>
-                                <span>${item.price} ৳ (Qty: ${item.qty})</span>
+                    <div class="cart-item-card" id="cartCard-${index}">
+                        <div class="cart-item-header" onclick="toggleCartItem(${index})">
+                            <div class="cart-item-left">
+                                <input type="checkbox" class="item-check" onclick="event.stopPropagation()" onchange="calculateTotal()" checked data-index="${index}">
+                                <img src="${imgSrc}" class="cart-item-thumb" alt="product" onerror="this.onerror=null; this.src='${NO_IMAGE_PLACEHOLDER}';">
+                                <div class="item-details">
+                                    <p>${item.name}</p>
+                                    <span>${item.price} ৳ x ${item.qty} = ${lineTotal} ৳</span>
+                                </div>
+                            </div>
+                            <div class="cart-item-right">
+                                <button class="delete-btn" onclick="event.stopPropagation(); deleteItem(${index})"><i class="fas fa-trash-alt"></i></button>
+                                <i class="fas fa-chevron-down toggle-icon"></i>
                             </div>
                         </div>
-                        <button class="delete-btn" onclick="deleteItem(${index})"><i class="fas fa-trash-alt"></i></button>
+                        <div class="cart-item-body" id="cartBody-${index}">
+                            <div class="cart-item-body-inner">
+                                <div style="display:flex; align-items:center; gap:10px; min-width:0;">
+                                    <img src="${imgSrc}" class="cart-item-img-large" alt="product" onerror="this.onerror=null; this.src='${NO_IMAGE_PLACEHOLDER}';">
+                                    <div class="cart-item-info-col">
+                                        <p>${item.name}</p>
+                                        <span>প্রতি পিস: ${item.price} ৳</span>
+                                    </div>
+                                </div>
+                                <div class="qty-stepper">
+                                    <button onclick="changeQty(${index}, -1)" ${item.qty <= 1 ? 'disabled' : ''}><i class="fas fa-minus"></i></button>
+                                    <span>${item.qty}</span>
+                                    <button onclick="changeQty(${index}, 1)"><i class="fas fa-plus"></i></button>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 `;
                 container.innerHTML += html;
             });
             calculateTotal();
+        }
+
+        // --- অ্যাকর্ডিয়ন ওপেন/ক্লোজ করার ফাংশন (প্রোডাক্ট ডিটেলস দেখানোর জন্য) ---
+        function toggleCartItem(index) {
+            let card = document.getElementById('cartCard-' + index);
+            let body = document.getElementById('cartBody-' + index);
+            if (!card || !body) return;
+
+            let isOpen = card.classList.contains('open');
+            if (isOpen) {
+                card.classList.remove('open');
+                body.style.maxHeight = '0px';
+            } else {
+                card.classList.add('open');
+                body.style.maxHeight = body.scrollHeight + 'px';
+            }
+        }
+
+        // --- কোয়ান্টিটি প্লাস/মাইনাস বাটনের ফাংশন ---
+        function changeQty(index, delta) {
+            if (!cart[index]) return;
+            let newQty = cart[index].qty + delta;
+            if (newQty < 1) newQty = 1;
+            cart[index].qty = newQty;
+
+            localStorage.setItem('myCart', JSON.stringify(cart));
+            renderCart();
+
+            // আগে যে কার্ডটি খোলা ছিল সেটি আবার খুলে রাখা (রি-রেন্ডারের পরেও)
+            let card = document.getElementById('cartCard-' + index);
+            let body = document.getElementById('cartBody-' + index);
+            if (card && body) {
+                card.classList.add('open');
+                body.style.maxHeight = body.scrollHeight + 'px';
+            }
         }
 
         function deleteItem(index) {

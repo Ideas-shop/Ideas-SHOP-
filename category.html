@@ -14,6 +14,7 @@
             margin: 0; padding: 0; background-color: #f8fafc; color: #1e293b;
             display: flex; flex-direction: column; height: 100vh;
             -webkit-tap-highlight-color: transparent;
+            overflow-x: hidden;
         }
 
         /* --- Header --- */
@@ -21,270 +22,167 @@
             background: linear-gradient(135deg, #3f51b5, #5c6bc0); 
             color: white; display: flex; align-items: center;
             padding: 16px; box-shadow: 0 4px 12px rgba(63, 81, 181, 0.15); z-index: 10;
+            width: 100%;
         }
         .header-title { font-size: 18px; font-weight: 700; margin-left: 15px; }
 
-        /* --- Main Layout --- */
-        .main-container { display: flex; flex-grow: 1; overflow: hidden; padding-bottom: 65px; }
+        /* --- Search Bar --- */
+        .search-container {
+            background-color: white; padding: 10px 15px; border-bottom: 1px solid #e2e8f0;
+            width: 100%;
+        }
+        .search-bar {
+            display: flex; align-items: center; background-color: #f1f5f9;
+            border-radius: 10px; overflow: hidden; border: 1px solid #e2e8f0;
+            width: 100%;
+        }
+        .search-bar input {
+            flex: 1; min-width: 0; border: none; outline: none; background: transparent;
+            padding: 12px 15px; font-size: 14px; color: #1e293b;
+        }
+        .search-icon-btn {
+            border: none; background: #3f51b5; color: white;
+            padding: 12px 16px; cursor: pointer; font-size: 14px; flex-shrink: 0;
+        }
 
-        /* --- Sidebar (Left Menu) --- */
-        .sidebar {
-            width: 90px; background-color: white; border-right: 1px solid #e2e8f0;
-            overflow-y: auto; padding-top: 10px;
+        /* --- Top Filter Bar --- */
+        .filter-container {
+            display: flex; overflow-x: auto; padding: 12px 15px;
+            background-color: white; gap: 10px; border-bottom: 1px solid #e2e8f0;
+            white-space: nowrap; scrollbar-width: none; width: 100%;
         }
-        .sidebar-item {
-            text-align: center; padding: 16px 5px; cursor: pointer;
-            border-bottom: 1px solid #f1f5f9; color: #64748b; transition: all 0.2s ease;
+        .filter-container::-webkit-scrollbar { display: none; }
+        
+        .filter-btn {
+            padding: 8px 20px; border: 1px solid #cbd5e1; border-radius: 20px;
+            background-color: white; color: #475569; font-size: 14px; font-weight: 600;
+            cursor: pointer; transition: all 0.2s ease; outline: none;
         }
-        .sidebar-item.active {
-            background-color: #eeecf9; color: #3f51b5; border-left: 4px solid #3f51b5; font-weight: 600;
+        .filter-btn.active {
+            background-color: #3f51b5; color: white; border-color: #3f51b5;
+            box-shadow: 0 4px 10px rgba(63, 81, 181, 0.3);
         }
-        .sidebar-item i { font-size: 20px; margin-bottom: 6px; display: block; }
-        .sidebar-item p { margin: 0; font-size: 11px; font-weight: 600; }
 
-        /* --- Content Area --- */
-        .content-area { flex-grow: 1; padding: 15px; overflow-y: auto; background-color: #f8fafc; }
-        
-        .category-section { display: none; }
-        .category-section.active { display: block; animation: fadeIn 0.3s ease; }
-        
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(8px); }
-            to { opacity: 1; transform: translateY(0); }
+        /* --- Content Area & Grid --- */
+        .content-area { 
+            flex: 1; padding: 15px; overflow-y: auto; padding-bottom: 80px; width: 100%;
         }
-        
-        .section-title { margin-top: 0; color: #1e293b; font-size: 16px; margin-bottom: 16px; font-weight: 700; }
-
-        /* --- Professional Product Grid & Cards --- */
         .product-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+        
         .product-card {
             background-color: white; border-radius: 14px; padding: 10px;
             box-shadow: 0 2px 8px rgba(0,0,0,0.04); text-align: center;
             border: 1px solid #f1f5f9; transition: all 0.2s ease; cursor: pointer;
             display: flex; flex-direction: column; justify-content: space-between;
         }
-        .product-card:active { transform: scale(0.97); box-shadow: 0 1px 4px rgba(0,0,0,0.02); }
+        .product-card:active { transform: scale(0.97); }
         .product-img-wrapper {
-            width: 100%; height: 110px; border-radius: 10px; overflow: hidden;
+            width: 100%; height: 130px; border-radius: 10px; overflow: hidden;
             background-color: #f1f5f9; margin-bottom: 8px;
         }
         .product-card img { width: 100%; height: 100%; object-fit: cover; }
         .product-card h4 { 
             margin: 4px 0 6px 0; font-size: 13px; color: #334155; 
             height: 36px; overflow: hidden; display: -webkit-box;
-            -webkit-line-clamp: 2; -webkit-box-orient: vertical;
-            line-height: 1.4; font-weight: 600;
+            -webkit-line-clamp: 2; -webkit-box-orient: vertical; line-height: 1.4; font-weight: 600;
         }
         .product-price { 
             margin: 0; font-size: 14px; font-weight: 700; color: #ef4444; 
             background: #fef2f2; padding: 4px; border-radius: 6px;
         }
 
-        /* --- Premium Popup Modal --- */
+        .hide { display: none !important; }
+
+        /* --- Fullscreen Modal --- */
         .modal-overlay {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(15, 23, 42, 0.6); backdrop-filter: blur(4px);
-            display: flex; justify-content: center; align-items: center;
-            opacity: 0; pointer-events: none; transition: all 0.3s ease; z-index: 1000; padding: 20px;
+            background: rgba(0,0,0,0.5); z-index: 1000;
+            display: none; opacity: 0; transition: opacity 0.3s;
         }
-        .modal-overlay.active { opacity: 1; pointer-events: auto; }
-        
+        .modal-overlay.active { display: block; opacity: 1; }
+
         .modal-box {
-            background: white; padding: 24px; border-radius: 20px;
-            max-width: 400px; width: 100%; position: relative;
-            transform: scale(0.85); transition: transform 0.3s ease;
-            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+            position: fixed; top: 100%; left: 0; width: 100%; height: 100%;
+            background: white; z-index: 1001; transition: top 0.3s ease-in-out;
+            display: flex; flex-direction: column;
         }
-        .modal-overlay.active .modal-box { transform: scale(1); }
+        .modal-box.active { top: 0; }
 
-        .close-btn {
-            position: absolute; top: 12px; right: 16px; font-size: 26px;
-            color: #94a3b8; cursor: pointer; transition: color 0.2s; z-index: 10;
+        .modal-header {
+            padding: 15px; display: flex; justify-content: space-between; align-items: center;
+            background: white; position: sticky; top: 0; z-index: 10; border-bottom: 1px solid #f1f5f9;
         }
-        .close-btn:hover { color: #ef4444; }
+        .modal-header h3 { margin: 0; font-size: 16px; color: #1e293b; }
+        .close-btn { font-size: 24px; color: #64748b; cursor: pointer; }
 
-        /* --- Image Slider Styles --- */
+        .modal-body { flex-grow: 1; overflow-y: auto; padding: 0 15px 15px 15px; }
+
         .slider-container {
-            position: relative; width: 100%; height: 180px; 
-            border-radius: 12px; overflow: hidden; margin-bottom: 16px;
+            position: relative; width: 100%; height: 300px;
+            border-radius: 0 0 12px 12px; overflow: hidden; margin-bottom: 16px; margin-top: -1px;
             background-color: #f1f5f9;
         }
-        .slider-wrapper {
-            display: flex; width: 100%; height: 100%; transition: transform 0.3s ease-in-out;
-        }
+        .slider-wrapper { display: flex; width: 100%; height: 100%; transition: transform 0.3s ease-in-out; }
         .slider-wrapper img { width: 100%; height: 100%; object-fit: cover; flex-shrink: 0; }
         .slider-btn {
             position: absolute; top: 50%; transform: translateY(-50%);
             background: rgba(15, 23, 42, 0.4); color: white; border: none;
-            width: 32px; height: 32px; cursor: pointer; border-radius: 50%;
-            font-size: 14px; z-index: 5; display: flex; align-items: center; justify-content: center;
+            width: 36px; height: 36px; cursor: pointer; border-radius: 50%;
+            font-size: 16px; z-index: 5; display: flex; align-items: center; justify-content: center;
         }
-        .prev-btn { left: 8px; }
-        .next-btn { right: 8px; }
+        .prev-btn { left: 10px; }
+        .next-btn { right: 10px; }
         .slider-dots {
-            position: absolute; bottom: 8px; left: 50%; transform: translateX(-50%);
+            position: absolute; bottom: 10px; left: 50%; transform: translateX(-50%);
             display: flex; gap: 6px; z-index: 5;
         }
-        .dot {
-            width: 8px; height: 8px; background: rgba(255, 255, 255, 0.5);
-            border-radius: 50%; cursor: pointer; transition: all 0.2s;
-        }
+        .dot { width: 8px; height: 8px; background: rgba(255,255,255,0.5); border-radius: 50%; cursor: pointer; }
         .dot.active { background: white; width: 14px; border-radius: 4px; }
 
-        .modal-title { font-size: 18px; color: #1e293b; margin: 0 0 8px 0; font-weight: 700; }
-        .modal-price { font-size: 16px; color: #ef4444; font-weight: 700; margin-bottom: 12px; }
-        .modal-desc { font-size: 13px; color: #64748b; line-height: 1.5; margin-bottom: 20px; }
-
-        /* Add to Cart Section inside Modal */
-        .code-box {
-            background: #f8fafc; border: 1.5px dashed #cbd5e1;
-            padding: 12px; border-radius: 12px; display: flex;
-            justify-content: space-between; align-items: center;
+        .modal-title { font-size: 22px; color: #1e293b; margin: 10px 0 5px 0; font-weight: 700; }
+        .modal-price { font-size: 20px; color: #ef4444; font-weight: 700; margin-bottom: 10px; }
+        .modal-desc { font-size: 14px; color: #475569; line-height: 1.6; margin-bottom: 20px; }
+        
+        .extra-details {
+            padding: 15px; background: #f8fafc; border-radius: 8px; border: 1px solid #e2e8f0; margin-bottom: 20px;
         }
-        .code-info { font-size: 13px; color: #334155; font-weight: 600; display: flex; flex-direction: column; }
-        .code-info span { color: #3f51b5; font-size: 11px; margin-top: 2px; }
+        .extra-details h4 { margin-top: 0; font-size: 15px; color: #3f51b5; margin-bottom: 10px; }
+        .extra-details p { font-size: 13px; color: #64748b; margin: 5px 0; font-weight: 500; }
+
+        .modal-footer {
+            padding: 15px; background: white; border-top: 1px solid #e2e8f0;
+            display: flex; justify-content: space-between; align-items: center;
+        }
+        .code-info { font-size: 12px; color: #64748b; font-weight: 600; display: flex; flex-direction: column; }
+        .code-info span { color: #1e293b; font-size: 14px; margin-top: 2px; }
         
         .add-cart-btn {
-            background: linear-gradient(135deg, #f59e0b, #ea580c);
-            color: white; border: none; padding: 10px 14px; border-radius: 8px; cursor: pointer;
-            font-size: 13px; font-weight: 600; transition: all 0.2s ease; display: flex; align-items: center; gap: 6px;
+            background: linear-gradient(135deg, #f59e0b, #ea580c); width: 60%; justify-content: center;
+            color: white; border: none; padding: 14px 15px; border-radius: 10px; cursor: pointer;
+            font-size: 15px; font-weight: 600; transition: all 0.2s ease; display: flex; align-items: center; gap: 8px;
             box-shadow: 0 4px 10px rgba(234, 88, 12, 0.2);
         }
-        .add-cart-btn:active { transform: scale(0.95); }
 
-        /* --- Toast Notification (Success Message) --- */
         .toast-notification {
             position: fixed; top: 20px; right: -350px; background: #10b981; color: white;
             padding: 12px 20px; border-radius: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.15);
             display: flex; align-items: center; gap: 10px; font-size: 14px; font-weight: 600;
-            transition: right 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55); z-index: 2000;
+            transition: right 0.4s ease; z-index: 2000;
         }
         .toast-notification.show { right: 20px; }
 
-        /* --- Bottom Navigation --- */
         .bottom-nav {
             position: fixed; bottom: 0; left: 0; width: 100%; background-color: white;
             display: flex; justify-content: space-around; padding: 10px 0;
             box-shadow: 0 -4px 12px rgba(0,0,0,0.05); z-index: 100; border-top: 1px solid #f1f5f9;
         }
-    
-/* মেইন কন্টেইনার যা টাইটেলকে বামে এবং বাটনকে ডানে পাঠাবে */
-.header-section {
-    display: flex;
-    justify-content: space-between; 
-    align-items: flex-start; 
-    margin-bottom: 12px;
-}
-
-.title-and-price {
-    display: flex;
-    flex-direction: column;
-    gap: 5px; /* টাইটেল ও দামের মাঝে একটু ফাঁকা জায়গা */
-}
-
-/* স্টোর বাটনের প্রিমিয়াম ডিজাইন */
-.store-button {
-    display: flex;
-    align-items: center;
-    gap: 4px; 
-    background-color: #ffffff;
-    border: 1px solid #e0e0e0;
-    padding: 4px 10px;
-    border-radius: 20px; 
-    text-decoration: none;
-    color: #333333;
-    font-size: 13px;
-    font-weight: bold;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.05); 
-}
-
-/* ভেরিফাইড ব্যাজের ডিজাইন */
-.verified-icon {
-    width: 16px;
-    height: 16px;
-    fill: #1da1f2; /* টুইটারের মত ভেরিফাইড ব্লু কালার */
-}
-
-        /* --- Premium Custom Preloader CSS --- */
-        .page-loader {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: #ffffff;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            z-index: 99999;
-            transition: opacity 0.4s ease, visibility 0.4s ease;
-        }
-
-        .loader-content {
-            text-align: center;
-        }
-
-        /* লাইট জ্বলছে এবং নিভছে (Glowing Animation) */
-        .idea-bulb {
-            font-size: 70px;
-            color: #dcdde1; /* নিভানো অবস্থার কালার (হালকা ধূসর) */
-            animation: light-glow 1.5s infinite alternate ease-in-out;
-            margin-bottom: 20px;
-        }
-
-        @keyframes light-glow {
-            0% {
-                color: #dcdde1;
-                text-shadow: none;
-                transform: scale(1);
-            }
-            100% {
-                color: #ffca28; /* জ্বলন্ত অবস্থার কালার (হলুদ) */
-                text-shadow: 0 0 15px rgba(255, 202, 40, 0.6), 
-                             0 0 30px rgba(255, 193, 7, 0.8), 
-                             0 0 50px rgba(255, 179, 0, 1);
-                transform: scale(1.05); /* জ্বললে একটু বড় হবে */
-            }
-        }
-
-        /* নৌকার ঢেউয়ের মতো টেক্সট অ্যানিমেশন */
-        .wavy-text {
-            position: relative;
-            display: flex;
-            justify-content: center;
-        }
-
-        .wavy-text span {
-            position: relative;
-            display: inline-block;
-            font-size: 22px;
-            font-weight: 800;
-            color: #0b1e36; /* আপনার থিমের নেভি ব্লু কালার */
-            text-transform: uppercase;
-            letter-spacing: 2px;
-            animation: wave-anim 1.5s infinite ease-in-out;
-            /* প্রতিটি অক্ষরে আলাদা আলাদা সময়ে অ্যানিমেশন শুরু হবে, তাই ঢেউয়ের মতো মনে হবে */
-            animation-delay: calc(0.1s * var(--i)); 
-        }
-
-        @keyframes wave-anim {
-            0%, 100% {
-                transform: translateY(0);
-            }
-            50% {
-                transform: translateY(-15px); /* পানির ঢেউয়ের মতো উপরে উঠবে */
-                color: #ffca28; /* ঢেউয়ের সাথে সাথে লেখার কালারও একটু চেঞ্জ হবে */
-            }
-        }
-
-
-     
         .nav-item { text-align: center; color: #94a3b8; text-decoration: none; flex-grow: 1; }
         .nav-item.active { color: #3f51b5; font-weight: 600; }
         .nav-item i { font-size: 19px; }
         .nav-item p { margin: 3px 0 0; font-size: 11px; }
 
-        /* --- Cart Notification Red Dot --- */
+        .search-highlight { border: 2px solid #f59e0b !important; box-shadow: 0 0 12px rgba(245, 158, 11, 0.5) !important; }
+           /* --- Cart Notification Red Dot --- */
         .nav-icon-wrap { position: relative; display: inline-block; }
         .nav-badge-dot {
             position: absolute;
@@ -305,593 +203,71 @@
             100% { box-shadow: 0 0 0 0 rgba(255,59,48,0); }
         }
 
-.search-container {
-    background-color: white;
-    padding: 10px 15px;
-    border-bottom: 1px solid #e2e8f0;
-}
-.search-bar {
-    display: flex;
-    align-items: center;
-    background-color: #f1f5f9;
-    border-radius: 10px;
-    overflow: hidden;
-    border: 1px solid #e2e8f0;
-}
-.search-bar input {
-    flex-grow: 1;
-    border: none;
-    outline: none;
-    background: transparent;
-    padding: 12px 15px;
-    font-size: 14px;
-    font-family: 'Hind Siliguri', sans-serif;
-}
-.search-icon-btn {
-    border: none;
-    background: #3f51b5;
-    color: white;
-    padding: 12px 16px;
-    cursor: pointer;
-    font-size: 14px;
-}
-.search-highlight {
-    border: 2px solid #f59e0b !important;
-    box-shadow: 0 0 12px rgba(245, 158, 11, 0.5) !important;
-    animation: pulseHighlight 1s ease-in-out 2;
-}
-@keyframes pulseHighlight {
-    0%, 100% { transform: scale(1); }
-    50% { transform: scale(1.03); }
-}
-
-
-
- </style>
+    </style>
 </head>
 
-    <div id="page-loader" class="page-loader">
-        <div class="loader-content">
-            <i class="fas fa-lightbulb idea-bulb"></i>
-            
-            <div class="wavy-text">
-                <span style="--i:1;">L</span>
-                <span style="--i:2;">o</span>
-                <span style="--i:3;">a</span>
-                <span style="--i:4;">d</span>
-                <span style="--i:5;">i</span>
-                <span style="--i:6;">n</span>
-                <span style="--i:7;">g</span>
-                <span style="--i:8;">.</span>
-                <span style="--i:9;">.</span>
-                <span style="--i:10;">.</span>
-            </div>
-        </div>
-    </div>
-
-
 <body>
-     
 
     <header class="header">
         <i class="fas fa-arrow-left" onclick="history.back()" style="cursor:pointer; font-size:18px;"></i>
         <div class="header-title">ক্যাটেগরি সমূহ</div>
     </header>
 
- <!-- Smart Search Bar -->
-        <div class="search-container">
-            <div class="search-bar">
-                <input type="text" id="searchInput" placeholder="প্রোডাক্ট খুঁজতে প্রোডাক্টের কোড দিন!..." onkeypress="handleSearchKeyPress(event)">
-                <button class="search-icon-btn" onclick="executeSearch()"><i class="fas fa-search"></i></button>
-            </div>
-        </div>
-
-    <div class="main-container">
-        <div class="sidebar">
-            <div class="sidebar-item active" onclick="showCategory('cat-gents', this)">
-                <i class="fas fa-male"></i><p>জেন্টস</p>
-            </div>
-            <div class="sidebar-item" onclick="showCategory('cat-ladies', this)">
-                <i class="fas fa-female"></i><p>লেডিস</p>
-            </div>
-            <div class="sidebar-item" onclick="showCategory('cat-electronics', this)">
-                <i class="fas fa-tv"></i><p>ইলেকট্রনিক্স</p>
-            </div>
-            <div class="sidebar-item" onclick="showCategory('cat-watch', this)">
-                <i class="fas fa-clock"></i><p>ঘড়ি</p>
-            </div>
-            <div class="sidebar-item" onclick="showCategory('cat-decor', this)">
-                <i class="fas fa-home"></i><p>ডেকোরেশন</p>
-            </div>
-        </div>
-
-        <div class="content-area">
-       
-            <div id="cat-gents" class="category-section active">
-                <h3 class="section-title">জেন্টস ফ্যাশন</h3>
-                <div class="product-grid">
- 
-<!-- ==================== ১. জেন্টস ক্যাটাগরি শুরু ==================== -->
-
-                   <div class="product-card" onclick="openModal('প্রিমিয়াম কটন শার্ট', '৳৭৫০', 'G-SHIRT-01', ['https://images.unsplash.com/photo-1596755094514-f87e34085b2c?w=400', 'https://images.unsplash.com/photo-1620012253295-c05ce3e85663?w=400'], 'এটি শতভাগ প্রিমিয়াম কটন কাপড়ে তৈরি আরামদায়ক ক্যাজুয়াল শার্ট। অফিস বা যেকোনো অনুষ্ঠানে পরার জন্য পারফেক্ট।')">
-                        <div class="product-img-wrapper"><img src="https://images.unsplash.com/photo-1596755094514-f87e34085b2c?w=400" alt="Product"></div>
-                        <h4>প্রিমিয়াম কটন শার্ট</h4>
-                        <p class="product-price">৳৭৫০</p>
-                    </div>
-<!-- ==================== জেন্টস ফ্যাশন ক্যাটাগরি শুরু ==================== -->
-
-<div class="product-card" data-code="G-SHIRT-01" onclick="openModal('প্রিমিয়াম কটন শার্ট', '৳৭৫০', 'G-SHIRT-01', ['https://images.unsplash.com/photo-1596755094514-f87e34085b2c?w=400'], 'শতভাগ প্রিমিয়াম কটন কাপড়ে তৈরি আরামদায়ক ক্যাজুয়াল শার্ট।')">
-    <div class="product-img-wrapper"><img src="https://images.unsplash.com/photo-1596755094514-f87e34085b2c?w=400" alt="প্রিমিয়াম কটন শার্ট"></div>
-    <h4>প্রিমিয়াম কটন শার্ট</h4>
-    <p class="product-price">৳৭৫০</p>
-</div>
-
-<div class="product-card" data-code="G-TSHIRT-02" onclick="openModal('কটন পোলো টি-শার্ট', '৳৫৫০', 'G-TSHIRT-02', ['https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?w=400'], 'আরামদায়ক ও স্টাইলিশ পোলো টি-শার্ট, প্রতিদিনের ব্যবহারের জন্য উপযোগী।')">
-    <div class="product-img-wrapper"><img src="https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?w=400" alt="কটন পোলো টি-শার্ট"></div>
-    <h4>কটন পোলো টি-শার্ট</h4>
-    <p class="product-price">৳৫৫০</p>
-</div>
-
-<div class="product-card" data-code="G-JEANS-03" onclick="openModal('স্লিম ফিট জিন্স প্যান্ট', '৳১৪৫০', 'G-JEANS-03', ['https://images.unsplash.com/photo-1542272604-787c3835535d?w=400'], 'উন্নতমানের ডেনিম কাপড়ে তৈরি স্লিম ফিট জিন্স।')">
-    <div class="product-img-wrapper"><img src="https://images.unsplash.com/photo-1542272604-787c3835535d?w=400" alt="স্লিম ফিট জিন্স প্যান্ট"></div>
-    <h4>স্লিম ফিট জিন্স প্যান্ট</h4>
-    <p class="product-price">৳১৪৫০</p>
-</div>
-
-<div class="product-card" data-code="G-BLAZER-04" onclick="openModal('ফরমাল ব্লেজার', '৳৩৫০০', 'G-BLAZER-04', ['https://images.unsplash.com/photo-1593030761757-71fae45fa0e7?w=400'], 'অফিস ও পার্টির জন্য পারফেক্ট স্মার্ট ব্লেজার।')">
-    <div class="product-img-wrapper"><img src="https://images.unsplash.com/photo-1593030761757-71fae45fa0e7?w=400" alt="ফরমাল ব্লেজার"></div>
-    <h4>ফরমাল ব্লেজার</h4>
-    <p class="product-price">৳৩৫০০</p>
-</div>
-
-<div class="product-card" data-code="G-SHOE-05" onclick="openModal('লেদার ক্যাজুয়াল শু', '৳১৮৫০', 'G-SHOE-05', ['https://images.unsplash.com/photo-1549298916-b41d501d3772?w=400'], 'প্রিমিয়াম লেদারে তৈরি আরামদায়ক ক্যাজুয়াল জুতা।')">
-    <div class="product-img-wrapper"><img src="https://images.unsplash.com/photo-1549298916-b41d501d3772?w=400" alt="লেদার ক্যাজুয়াল শু"></div>
-    <h4>লেদার ক্যাজুয়াল শু</h4>
-    <p class="product-price">৳১৮৫০</p>
-</div>
-
-<div class="product-card" data-code="G-JACKET-06" onclick="openModal('উইন্টার জ্যাকেট', '৳২২০০', 'G-JACKET-06', ['https://images.unsplash.com/photo-1551028719-00167b16eac5?w=400'], 'শীতের জন্য উষ্ণ এবং স্টাইলিশ জ্যাকেট।')">
-    <div class="product-img-wrapper"><img src="https://images.unsplash.com/photo-1551028719-00167b16eac5?w=400" alt="উইন্টার জ্যাকেট"></div>
-    <h4>উইন্টার জ্যাকেট</h4>
-    <p class="product-price">৳২২০০</p>
-</div>
-
-<div class="product-card" data-code="G-BELT-07" onclick="openModal('লেদার বেল্ট', '৳৪৫০', 'G-BELT-07', ['https://images.unsplash.com/photo-1624222247344-550fb60583dc?w=400'], 'খাঁটি লেদারের তৈরি দীর্ঘস্থায়ী বেল্ট।')">
-    <div class="product-img-wrapper"><img src="https://images.unsplash.com/photo-1624222247344-550fb60583dc?w=400" alt="লেদার বেল্ট"></div>
-    <h4>লেদার বেল্ট</h4>
-    <p class="product-price">৳৪৫০</p>
-</div>
-
-<div class="product-card" data-code="G-PANJABI-08" onclick="openModal('সিল্ক পাঞ্জাবি', '৳১৬০০', 'G-PANJABI-08', ['https://images.unsplash.com/photo-1610652492500-ded49ceeb378?w=400'], 'ঈদ ও উৎসবের জন্য আকর্ষণীয় সিল্ক পাঞ্জাবি।')">
-    <div class="product-img-wrapper"><img src="https://images.unsplash.com/photo-1610652492500-ded49ceeb378?w=400" alt="সিল্ক পাঞ্জাবি"></div>
-    <h4>সিল্ক পাঞ্জাবি</h4>
-    <p class="product-price">৳১৬০০</p>
-</div>
-
-<div class="product-card" data-code="G-CAP-09" onclick="openModal('স্পোর্টস ক্যাপ', '৳৩০০', 'G-CAP-09', ['https://images.unsplash.com/photo-1588850561407-ed78c282e89b?w=400'], 'ক্যাজুয়াল ও স্পোর্টস লুকের জন্য আকর্ষণীয় ক্যাপ।')">
-    <div class="product-img-wrapper"><img src="https://images.unsplash.com/photo-1588850561407-ed78c282e89b?w=400" alt="স্পোর্টস ক্যাপ"></div>
-    <h4>স্পোর্টস ক্যাপ</h4>
-    <p class="product-price">৳৩০০</p>
-</div>
-
-<div class="product-card" data-code="G-WALLET-10" onclick="openModal('লেদার ওয়ালেট', '৳৬৫০', 'G-WALLET-10', ['https://images.unsplash.com/photo-1627123424574-724758594e93?w=400'], 'প্রিমিয়াম লেদারের তৈরি স্টাইলিশ ওয়ালেট।')">
-    <div class="product-img-wrapper"><img src="https://images.unsplash.com/photo-1627123424574-724758594e93?w=400" alt="লেদার ওয়ালেট"></div>
-    <h4>লেদার ওয়ালেট</h4>
-    <p class="product-price">৳৬৫০</p>
-</div>
-
-<!-- ==================== জেন্টস ফ্যাশন ক্যাটাগরি শেষ ==================== -->
-
-
-
-
-
-
-                </div>
-            </div>
-
-<!-- ==================== ২. লেডিস ক্যাটাগরি শুরু ==================== -->
-
-            <div id="cat-ladies" class="category-section">
-                <h3 class="section-title">লেডিস ফ্যাশন</h3>
-                <div class="product-grid">
-                    <div class="product-card" onclick="openModal('স্টাইলিশ ভ্যানিটি ব্যাগ', '৳১২৫০', 'L-BAG-02', ['https://images.unsplash.com/photo-1584917865442-de89df76afd3?w=400','images (31).jpeg'], 'লেডিস এক্সক্লুসিভ কালেকশনের গর্জিয়াস ভ্যানিটি ব্যাগ। চেইন এবং মেটেরিয়াল অত্যন্ত উন্নত মানের।')">
-                        <div class="product-img-wrapper"><img src="https://images.unsplash.com/photo-1584917865442-de89df76afd3?w=400" alt="ladies fashion"></div>
-                        <h4>Stylish Vanity Bag</h4>
-                        <p class="product-price">৳১২৫০</p>
-                    </div>
-  
- <div class="product-card" onclick="openModal('স্টাইলিশ ভ্যানিটি ব্যাগ', '৳১২৫০', 'L-BAG-02', ['https://images.unsplash.com/photo-1584917865442-de89df76afd3?w=400','images (31).jpeg'], 'লেডিস এক্সক্লুসিভ কালেকশনের গর্জিয়াস ভ্যানিটি ব্যাগ। চেইন এবং মেটেরিয়াল অত্যন্ত উন্নত মানের।')">
-                        <div class="product-img-wrapper"><img src="https://images.unsplash.com/photo-1584917865442-de89df76afd3?w=400" alt="ladies fashion"></div>
-                        <h4>Stylish Vanity Bag</h4>
-                        <p class="product-price">৳১২৫০</p>
-                    </div>
-<!-- ==================== লেডিস ফ্যাশন ক্যাটাগরি শুরু ==================== -->
-
-<div class="product-card" data-code="L-BAG-01" onclick="openModal('স্টাইলিশ ভ্যানিটি ব্যাগ', '৳১২৫০', 'L-BAG-01', ['https://images.unsplash.com/photo-1584917865442-de89df76afd3?w=400'], 'লেডিস এক্সক্লুসিভ কালেকশনের গর্জিয়াস ভ্যানিটি ব্যাগ।')">
-    <div class="product-img-wrapper"><img src="https://images.unsplash.com/photo-1584917865442-de89df76afd3?w=400" alt="স্টাইলিশ ভ্যানিটি ব্যাগ"></div>
-    <h4>স্টাইলিশ ভ্যানিটি ব্যাগ</h4>
-    <p class="product-price">৳১২৫০</p>
-</div>
-
-<div class="product-card" data-code="L-SAREE-02" onclick="openModal('জামদানি শাড়ি', '৳৩৫০০', 'L-SAREE-02', ['https://images.unsplash.com/photo-1583391733956-6c78276477e2?w=400'], 'হাতে বোনা ঐতিহ্যবাহী জামদানি শাড়ি।')">
-    <div class="product-img-wrapper"><img src="https://images.unsplash.com/photo-1583391733956-6c78276477e2?w=400" alt="জামদানি শাড়ি"></div>
-    <h4>জামদানি শাড়ি</h4>
-    <p class="product-price">৳৩৫০০</p>
-</div>
-
-<div class="product-card" data-code="L-EARRING-03" onclick="openModal('পার্ল ইয়াররিং', '৳৪৫০', 'L-EARRING-03', ['https://images.unsplash.com/photo-1535632066927-ab7c9ab60908?w=400'], 'এলিগেন্ট লুকের পার্ল ডিজাইনের কানের দুল।')">
-    <div class="product-img-wrapper"><img src="https://images.unsplash.com/photo-1535632066927-ab7c9ab60908?w=400" alt="পার্ল ইয়াররিং"></div>
-    <h4>পার্ল ইয়াররিং</h4>
-    <p class="product-price">৳৪৫০</p>
-</div>
-
-<div class="product-card" data-code="L-KURTI-04" onclick="openModal('প্রিন্টেড কুর্তি', '৳৮৫০', 'L-KURTI-04', ['https://images.unsplash.com/photo-1583846717393-dc2412c95ed7?w=400'], 'আরামদায়ক কাপড়ে তৈরি আকর্ষণীয় প্রিন্টের কুর্তি।')">
-    <div class="product-img-wrapper"><img src="https://images.unsplash.com/photo-1583846717393-dc2412c95ed7?w=400" alt="প্রিন্টেড কুর্তি"></div>
-    <h4>প্রিন্টেড কুর্তি</h4>
-    <p class="product-price">৳৮৫০</p>
-</div>
-
-<div class="product-card" data-code="L-HEELS-05" onclick="openModal('হাই হিল স্যান্ডেল', '৳১১৫০', 'L-HEELS-05', ['https://images.unsplash.com/photo-1543163521-1bf539c55dd2?w=400'], 'পার্টি ও অনুষ্ঠানের জন্য স্টাইলিশ হাই হিল।')">
-    <div class="product-img-wrapper"><img src="https://images.unsplash.com/photo-1543163521-1bf539c55dd2?w=400" alt="হাই হিল স্যান্ডেল"></div>
-    <h4>হাই হিল স্যান্ডেল</h4>
-    <p class="product-price">৳১১৫০</p>
-</div>
-
-<div class="product-card" data-code="L-NECKLACE-06" onclick="openModal('গোল্ড প্লেটেড নেকলেস', '৳৯৫০', 'L-NECKLACE-06', ['https://images.unsplash.com/photo-1599643478518-a784e5dc4c8f?w=400'], 'আকর্ষণীয় ডিজাইনের গোল্ড প্লেটেড নেকলেস সেট।')">
-    <div class="product-img-wrapper"><img src="https://images.unsplash.com/photo-1599643478518-a784e5dc4c8f?w=400" alt="গোল্ড প্লেটেড নেকলেস"></div>
-    <h4>গোল্ড প্লেটেড নেকলেস</h4>
-    <p class="product-price">৳৯৫০</p>
-</div>
-
-<div class="product-card" data-code="L-SCARF-07" onclick="openModal('সিল্ক স্কার্ফ', '৳৩৫০', 'L-SCARF-07', ['https://images.unsplash.com/photo-1601924994987-69e26d50dc26?w=400'], 'নরম সিল্ক কাপড়ের আকর্ষণীয় রঙের স্কার্ফ।')">
-    <div class="product-img-wrapper"><img src="https://images.unsplash.com/photo-1601924994987-69e26d50dc26?w=400" alt="সিল্ক স্কার্ফ"></div>
-    <h4>সিল্ক স্কার্ফ</h4>
-    <p class="product-price">৳৩৫০</p>
-</div>
-
-<div class="product-card" data-code="L-SUNGLASS-08" onclick="openModal('লেডিস সানগ্লাস', '৳৬৫০', 'L-SUNGLASS-08', ['https://images.unsplash.com/photo-1572635196237-14b3f281503f?w=400'], 'UV প্রোটেকশন সহ স্টাইলিশ সানগ্লাস।')">
-    <div class="product-img-wrapper"><img src="https://images.unsplash.com/photo-1572635196237-14b3f281503f?w=400" alt="লেডিস সানগ্লাস"></div>
-    <h4>লেডিস সানগ্লাস</h4>
-    <p class="product-price">৳৬৫০</p>
-</div>
-
-<div class="product-card" data-code="L-WATCH-09" onclick="openModal('লেডিস ফ্যাশন ওয়াচ', '৳১৪৫০', 'L-WATCH-09', ['https://images.unsplash.com/photo-1548171915-e79a380a2a4b?w=400'], 'এলিগেন্ট ডিজাইনের লেডিস রিস্ট ওয়াচ।')">
-    <div class="product-img-wrapper"><img src="https://images.unsplash.com/photo-1548171915-e79a380a2a4b?w=400" alt="লেডিস ফ্যাশন ওয়াচ"></div>
-    <h4>লেডিস ফ্যাশন ওয়াচ</h4>
-    <p class="product-price">৳১৪৫০</p>
-</div>
-
-<div class="product-card" data-code="L-LIPSTICK-10" onclick="openModal('ম্যাট লিপস্টিক সেট', '৳৫৫০', 'L-LIPSTICK-10', ['https://images.unsplash.com/photo-1586495777744-4413f21062fa?w=400'], 'দীর্ঘস্থায়ী ও ওয়াটারপ্রুফ ম্যাট লিপস্টিক সেট।')">
-    <div class="product-img-wrapper"><img src="https://images.unsplash.com/photo-1586495777744-4413f21062fa?w=400" alt="ম্যাট লিপস্টিক সেট"></div>
-    <h4>ম্যাট লিপস্টিক সেট</h4>
-    <p class="product-price">৳৫৫০</p>
-</div>
-
-<!-- ==================== লেডিস ফ্যাশন ক্যাটাগরি শেষ ==================== -->
-
- 
-
-                 </div>
-             </div>
-
-
-<!-- ==================== ৩. ইলেকট্রনিক্স ক্যাটাগরি শুরু ==================== -->
-
-            <div id="cat-electronics" class="category-section">
-                <h3 class="section-title">ইলেকট্রনিক্স</h3>
-                <div class="product-grid">
-                  
-                    <!-- ==================== ইলেকট্রনিক্স ক্যাটাগরি শুরু ==================== -->
-
-<div class="product-card" data-code="Ideasshoh-p1-28" onclick="openModal('RGB Lights 15m-', '৳৩৮০', 'Ideasshoh-p1-28', ['https://res.cloudinary.com/dzuwta6lc/image/upload/v1782296291/1000018459_o89bec.webp', 'https://res.cloudinary.com/dzuwta6lc/image/upload/v1782296292/1000018461_x6ipvm.webp', 'https://res.cloudinary.com/dzuwta6lc/image/upload/v1782296291/1000018458_yhmjlz.webp', 'https://res.cloudinary.com/dzuwta6lc/image/upload/v1782296291/1000018460_ifdjp3.webp','https://res.cloudinary.com/dzuwta6lc/image/upload/v1782296291/1000018457_mqqkga.webp'], 'এই ১৬-ফুট নমনীয় আরজিবি এলইডি স্ট্রিপ লাইট কিটটির সাথে ঘর সাজানোর জন্য একটি রিমোট কন্ট্রোল এবং পাওয়ার অ্যাডাপ্টার অন্তর্ভুক্ত রয়েছে।')">
-    <div class="product-img-wrapper"><img src="https://res.cloudinary.com/dzuwta6lc/image/upload/v1782296292/1000018461_x6ipvm.webp" alt="RGB Lights 15m-"></div>
-    <h4>RGB Lights 15m-</h4>
-    <p class="product-price">৳৩৮০</p>
-</div>
-                    
-                  <div class="product-card" data-code="E-EARBUD-03"onclick="openModal('ব্লুটুথ ওয়ারলেস ইয়ারবাডস', '৳৯৯০', 'E-EARBUD-03', ['https://images.unsplash.com/photo-1590658268037-6bf12165a8df?w=400'], 'অসাধারণ সাউন্ড কোয়ালিটি এবং হেভি বেস সমৃদ্ধ ব্লুটুথ ইয়ারবাডস।')">
-                        <div class="product-img-wrapper"><img src="https://images.unsplash.com/photo-1590658268037-6bf12165a8df?w=400" alt="Electronics"></div>
-                        <h4>ব্লুটুথ ওয়ারলেস ইয়ারবাডস</h4>
-                        <p class="product-price">৳৯৯০</p>
-                    </div>
-                    <div class="product-card" onclick="openModal('Mini cute Fan', '৩৫০', 'F-Minifan-12', ['Minifan.jpg', 'Minifan.jpg'], 'Rechargeable mini cute Fan')">
-                        <div class="product-img-wrapper"><img src="Minifan.jpg" alt="Mini cute Fan"></div>
-                        <h4>Mini cute Fan</h4>
-                        <p class="product-price">৩৫০</p>
-                    </div>
-          <div class="product-card" onclick="openModal('Mini cute Fan', '৩৫০', 'F-Minifan-12', ['Minifan.jpg', 'Minifan.jpg'], 'Rechargeable mini cute Fan')">
-                        <div class="product-img-wrapper"><img src="Minifan.jpg" alt="Mini cute Fan"></div>
-                        <h4>Mini cute Fan</h4>
-                        <p class="product-price">৩৫০</p>
-                    </div>
-    <div class="product-card" onclick="openModal('Mini cute Fan', '৩৫০', 'F-Minifan-12', ['Minifan.jpg', 'Minifan.jpg'], 'Rechargeable mini cute Fan')">
-                        <div class="product-img-wrapper"><img src="Minifan.jpg" alt="Mini cute Fan"></div>
-                        <h4>Mini cute Fan</h4>
-                        <p class="product-price">৩৫০</p>
-                    </div>
-    
-<!-- ==================== ইলেকট্রনিক্স ক্যাটাগরি শুরু ==================== -->
-
-<div class="product-card" data-code="E-EARBUD-01" onclick="openModal('ব্লুটুথ ওয়ারলেস ইয়ারবাডস', '৳৯৯০', 'E-EARBUD-01', ['https://images.unsplash.com/photo-1590658268037-6bf12165a8df?w=400'], 'অসাধারণ সাউন্ড কোয়ালিটি এবং হেভি বেস সমৃদ্ধ ব্লুটুথ ইয়ারবাডস।')">
-    <div class="product-img-wrapper"><img src="https://images.unsplash.com/photo-1590658268037-6bf12165a8df?w=400" alt="ব্লুটুথ ওয়ারলেস ইয়ারবাডস"></div>
-    <h4>ব্লুটুথ ওয়ারলেস ইয়ারবাডস</h4>
-    <p class="product-price">৳৯৯০</p>
-</div>
-
-<div class="product-card" data-code="E-SPEAKER-02" onclick="openModal('পোর্টেবল ব্লুটুথ স্পিকার', '৳১৬৫০', 'E-SPEAKER-02', ['https://images.unsplash.com/photo-1608043152269-423dbba4e7e1?w=400'], 'শক্তিশালী সাউন্ড সহ ওয়াটারপ্রুফ পোর্টেবল স্পিকার।')">
-    <div class="product-img-wrapper"><img src="https://images.unsplash.com/photo-1608043152269-423dbba4e7e1?w=400" alt="পোর্টেবল ব্লুটুথ স্পিকার"></div>
-    <h4>পোর্টেবল ব্লুটুথ স্পিকার</h4>
-    <p class="product-price">৳১৬৫০</p>
-</div>
-
-<div class="product-card" data-code="E-POWERBANK-03" onclick="openModal('১০০০০ মিলি পাওয়ার ব্যাংক', '৳১২৫০', 'E-POWERBANK-03', ['https://images.unsplash.com/photo-1609091839311-d5365f9ff1c5?w=400'], 'ফাস্ট চার্জিং সাপোর্টেড উচ্চ ক্ষমতার পাওয়ার ব্যাংক।')">
-    <div class="product-img-wrapper"><img src="https://images.unsplash.com/photo-1609091839311-d5365f9ff1c5?w=400" alt="১০০০০ মিলি পাওয়ার ব্যাংক"></div>
-    <h4>১০০০০ মিলি পাওয়ার ব্যাংক</h4>
-    <p class="product-price">৳১২৫০</p>
-</div>
-
-<div class="product-card" data-code="E-MINIFAN-04" onclick="openModal('মিনি কিউট ফ্যান', '৳৩৫০', 'E-MINIFAN-04', ['https://images.unsplash.com/photo-1614792323156-31a8a1da12f1?w=400'], 'রিচার্জেবল মিনি কিউট ফ্যান, গরমে আরামদায়ক বাতাসের জন্য।')">
-    <div class="product-img-wrapper"><img src="https://images.unsplash.com/photo-1614792323156-31a8a1da12f1?w=400" alt="মিনি কিউট ফ্যান"></div>
-    <h4>মিনি কিউট ফ্যান</h4>
-    <p class="product-price">৳৩৫০</p>
-</div>
-
-<div class="product-card" data-code="E-MOUSE-05" onclick="openModal('ওয়্যারলেস গেমিং মাউস', '৳৭৫০', 'E-MOUSE-05', ['https://images.unsplash.com/photo-1527864550417-7fd91fc51a46?w=400'], 'হাই প্রিসিশন সেন্সর সহ আরজিবি গেমিং মাউস।')">
-    <div class="product-img-wrapper"><img src="https://images.unsplash.com/photo-1527864550417-7fd91fc51a46?w=400" alt="ওয়্যারলেস গেমিং মাউস"></div>
-    <h4>ওয়্যারলেস গেমিং মাউস</h4>
-    <p class="product-price">৳৭৫০</p>
-</div>
-
-<div class="product-card" data-code="E-KEYBOARD-06" onclick="openModal('মেকানিক্যাল কিবোর্ড', '৳২২০০', 'E-KEYBOARD-06', ['https://images.unsplash.com/photo-1587829741301-dc798b83add3?w=400'], 'RGB ব্যাকলিট মেকানিক্যাল গেমিং কিবোর্ড।')">
-    <div class="product-img-wrapper"><img src="https://images.unsplash.com/photo-1587829741301-dc798b83add3?w=400" alt="মেকানিক্যাল কিবোর্ড"></div>
-    <h4>মেকানিক্যাল কিবোর্ড</h4>
-    <p class="product-price">৳২২০০</p>
-</div>
-
-<div class="product-card" data-code="E-CHARGER-07" onclick="openModal('ফাস্ট চার্জার অ্যাডাপ্টার', '৳৬৫০', 'E-CHARGER-07', ['https://images.unsplash.com/photo-1591290619762-c4d5aeebccdb?w=400'], '৩৩ ওয়াট ফাস্ট চার্জিং সাপোর্টেড অ্যাডাপ্টার।')">
-    <div class="product-img-wrapper"><img src="https://images.unsplash.com/photo-1591290619762-c4d5aeebccdb?w=400" alt="ফাস্ট চার্জার অ্যাডাপ্টার"></div>
-    <h4>ফাস্ট চার্জার অ্যাডাপ্টার</h4>
-    <p class="product-price">৳৬৫০</p>
-</div>
-
-<div class="product-card" data-code="E-CAMERA-08" onclick="openModal('ওয়েবক্যাম এইচডি', '৳১৮৫০', 'E-CAMERA-08', ['https://images.unsplash.com/photo-1587826080692-f439cd0b70da?w=400'], 'ফুল এইচডি ১০৮০পি রেজুলেশনের ওয়েবক্যাম।')">
-    <div class="product-img-wrapper"><img src="https://images.unsplash.com/photo-1587826080692-f439cd0b70da?w=400" alt="ওয়েবক্যাম এইচডি"></div>
-    <h4>ওয়েবক্যাম এইচডি</h4>
-    <p class="product-price">৳১৮৫০</p>
-</div>
-
-<div class="product-card" data-code="E-USBHUB-09" onclick="openModal('৪ পোর্ট ইউএসবি হাব', '৳৪৫০', 'E-USBHUB-09', ['https://images.unsplash.com/photo-1591370874773-6702e8f12fd8?w=400'], 'মাল্টি ডিভাইস কানেক্টিভিটির জন্য কম্প্যাক্ট ইউএসবি হাব।')">
-    <div class="product-img-wrapper"><img src="https://images.unsplash.com/photo-1591370874773-6702e8f12fd8?w=400" alt="৪ পোর্ট ইউএসবি হাব"></div>
-    <h4>৪ পোর্ট ইউএসবি হাব</h4>
-    <p class="product-price">৳৪৫০</p>
-</div>
-
-<div class="product-card" data-code="E-PHONESTAND-10" onclick="openModal('ফোন স্ট্যান্ড হোল্ডার', '৳২৫০', 'E-PHONESTAND-10', ['https://images.unsplash.com/photo-1592890288564-76628a30a657?w=400'], 'এডজাস্টেবল ও ফোল্ডেবল ফোন স্ট্যান্ড হোল্ডার।')">
-    <div class="product-img-wrapper"><img src="https://images.unsplash.com/photo-1592890288564-76628a30a657?w=400" alt="ফোন স্ট্যান্ড হোল্ডার"></div>
-    <h4>ফোন স্ট্যান্ড হোল্ডার</h4>
-    <p class="product-price">৳২৫০</p>
-</div>
-
-<!-- ==================== ইলেকট্রনিক্স ক্যাটাগরি শেষ ==================== -->
-
-    
-                </div>
-            </div>
-
-<!-- ==================== ৪. ঘড়ি ও চশমা ক্যাটাগরি শুরু ==================== -->
-
-            <div id="cat-watch" class="category-section">
-                <h3 class="section-title">ঘড়ি ও চশমা</h3>
-                <div class="product-grid">
-                    <div class="product-card" onclick="openModal('স্টাইলিশ স্মার্ট ওয়াচ', '৳১২০০', 'W-WATCH-04', ['watch.jpg'], 'ফুল টাচ স্ক্রিন এবং হেলথ ট্র্যাকিং ফিচারসহ প্রিমিয়াম লুকের স্মার্ট ওয়াচ।')">
-                        <div class="product-img-wrapper"><img src="watch.jpg" alt="স্মার্ট ওয়াচ"></div>
-                        <h4>স্টাইলিশ স্মার্ট ওয়াচ</h4>
-                        <p class="product-price">৳১২০০</p>
-                    </div>
-                    <div class="product-card" onclick="openModal('Watch of royal', '4000tk', 'W-watchroyal-5', ['Watch1.png', 'Watch2.png', 'Watch3.png'], 'খুব ভালো প্রোডাক্ট নিতে এখনি অর্ডার করুন')">
-                        <div class="product-img-wrapper"><img src="Watch.png" alt="Watch of royal"></div>
-                        <h4>Watch of royal</h4>
-                        <p class="product-price">4000tk</p>
-                    </div>
-                    <div class="product-card" onclick="openModal('Watch', '৮০০', 'W-watch-12', ['Watch1.png', 'Watch2.png'], 'খুব ভালো একটি ঘড়ি')">
-                        <div class="product-img-wrapper"><img src="Watch.png" alt="Watch"></div>
-                        <h4>Watch</h4>
-                        <p class="product-price">৮০০</p>
-                   </div>
-
-<!-- ==================== ঘড়ি ও চশমা ক্যাটাগরি শুরু ==================== -->
-
-<div class="product-card" data-code="W-WATCH-01" onclick="openModal('স্টাইলিশ স্মার্ট ওয়াচ', '৳১২০০', 'W-WATCH-01', ['https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=400'], 'ফুল টাচ স্ক্রিন এবং হেলথ ট্র্যাকিং ফিচারসহ প্রিমিয়াম লুকের স্মার্ট ওয়াচ।')">
-    <div class="product-img-wrapper"><img src="https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=400" alt="স্টাইলিশ স্মার্ট ওয়াচ"></div>
-    <h4>স্টাইলিশ স্মার্ট ওয়াচ</h4>
-    <p class="product-price">৳১২০০</p>
-</div>
-
-<div class="product-card" data-code="W-ROYAL-02" onclick="openModal('Watch of royal', '৳৪০০০', 'W-ROYAL-02', ['https://images.unsplash.com/photo-1495856458515-0637185db551?w=400'], 'খুব ভালো প্রোডাক্ট, নিতে এখনি অর্ডার করুন।')">
-    <div class="product-img-wrapper"><img src="https://images.unsplash.com/photo-1495856458515-0637185db551?w=400" alt="Watch of royal"></div>
-    <h4>Watch of royal</h4>
-    <p class="product-price">৳৪০০০</p>
-</div>
-
-<div class="product-card" data-code="W-LEATHER-03" onclick="openModal('লেদার স্ট্র্যাপ ওয়াচ', '৳১৭৫০', 'W-LEATHER-03', ['https://images.unsplash.com/photo-1547996160-81dfa63595aa?w=400'], 'প্রিমিয়াম লেদার স্ট্র্যাপ সমৃদ্ধ ক্লাসিক ডিজাইনের ওয়াচ।')">
-    <div class="product-img-wrapper"><img src="https://images.unsplash.com/photo-1547996160-81dfa63595aa?w=400" alt="লেদার স্ট্র্যাপ ওয়াচ"></div>
-    <h4>লেদার স্ট্র্যাপ ওয়াচ</h4>
-    <p class="product-price">৳১৭৫০</p>
-</div>
-
-<div class="product-card" data-code="W-SUNGLASS-04" onclick="openModal('জেন্টস সানগ্লাস', '৳৭৫০', 'W-SUNGLASS-04', ['https://images.unsplash.com/photo-1473496169904-658ba7c44d8a?w=400'], 'UV প্রোটেকশন সহ স্টাইলিশ এভিয়েটর সানগ্লাস।')">
-    <div class="product-img-wrapper"><img src="https://images.unsplash.com/photo-1473496169904-658ba7c44d8a?w=400" alt="জেন্টস সানগ্লাস"></div>
-    <h4>জেন্টস সানগ্লাস</h4>
-    <p class="product-price">৳৭৫০</p>
-</div>
-
-<div class="product-card" data-code="W-DIGITAL-05" onclick="openModal('ডিজিটাল স্পোর্টস ওয়াচ', '৳৯৫০', 'W-DIGITAL-05', ['https://images.unsplash.com/photo-1508685096489-7aacd43bd3b1?w=400'], 'ওয়াটারপ্রুফ ও শক রেজিস্ট্যান্ট ডিজিটাল স্পোর্টস ওয়াচ।')">
-    <div class="product-img-wrapper"><img src="https://images.unsplash.com/photo-1508685096489-7aacd43bd3b1?w=400" alt="ডিজিটাল স্পোর্টস ওয়াচ"></div>
-    <h4>ডিজিটাল স্পোর্টস ওয়াচ</h4>
-    <p class="product-price">৳৯৫০</p>
-</div>
-
-<div class="product-card" data-code="W-CHAIN-06" onclick="openModal('পকেট ওয়াচ চেইন', '৳৬৫০', 'W-CHAIN-06', ['https://images.unsplash.com/photo-1509048191080-d2984bad6ae5?w=400'], 'ভিনটেজ স্টাইলের চেইনসহ পকেট ওয়াচ।')">
-    <div class="product-img-wrapper"><img src="https://images.unsplash.com/photo-1509048191080-d2984bad6ae5?w=400" alt="পকেট ওয়াচ চেইন"></div>
-    <h4>পকেট ওয়াচ চেইন</h4>
-    <p class="product-price">৳৬৫০</p>
-</div>
-
-<div class="product-card" data-code="W-READING-07" onclick="openModal('রিডিং গ্লাস', '৳৩৫০', 'W-READING-07', ['https://images.unsplash.com/photo-1591076482161-42ce6da69f67?w=400'], 'আরামদায়ক ফ্রেমের ব্লু লাইট প্রোটেকশন রিডিং গ্লাস।')">
-    <div class="product-img-wrapper"><img src="https://images.unsplash.com/photo-1591076482161-42ce6da69f67?w=400" alt="রিডিং গ্লাস"></div>
-    <h4>রিডিং গ্লাস</h4>
-    <p class="product-price">৳৩৫০</p>
-</div>
-
-<div class="product-card" data-code="W-KIDS-08" onclick="openModal('কিডস কার্টুন ওয়াচ', '৳৪৫০', 'W-KIDS-08', ['https://images.unsplash.com/photo-1434056886845-dac89ffe9b56?w=400'], 'বাচ্চাদের জন্য আকর্ষণীয় কার্টুন ডিজাইনের ওয়াচ।')">
-    <div class="product-img-wrapper"><img src="https://images.unsplash.com/photo-1434056886845-dac89ffe9b56?w=400" alt="কিডস কার্টুন ওয়াচ"></div>
-    <h4>কিডস কার্টুন ওয়াচ</h4>
-    <p class="product-price">৳৪৫০</p>
-</div>
-
-<div class="product-card" data-code="W-COUPLE-09" onclick="openModal('কাপল ওয়াচ সেট', '৳২২০০', 'W-COUPLE-09', ['https://images.unsplash.com/photo-1539874754764-5a96559165b0?w=400'], 'কাপলদের জন্য ম্যাচিং ডিজাইনের দুটি ওয়াচ সেট।')">
-    <div class="product-img-wrapper"><img src="https://images.unsplash.com/photo-1539874754764-5a96559165b0?w=400" alt="কাপল ওয়াচ সেট"></div>
-    <h4>কাপল ওয়াচ সেট</h4>
-    <p class="product-price">৳২২০০</p>
-</div>
-
-<div class="product-card" data-code="W-CASE-10" onclick="openModal('ওয়াচ স্টোরেজ বক্স', '৳৫৫০', 'W-CASE-10', ['https://images.unsplash.com/photo-1622434641406-a158123450f9?w=400'], 'একাধিক ওয়াচ সংরক্ষণের জন্য প্রিমিয়াম বক্স।')">
-    <div class="product-img-wrapper"><img src="https://images.unsplash.com/photo-1622434641406-a158123450f9?w=400" alt="ওয়াচ স্টোরেজ বক্স"></div>
-    <h4>ওয়াচ স্টোরেজ বক্স</h4>
-    <p class="product-price">৳৫৫০</p>
-</div>
-
-<!-- ==================== ঘড়ি ও চশমা ক্যাটাগরি শেষ ==================== -->
-
-
-
-                </div>
-            </div>
-
-<!-- ==================== ৫. হোম ডেকোরেশন ক্যাটাগরি শুরু ==================== -->
-       
-            <div id="cat-decor" class="category-section">
-                <h3 class="section-title">ঘরের ডেকোরেশন</h3>
-                <div class="product-grid">
-                    <div class="product-card" onclick="openModal('ওয়াল বোর্ড (মোটিভেশনাল)', '৳৫০', '10#1', ['products flyer.png'], 'ঘরের বা অফিসের দেয়াল সাজানোর জন্য দারুণ একটি মোটিভেশনাল ওয়াল বোর্ড।')">
-                        <div class="product-img-wrapper"><img src="products flyer.png" alt="ওয়াল বোর্ড"></div>
-                        <h4>ওয়াল বোর্ড (মোটিভেশনাল)</h4>
-                        <p class="product-price">৳৫০</p>
-                    </div>
-
-<!-- ==================== হোম ডেকোরেশন ক্যাটাগরি শুরু ==================== -->
-
-<div class="product-card" data-code="D-LAMP-01" onclick="openModal('ডেকোরেটিভ টেবিল ল্যাম্প', '৳৮৫০', 'D-LAMP-01', ['https://images.unsplash.com/photo-1507473885765-e6ed057f782c?w=400'], 'রুমের সৌন্দর্য বাড়াতে আকর্ষণীয় ডিজাইনের টেবিল ল্যাম্প।')">
-    <div class="product-img-wrapper"><img src="https://images.unsplash.com/photo-1507473885765-e6ed057f782c?w=400" alt="ডেকোরেটিভ টেবিল ল্যাম্প"></div>
-    <h4>ডেকোরেটিভ টেবিল ল্যাম্প</h4>
-    <p class="product-price">৳৮৫০</p>
-</div>
-
-<div class="product-card" data-code="D-WALLCLOCK-02" onclick="openModal('উড এন্টিক ওয়াল ক্লক', '৳১১৫০', 'D-WALLCLOCK-02', ['https://images.unsplash.com/photo-1495805442109-bf1cf975750b?w=400'], 'কাঠের তৈরি ভিন্টেজ ডিজাইনের ওয়াল ক্লক।')">
-    <div class="product-img-wrapper"><img src="https://images.unsplash.com/photo-1495805442109-bf1cf975750b?w=400" alt="উড এন্টিক ওয়াল ক্লক"></div>
-    <h4>উড এন্টিক ওয়াল ক্লক</h4>
-    <p class="product-price">৳১১৫০</p>
-</div>
-
-<div class="product-card" data-code="D-VASE-03" onclick="openModal('সিরামিক ফ্লাওয়ার ভাস', '৳৬৫০', 'D-VASE-03', ['https://images.unsplash.com/photo-1578500494198-246f612d3b3d?w=400'], 'ঘর সাজানোর জন্য নকশাদার সিরামিক ফুলদানি।')">
-    <div class="product-img-wrapper"><img src="https://images.unsplash.com/photo-1578500494198-246f612d3b3d?w=400" alt="সিরামিক ফ্লাওয়ার ভাস"></div>
-    <h4>সিরামিক ফ্লাওয়ার ভাস</h4>
-    <p class="product-price">৳৬৫০</p>
-</div>
-
-<div class="product-card" data-code="D-CUSHION-04" onclick="openModal('ডেকোরেটিভ কুশন কভার', '৳৩৫০', 'D-CUSHION-04', ['https://images.unsplash.com/photo-1584100936595-c0654b55a2e2?w=400'], 'সোফার সৌন্দর্য বাড়াতে আকর্ষণীয় প্রিন্টের কুশন কভার।')">
-    <div class="product-img-wrapper"><img src="https://images.unsplash.com/photo-1584100936595-c0654b55a2e2?w=400" alt="ডেকোরেটিভ কুশন কভার"></div>
-    <h4>ডেকোরেটিভ কুশন কভার</h4>
-    <p class="product-price">৳৩৫০</p>
-</div>
-
-<div class="product-card" data-code="D-PHOTOFRAME-05" onclick="openModal('উড ফটো ফ্রেম সেট', '৳৪৫০', 'D-PHOTOFRAME-05', ['https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?w=400'], 'কাঠের তৈরি স্টাইলিশ ফটো ফ্রেমের সেট।')">
-    <div class="product-img-wrapper"><img src="https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?w=400" alt="উড ফটো ফ্রেম সেট"></div>
-    <h4>উড ফটো ফ্রেম সেট</h4>
-    <p class="product-price">৳৪৫০</p>
-</div>
-
-<div class="product-card" data-code="D-CANDLE-06" onclick="openModal('সুগন্ধি অ্যারোমা ক্যান্ডেল', '৳৩০০', 'D-CANDLE-06', ['https://images.unsplash.com/photo-1602874801006-e26c4c5a32a8?w=400'], 'রিল্যাক্সিং সুগন্ধযুক্ত অ্যারোমা ক্যান্ডেল।')">
-    <div class="product-img-wrapper"><img src="https://images.unsplash.com/photo-1602874801006-e26c4c5a32a8?w=400" alt="সুগন্ধি অ্যারোমা ক্যান্ডেল"></div>
-    <h4>সুগন্ধি অ্যারোমা ক্যান্ডেল</h4>
-    <p class="product-price">৳৩০০</p>
-</div>
-
-<div class="product-card" data-code="D-RUG-07" onclick="openModal('ডেকোরেটিভ ফ্লোর রাগ', '৳১৪৫০', 'D-RUG-07', ['https://images.unsplash.com/photo-1600166898405-da9535204843?w=400'], 'নরম ও আরামদায়ক ডিজাইনার ফ্লোর রাগ।')">
-    <div class="product-img-wrapper"><img src="https://images.unsplash.com/photo-1600166898405-da9535204843?w=400" alt="ডেকোরেটিভ ফ্লোর রাগ"></div>
-    <h4>ডেকোরেটিভ ফ্লোর রাগ</h4>
-    <p class="product-price">৳১৪৫০</p>
-</div>
-
-<div class="product-card" data-code="D-MIRROR-08" onclick="openModal('ডেকোরেটিভ ওয়াল মিরর', '৳৯৫০', 'D-MIRROR-08', ['https://images.unsplash.com/photo-1618220179428-22790b461013?w=400'], 'আকর্ষণীয় ফ্রেমের ওয়াল মাউন্টেড ডেকোরেটিভ মিরর।')">
-    <div class="product-img-wrapper"><img src="https://images.unsplash.com/photo-1618220179428-22790b461013?w=400" alt="ডেকোরেটিভ ওয়াল মিরর"></div>
-    <h4>ডেকোরেটিভ ওয়াল মিরর</h4>
-    <p class="product-price">৳৯৫০</p>
-</div>
-
-<div class="product-card" data-code="D-PLANT-09" onclick="openModal('আর্টিফিশিয়াল ইনডোর প্লান্ট', '৳৫৫০', 'D-PLANT-09', ['https://images.unsplash.com/photo-1485955900006-10f4d324d411?w=400'], 'যত্নের প্রয়োজন নেই, ঘর সাজানোর জন্য আর্টিফিশিয়াল প্লান্ট।')">
-    <div class="product-img-wrapper"><img src="https://images.unsplash.com/photo-1485955900006-10f4d324d411?w=400" alt="আর্টিফিশিয়াল ইনডোর প্লান্ট"></div>
-    <h4>আর্টিফিশিয়াল ইনডোর প্লান্ট</h4>
-    <p class="product-price">৳৫৫০</p>
-</div>
-
-<div class="product-card" data-code="D-LIGHTSTRING-10" onclick="openModal('এলইডি স্ট্রিং লাইট', '৳৪০০', 'D-LIGHTSTRING-10', ['https://images.unsplash.com/photo-1573676173441-44fbfb88ce0c?w=400'], 'রুম ডেকোরেশনের জন্য রঙিন এলইডি স্ট্রিং লাইট।')">
-    <div class="product-img-wrapper"><img src="https://images.unsplash.com/photo-1573676173441-44fbfb88ce0c?w=400" alt="এলইডি স্ট্রিং লাইট"></div>
-    <h4>এলইডি স্ট্রিং লাইট</h4>
-    <p class="product-price">৳৪০০</p>
-</div>
-
-<!-- ==================== হোম ডেকোরেশন ক্যাটাগরি শেষ ==================== -->
-    
-
-                </div>
-            </div>
-
+    <div class="search-container">
+        <div class="search-bar">
+            <input type="text" id="searchInput" placeholder="প্রোডাক্ট কোড দিয়ে খুঁজুন..." onkeypress="handleSearchKeyPress(event)">
+            <button class="search-icon-btn" onclick="executeSearch()"><i class="fas fa-search"></i></button>
         </div>
     </div>
 
-    <div class="modal-overlay" id="productModal" onclick="closeModal(event)">
-        <div class="modal-box">
-            <span class="close-btn" onclick="document.getElementById('productModal').classList.remove('active')">&times;</span>
-            
+    <div class="filter-container">
+        <button class="filter-btn active" onclick="filterSelection('all')">All</button>
+        <button class="filter-btn" onclick="filterSelection('gents')">জেন্টস</button>
+        <button class="filter-btn" onclick="filterSelection('ladies')">লেডিস</button>
+        <button class="filter-btn" onclick="filterSelection('electronics')">ইলেকট্রনিক্স</button>
+        <button class="filter-btn" onclick="filterSelection('watch')">ঘড়ি ও চশমা</button>
+        <button class="filter-btn" onclick="filterSelection('decor')">ডেকোরেশন</button>
+    </div>
+
+    <div class="content-area">
+        <!-- প্রোডাক্টগুলো এখন আর হার্ডকোড করা নেই, জাভাস্ক্রিপ্ট দিয়ে আসবে -->
+        <div class="product-grid" id="productGrid"></div>
+    </div>
+
+    <div class="modal-overlay" id="modalOverlay" onclick="closeModal(event)"></div>
+    <div class="modal-box" id="productModal">
+        
+        <div class="modal-header">
+            <h3>প্রোডাক্ট ডিটেইলস</h3>
+            <span class="close-btn" onclick="forceCloseModal()">&times;</span>
+        </div>
+
+        <div class="modal-body">
             <div class="slider-container">
                 <div class="slider-wrapper" id="modalSliderWrapper"></div>
                 <button class="slider-btn prev-btn" onclick="moveSlider(-1)"><i class="fas fa-chevron-left"></i></button>
                 <button class="slider-btn next-btn" onclick="moveSlider(1)"><i class="fas fa-chevron-right"></i></button>
                 <div class="slider-dots" id="modalSliderDots"></div>
             </div>
-             <div class="header-section">
-    
-    <div class="title-and-price">
-        <h3 id="modalTitle" class="modal-title"></h3>
-        <div id="modalPrice" class="modal-price"></div>
-    </div>
-    
-    <div class="store-link-section">
-        <a href="store.html" id="modalStoreLink" class="store-button">
-            স্টোর
-            <svg viewBox="0 0 24 24" class="verified-icon">
-                <path d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10 10-4.5 10-10S17.5 2 12 2zm-1.25 15L6 12.25l1.5-1.5 3.25 3.25 7.5-7.5 1.5 1.5L10.75 17z"></path>
-            </svg>
-        </a>
-    </div>
-
-</div>
-
-<p id="modalDesc" class="modal-desc"></p>
-
-              <p id="modalDesc" class="modal-desc"></p>
             
-            <div class="code-box">
-                <div class="code-info">
-                    মূল্য: <span id="productPriceInfo" style="font-size:14px;"></span>
-                    <span id="productCode"></span>
-                </div>
-                <button class="add-cart-btn" id="addToCartBtn" onclick="addToCart()">
-                    কার্টে যোগ করুন <i class="fas fa-shopping-cart"></i>
-                </button>
+            <h1 id="modalTitle" class="modal-title"></h1>
+            <div id="modalPrice" class="modal-price"></div>
+            
+            <div class="extra-details" id="extraDetailsBox">
+                <h4>প্রোডাক্ট স্পেসিফিকেশন:</h4>
+                <div id="dynamicSpecsContainer"></div>
             </div>
+
+            <p id="modalDesc" class="modal-desc"></p>
+        </div>
+
+        <div class="modal-footer">
+            <div class="code-info">
+                প্রোডাক্ট কোড: <span id="productCode"></span>
+            </div>
+            <button class="add-cart-btn" id="addToCartBtn" onclick="addToCart()">
+                কার্টে যোগ করুন <i class="fas fa-shopping-cart"></i>
+            </button>
         </div>
     </div>
 
@@ -902,51 +278,233 @@
     <footer class="bottom-nav">
         <a href="home.html" class="nav-item"><i class="fas fa-home"></i> <p>হোম</p></a>
         <a href="category.html" class="nav-item active"><i class="fas fa-th-large"></i> <p>ক্যাটেগরি</p></a>
-        <a href="order.html" class="nav-item"><span class="nav-icon-wrap"><i class="fas fa-shopping-bag"></i><span class="nav-badge-dot" id="orderNavBadge"></span></span> <p>অর্ডার</p></a>
-         <a href="store.html" class="nav-item"><i class="fas fa-store"></i><p>Store</p></a>
+        <a href="order.html" class="nav-item"><span class="nav-icon-wrap"><i class="fas fa-shopping-bag"></i><span class="nav-badge-dot" id="orderNavBadge"></span></span><p>Order</p></a>
+        <a href="store.html" class="nav-item"><i class="fas fa-store"></i><p>Store</p></a>
         <a href="profile.html" class="nav-item"><i class="fas fa-user"></i> <p>প্রোফাইল</p></a>
     </footer>
 
     <script>
-        // ক্যাটাগরি পরিবর্তন
-        function showCategory(categoryId, element) {
-            document.querySelectorAll('.category-section').forEach(sec => sec.classList.remove('active'));
-            document.getElementById(categoryId).classList.add('active');
-            document.querySelectorAll('.sidebar-item').forEach(item => item.classList.remove('active'));
-            element.classList.add('active');
+        // --- লোকাল স্টোরেজ ডাটা সেটআপ ---
+        const initialProducts = [       
+  {
+    code: "Ideasshop-p1-57", 
+    title: "WATCH for Man", 
+    price: "৳৩৭৫",
+    images: ["1", "2", "3", "4", "5", "6", "7"],
+    desc: "এটি পিন করতে ক্লিপটি টাচ করে ধরে থাকুন। আনপিন করা ক্লিপ ১ ঘণ্টা পরে মুছে ফেলা হবে।",
+    specs: ["No warranty", "Hand to hand return policy", "Longlife battery", "Brand: Casio"],
+    category: "watch", 
+    storeId: "store1"
+},
+
+  {
+    code: "Ideasshop-p1-25", 
+    title: "RGB LIGHTS 16 Feet", 
+    price: "৳৩৭০",
+    images: ["1", "2", "3", "4", "5", "6", "7"],
+    desc: "Model-Lowprice Online 16 FeetRemote Control LED Strip Light",
+    specs: ["Hand to hand return policy", "No warranty", "24 hours delivery"],
+    category: "decor", 
+    storeId: "store1"
+  },
+
+            {
+                code: "E-EARBUD-01", title: "ব্লুটুথ ওয়ারলেস ইয়ারবাডস", price: "৳৯৯০",
+                images: ["https://images.unsplash.com/photo-1590658268037-6bf12165a8df?w=400"],
+                desc: "অসাধারণ সাউন্ড কোয়ালিটি এবং হেভি বেস সমৃদ্ধ ব্লুটুথ ইয়ারবাডস।",
+                specs: ["✔ ব্যাকআপ: ৪-৫ ঘণ্টা একটানা প্লেব্যাক", "✔ কেস ব্যাকআপ: অতিরিক্ত ২০ ঘণ্টা", "✔ ওয়াটারপ্রুফ: IPX5 রেটিং"],
+                category: "electronics", storeId: "store1"
+            },
+            {
+                code: "E-EARBUD-01", title: "ব্লুটুথ ওয়ারলেস ইয়ারবাডস", price: "৳৯৯০",
+                images: ["https://images.unsplash.com/photo-1590658268037-6bf12165a8df?w=400"],
+                desc: "অসাধারণ সাউন্ড কোয়ালিটি এবং হেভি বেস সমৃদ্ধ ব্লুটুথ ইয়ারবাডস।",
+                specs: ["✔ ব্যাকআপ: ৪-৫ ঘণ্টা একটানা প্লেব্যাক", "✔ কেস ব্যাকআপ: অতিরিক্ত ২০ ঘণ্টা", "✔ ওয়াটারপ্রুফ: IPX5 রেটিং"],
+                category: "electronics", storeId: "store1"
+            },
+            {
+                code: "G-TSHIRT-02", title: "কটন পোলো টি-শার্ট", price: "৳৫৫০",
+                images: ["https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?w=400"],
+                desc: "আরামদায়ক ও স্টাইলিশ পোলো টি-শার্ট, প্রতিদিনের ব্যবহারের জন্য উপযোগী।",
+                specs: ["✔ জিএসএম: ২১০+ হেভি কোয়ালিটি", "✔ সাইজ: M, L, XL", "✔ এক্সক্লুসিভ এক্সপোর্ট কোয়ালিটি"],
+                category: "gents", storeId: "store1"
+            },
+            {
+                code: "E-EARBUD-01", title: "ব্লুটুথ ওয়ারলেস ইয়ারবাডস", price: "৳১০০",
+                images: ["https://images.unsplash.com/photo-1590658268037-6bf12165a8df?w=400"],
+                desc: "অসাধারণ সাউন্ড কোয়ালিটি এবং হেভি বেস সমৃদ্ধ ব্লুটুথ ইয়ারবাডস।",
+                specs: ["✔ ব্যাকআপ: ৪-৫ ঘণ্টা একটানা প্লেব্যাক", "✔ কেস ব্যাকআপ: অতিরিক্ত ২০ ঘণ্টা", "✔ ওয়াটারপ্রুফ: IPX5 রেটিং"],
+                category: "electronics", storeId: "store1"
+            },
+            {
+                code: "W-WACH-01", title: "স্টা স্মার্ট ওয়াচ", price: "৳১২০",
+                images: ["https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=400"],
+                desc: "ফুল টাচ স্ক্রিন এবং হেলথ ট্র্যাকিং ফিচারসহ প্রিমিয়াম লুকের স্মার্ট ওয়াচ।",
+                specs: ["✔ ডিসপ্লে: ১.৬৯ ইঞ্চি ফুল টাচ HD", "✔ সেন্সার্ট রেট, এসপিও২ ট্র্যাকার", "✔ ব্যাটারি ল: ৭ থেকে ১০ দিন ব্যাকআপ"],
+                category: "decor", storeId: "store1"
+            },
+            {
+                code: "G-SHIRT-01", title: "প্রিমিয়াম কটন শার্ট", price: "৳৭৫৮",
+                images: ["https://images.unsplash.com/photo-1596755094514-f87e34085b2c?w=400"],
+                desc: "শতভাগ প্রিমিয়াম কটন কাপড়ে তৈরি আরামদায়ক ক্যাজুয়াল শার্ট।",
+                specs: ["✔ ফেব্রিক: ১০০% প্রিমিয়াম কটন", "✔ সাইজ: M, L, XL, XXL এভেইলেবল", "✔ কালার গ্যারান্টি: ১০০%", "✔ ৭ দিনের সহজ রিটার্ন পলিসি"],
+                category: "gents", storeId: "store1"
+            },
+            {
+                code: "W-WATCH-01", title: "স্টাইলিশ স্মার্ট ওয়াচ", price: "৳১২০০",
+                images: ["https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=400"],
+                desc: "ফুল টাচ স্ক্রিন এবং হেলথ ট্র্যাকিং ফিচারসহ প্রিমিয়াম লুকের স্মার্ট ওয়াচ।",
+                specs: ["✔ ডিসপ্লে: ১.৬৯ ইঞ্চি ফুল টাচ HD", "✔ সেন্সর: হার্ট রেট, এসপিও২ ট্র্যাকার", "✔ ব্যাটারি লাইফ: ৭ থেকে ১০ দিন ব্যাকআপ"],
+                category: "watch", storeId: "store1"
+            },
+            {
+                code: "G-TSHIRT-02", title: "কটন পোলো টি-শার্ট", price: "৳৫৫০",
+                images: ["https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?w=400"],
+                desc: "আরামদায়ক ও স্টাইলিশ পোলো টি-শার্ট, প্রতিদিনের ব্যবহারের জন্য উপযোগী।",
+                specs: ["✔ জিএসএম: ২১০+ হেভি কোয়ালিটি", "✔ সাইজ: M, L, XL", "✔ এক্সক্লুসিভ এক্সপোর্ট কোয়ালিটি"],
+                category: "gents", storeId: "store1"
+            },
+            {
+                code: "L-BAG-01", title: "স্টাইলিশ ভ্যানিটি ব্যাগ", price: "৳১২৫০",
+                images: ["https://images.unsplash.com/photo-1584917865442-de89df76afd3?w=400"],
+                desc: "লেডিস এক্সক্লুসিভ কালেকশনের গর্জিয়াস ভ্যানিটি ব্যাগ।",
+                specs: ["✔ মেটেরিয়াল: প্রিমিয়াম পিইউ লেদার", "✔ চেম্বার: ৩টি বড় পকেট এবং চেইন", "✔ বেল্ট: অ্যাডজাস্টেবল লং বেল্ট সহ"],
+                category: "ladies", storeId: "store1"
+            },
+            {
+                code: "L-BAG-01", title: "স্টাইলিশ ভ্যানিটি ব্যাগ", price: "৳১২৫০",
+                images: ["https://images.unsplash.com/photo-1584917865442-de89df76afd3?w=400"],
+                desc: "লেডিস এক্সক্লুসিভ কালেকশনের গর্জিয়াস ভ্যানিটি ব্যাগ।",
+                specs: ["✔ মেটেরিয়াল: প্রিমিয়াম পিইউ লেদার", "✔ চেম্বার: ৩টি বড় পকেট এবং চেইন", "✔ বেল্ট: অ্যাডজাস্টেবল লং বেল্ট সহ"],
+                category: "ladies", storeId: "store1"
+            },
+            {
+                code: "E-EARBUD-01", title: "ব্লুটুথ ওয়ারলেস ইয়ারবাডস", price: "৳৯৯০",
+                images: ["https://images.unsplash.com/photo-1590658268037-6bf12165a8df?w=400"],
+                desc: "অসাধারণ সাউন্ড কোয়ালিটি এবং হেভি বেস সমৃদ্ধ ব্লুটুথ ইয়ারবাডস।",
+                specs: ["✔ ব্যাকআপ: ৪-৫ ঘণ্টা একটানা প্লেব্যাক", "✔ কেস ব্যাকআপ: অতিরিক্ত ২০ ঘণ্টা", "✔ ওয়াটারপ্রুফ: IPX5 রেটিং"],
+                category: "electronics", storeId: "store1"
+            },
+            {
+                code: "W-WATCH-01", title: "স্টাইলিশ স্মার্ট ওয়াচ", price: "৳১২০০",
+                images: ["https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=400"],
+                desc: "ফুল টাচ স্ক্রিন এবং হেলথ ট্র্যাকিং ফিচারসহ প্রিমিয়াম লুকের স্মার্ট ওয়াচ।",
+                specs: ["✔ ডিসপ্লে: ১.৬৯ ইঞ্চি ফুল টাচ HD", "✔ সেন্সর: হার্ট রেট, এসপিও২ ট্র্যাকার", "✔ ব্যাটারি লাইফ: ৭ থেকে ১০ দিন ব্যাকআপ"],
+                category: "watch", storeId: "store1"
+            }
+        ];
+
+        // আপনার আগের initialProducts অ্যারেটি এখানে থাকবে...
+
+// ব্রাউজারে ডাটা আপডেট করার লজিক (লক ভাঙার জন্য)
+// 💡 প্রোডাক্ট লিস্টে যেকোনো পরিবর্তন (নতুন প্রোডাক্ট/এডিট) করলে নিচের DATA_VERSION নাম্বারটি পরিবর্তন করুন,
+// তাহলে পুরনো localStorage ক্যাশ অটোমেটিক রিফ্রেশ হয়ে নতুন ডাটা শো করবে।
+const DATA_VERSION = "vb";
+
+let allProducts = JSON.parse(localStorage.getItem('megaProductList'));
+let savedVersion = localStorage.getItem('megaProductListVersion');
+
+if (!allProducts || savedVersion !== DATA_VERSION) {
+    // ভার্সন না মিললে বা ডাটা না থাকলে, কোডের initialProducts দিয়ে রিফ্রেশ হবে
+    localStorage.setItem('megaProductList', JSON.stringify(initialProducts));
+    localStorage.setItem('megaProductListVersion', DATA_VERSION);
+    allProducts = initialProducts;
+}
+
+// --- ডায়নামিক রেন্ডারিং ---
+function renderProducts() {
+    const grid = document.getElementById('productGrid');
+    grid.innerHTML = ''; 
+
+    allProducts.forEach(product => {
+        const card = document.createElement('div');
+        card.className = `product-card filter-item ${product.category}`;
+        card.setAttribute('data-code', product.code);
+        
+        card.onclick = () => {
+            openModal(product.title, product.price, product.code, product.images, product.desc, product.specs);
+        };
+
+        card.innerHTML = `
+            <div class="product-img-wrapper"><img src="${product.images[0]}" alt="Product"></div>
+            <h4>${product.title}</h4>
+            <p class="product-price">${product.price}</p>
+        `;
+        grid.appendChild(card);
+    });
+}
+
+// 💡 বোনাস ফাংশন: কোড বা কনসোল থেকে নতুন প্রোডাক্ট লাইভ অ্যাড করার জন্য
+function addNewProductLive(newProd) {
+    allProducts.push(newProd);
+    localStorage.setItem('megaProductList', JSON.stringify(allProducts));
+    renderProducts(); // পেজ রিফ্রেশ ছাড়াই প্রোডাক্ট চলে আসবে
+    filterSelection('all');
+}
+
+
+        // --- ক্যাটাগরি ফিল্টার লজিক ---
+        function filterSelection(category) {
+            let cards = document.getElementsByClassName("filter-item");
+            let btns = document.getElementsByClassName("filter-btn");
+
+            for (let i = 0; i < btns.length; i++) {
+                btns[i].classList.remove("active");
+            }
+            if(event && event.currentTarget) {
+                event.currentTarget.classList.add("active");
+            }
+
+            if (category == "all") category = "";
+            for (let i = 0; i < cards.length; i++) {
+                cards[i].classList.add("hide");
+                if (cards[i].className.indexOf(category) > -1) {
+                    cards[i].classList.remove("hide");
+                }
+            }
         }
 
-        // --- স্লাইডার এবং কার্ট কন্ট্রোল ভেরিয়েবলস ---
+        // পেজ লোড হলেই প্রোডাক্ট রেন্ডার হবে এবং "all" ফিল্টার অ্যাপ্লাই হবে
+        window.addEventListener('DOMContentLoaded', () => {
+            renderProducts();
+            filterSelection('all');
+        });
+
+        // --- মডাল ও স্লাইডার লজিক (স্পেসিফিকেশন সহ) ---
         let currentImageIndex = 0;
         let modalImages = [];
-        let currentProductData = {}; // কার্টে পাঠানোর জন্য ডেটা
+        let currentProductData = {}; 
 
-        // বাংলা সংখ্যাকে ইংরেজিতে কনভার্ট করার ফাংশন (প্রাইস ক্যালকুলেশনের জন্য)
         function convertToEnglishNumber(str) {
             const bengaliToEnglish = {'০':'0', '১':'1', '২':'2', '৩':'3', '৪':'4', '৫':'5', '৬':'6', '৭':'7', '৮':'8', '৯':'9'};
             let engStr = str.replace(/[০-৯]/g, m => bengaliToEnglish[m]);
-            // শুধু সংখ্যাগুলো আলাদা করা
             return parseInt(engStr.replace(/[^0-9]/g, '')) || 0;
         }
 
-        // পপ-আপ বা উইন্ডো খোলার ফাংশন
-        function openModal(title, price, code, imgArray, desc) {
+        function openModal(title, price, code, imgArray, desc, specsArray) {
             document.getElementById('modalTitle').innerText = title;
-            document.getElementById('modalPrice').innerText = "মূল্য: " + price;
-            document.getElementById('productCode').innerText = "কোড: " + code;
-            document.getElementById('productPriceInfo').innerText = price;
+            document.getElementById('modalPrice').innerText = price;
+            document.getElementById('productCode').innerText = code;
             document.getElementById('modalDesc').innerText = desc;
             
-            // কার্টে সেভ করার জন্য ডেটা প্রসেসিং
+            const specsContainer = document.getElementById('dynamicSpecsContainer');
+            specsContainer.innerHTML = ''; 
+            
+            if(specsArray && specsArray.length > 0) {
+                document.getElementById('extraDetailsBox').style.display = 'block';
+                specsArray.forEach(spec => {
+                    const p = document.createElement('p');
+                    p.innerText = spec;
+                    specsContainer.appendChild(p);
+                });
+            } else {
+                document.getElementById('extraDetailsBox').style.display = 'none'; 
+            }
+            
             let cleanPriceNumber = convertToEnglishNumber(price);
+            let mainImage = (imgArray && imgArray.length > 0) ? imgArray[0] : '';
+            currentProductData = { name: title + " (" + code + ")", price: cleanPriceNumber, qty: 1, image: mainImage, code: code };
 
-            currentProductData = {
-                name: title + " (" + code + ")", 
-                price: cleanPriceNumber,
-                qty: 1
-            };
-
-            // স্লাইডার সেটআপ
             modalImages = imgArray;
             currentImageIndex = 0;
             const wrapper = document.getElementById('modalSliderWrapper');
@@ -959,23 +517,22 @@
                 dot.onclick = () => goToSlide(index); dotsContainer.appendChild(dot);
             });
 
-            const prevBtn = document.querySelector('.prev-btn'), nextBtn = document.querySelector('.next-btn');
-            if (modalImages.length <= 1) { prevBtn.style.display = 'none'; nextBtn.style.display = 'none'; } 
-            else { prevBtn.style.display = 'flex'; nextBtn.style.display = 'flex'; }
-            
+            document.querySelector('.prev-btn').style.display = modalImages.length > 1 ? 'flex' : 'none';
+            document.querySelector('.next-btn').style.display = modalImages.length > 1 ? 'flex' : 'none';
             updateSliderPosition();
 
-            // "কার্টে যোগ করুন" বাটন রিসেট করা
             const cartBtn = document.getElementById('addToCartBtn');
             cartBtn.innerHTML = 'কার্টে যোগ করুন <i class="fas fa-shopping-cart"></i>';
             cartBtn.style.background = "linear-gradient(135deg, #f59e0b, #ea580c)";
 
+            document.getElementById('modalOverlay').classList.add('active');
             document.getElementById('productModal').classList.add('active');
+            document.body.style.overflow = 'hidden'; 
         }
 
         function moveSlider(direction) {
             currentImageIndex += direction;
-        if (currentImageIndex >= modalImages.length) currentImageIndex = 0;
+            if (currentImageIndex >= modalImages.length) currentImageIndex = 0;
             if (currentImageIndex < 0) currentImageIndex = modalImages.length - 1;
             updateSliderPosition();
         }
@@ -990,50 +547,36 @@
         }
 
         function closeModal(event) {
-            if(event.target.className === 'modal-overlay active') {
-                document.getElementById('productModal').classList.remove('active');
-            }
+            if(event.target.id === 'modalOverlay') forceCloseModal();
         }
 
-        // --- কার্টে ডেটা যুক্ত করার মেইন ফাংশন ---
-        function addToCart() {
-            // লোকাল স্টোরেজ থেকে আগের কার্ট আনা
+        function forceCloseModal() {
+            document.getElementById('modalOverlay').classList.remove('active');
+            document.getElementById('productModal').classList.remove('active');
+            document.body.style.overflow = 'auto'; 
+        }
+
+                function addToCart() {
             let cart = JSON.parse(localStorage.getItem('myCart')) || [];
-            
-            // প্রোডাক্টটি আগে থেকেই কার্টে আছে কি না চেক করা
             let existingItem = cart.find(item => item.name === currentProductData.name);
             
-            if (existingItem) {
-                existingItem.qty += 1; // থাকলে পরিমাণ ১ বাড়িয়ে দেওয়া
-            } else {
-                cart.push(currentProductData); // না থাকলে নতুন এন্ট্রি
-            }
+            if (existingItem) existingItem.qty += 1;
+            else cart.push(currentProductData);
 
-            // আপডেট হওয়া কার্ট আবার সেভ করা
             localStorage.setItem('myCart', JSON.stringify(cart));
-            updateCartBadge();
             
-            // বাটনের স্টাইল চেঞ্জ করে কনফার্মেশন দেওয়া
+            // কার্টে প্রোডাক্ট অ্যাড হওয়ার সাথে সাথে রেড ডট আপডেট করবে
+            updateCartBadge(); 
+            
             const cartBtn = document.getElementById('addToCartBtn');
             cartBtn.innerHTML = 'যুক্ত হয়েছে ✓';
             cartBtn.style.background = "#10b981";
 
-            // সাকসেস মেসেজ দেখানো
             showToast("প্রোডাক্টটি সফলভাবে কার্টে যুক্ত হয়েছে!");
+            setTimeout(forceCloseModal, 1000); 
         }
 
-        // টোস্ট নোটিফিকেশন দেখানোর ফাংশন
-        function showToast(message) {
-            const toast = document.getElementById('toastNotification');
-            document.getElementById('toastMsg').innerText = message;
-            toast.classList.add('show');
-            
-            // ৩ সেকেন্ড পর অটোমেটিক হাইড হয়ে যাবে
-            setTimeout(() => {
-                toast.classList.remove('show');
-            }, 3000);
-        }
-
+        // --- অর্ডার আইকনে রেড ডট (Badge) দেখানোর ফাংশন ---
         function updateCartBadge() {
             let badge = document.getElementById('orderNavBadge');
             if (!badge) return;
@@ -1044,99 +587,47 @@
                 badge.classList.remove('show');
             }
         }
+
+        // পেজ রিলোড বা ওপেন করার সাথে সাথেই কার্ট চেক করে রেড ডট দেখাবে
         updateCartBadge();
- 
-        // লোডার হাইড করার মেইন ফাংশন
-        function hideLoader() {
-            const loader = document.getElementById('page-loader');
-            if(loader) {
-                loader.style.opacity = '0'; // আগে আস্তে করে অদৃশ্য হবে
-                setTimeout(() => {
-                    loader.style.display = 'none'; // তারপর জায়গা ছেড়ে দেবে
-                }, 400);
+
+
+        function showToast(message) {
+            const toast = document.getElementById('toastNotification');
+            document.getElementById('toastMsg').innerText = message;
+            toast.classList.add('show');
+            setTimeout(() => toast.classList.remove('show'), 3000);
+        }
+
+        function handleSearchKeyPress(event) {
+            if (event.key === 'Enter') executeSearch();
+        }
+
+        function executeSearch() {
+            const query = document.getElementById('searchInput').value.trim().toLowerCase();
+            if (!query) return;
+
+            document.querySelectorAll('.product-card.search-highlight').forEach(c => c.classList.remove('search-highlight'));
+            filterSelection('all');
+
+            const allCards = document.querySelectorAll('.filter-item');
+            let foundCard = null;
+
+            allCards.forEach(card => {
+                const code = (card.getAttribute('data-code') || '').toLowerCase();
+                if (code === query) foundCard = card;
+            });
+
+            if (foundCard) {
+                const grid = document.getElementById('productGrid');
+                grid.prepend(foundCard);
+                foundCard.classList.add('search-highlight');
+                foundCard.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                setTimeout(() => foundCard.classList.remove('search-highlight'), 2500);
+            } else {
+                alert('এই কোডের কোনো প্রোডাক্ট পাওয়া যায়নি।');
             }
         }
-
-        // ১. পেজ পুরোপুরি লোড হয়ে গেলে লোডার সরিয়ে ফেলবে
-        window.addEventListener('load', function() {
-            hideLoader();
-        });
-
-        // ২. ফেইলসেফ: কোনো কারণে পেজ আটকে গেলে ৩ সেকেন্ড পর অটোমেটিক লোডার বন্ধ হয়ে যাবে
-        setTimeout(function() {
-            hideLoader();
-        }, 3000);
-
-        // ৩. নিচের মেনুতে (Home, Store ইত্যাদিতে) ক্লিক করলে আবার লোডার দেখাবে
-        document.querySelectorAll('.bottom-nav a').forEach(link => {
-            link.addEventListener('click', function() {
-                const loader = document.getElementById('page-loader');
-                if(loader) {
-                    loader.style.display = 'flex';
-                    loader.style.opacity = '1';
-                }
-            });
-        });
-
-
-
     </script>
-
-<script>
-function handleSearchKeyPress(event) {
-    if (event.key === 'Enter') {
-        executeSearch();
-    }
-}
-
-function executeSearch() {
-    const query = document.getElementById('searchInput').value.trim().toLowerCase();
-    if (!query) return;
-
-    // আগের সব হাইলাইট মুছে ফেলা
-    document.querySelectorAll('.product-card.search-highlight').forEach(c => {
-        c.classList.remove('search-highlight');
-    });
-
-    // সব ক্যাটাগরির সব কার্ডের মধ্যে কোড খোঁজা
-    const allCards = document.querySelectorAll('.product-card');
-    let foundCard = null;
-    let foundSection = null;
-
-    allCards.forEach(card => {
-        const code = (card.getAttribute('data-code') || '').toLowerCase();
-        if (code === query) {
-            foundCard = card;
-            foundSection = card.closest('.category-section');
-        }
-    });
-
-    if (foundCard) {
-        // সঠিক ক্যাটাগরি ট্যাবে সুইচ করা
-        const sectionId = foundSection.id;
-        const sidebarItem = Array.from(document.querySelectorAll('.sidebar-item'))
-            .find(item => item.getAttribute('onclick').includes(sectionId));
-        if (sidebarItem) {
-            showCategory(sectionId, sidebarItem);
-        }
-
-        // কার্ডটিকে গ্রিডের সবার উপরে নিয়ে আসা
-        const grid = foundCard.parentElement;
-        grid.prepend(foundCard);
-
-        // হাইলাইট করা এবং স্ক্রল করা
-        foundCard.classList.add('search-highlight');
-        foundCard.scrollIntoView({ behavior: 'smooth', block: 'center' });
-
-        setTimeout(() => {
-            foundCard.classList.remove('search-highlight');
-        }, 2500);
-    } else {
-        alert('এই কোডের কোনো প্রোডাক্ট পাওয়া যায়নি।');
-    }
-}
-</script>
-
-
 </body>
 </html>

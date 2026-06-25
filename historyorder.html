@@ -273,9 +273,6 @@
                                     <p>${item.name}</p>
                                     <span>Qty: ${item.qty} &bull; কোড: ${cleanCode}</span>
                                 </div>
-                                <button class="oh-copy-btn" onclick="copyProductCode(this, '${cleanCode}')">
-                                    <i class="fas fa-copy"></i> কপি
-                                </button>
                             </div>
                         `;
                     });
@@ -288,6 +285,9 @@
                                 <span class="oh-id"><i class="fas fa-receipt"></i> ${order.orderId}</span>
                                 <span class="oh-date">${order.date}</span>
                             </div>
+                            <button class="oh-copy-btn" style="margin-bottom:12px;" onclick="copyOrderId(this, '${order.orderId}')">
+                                <i class="fas fa-copy"></i> অর্ডার আইডি কপি
+                            </button>
                             ${statusUI}
                             <div>${itemsHtml}</div>
                             <div class="oh-total-row">
@@ -301,8 +301,8 @@
             }
         }
 
-        // --- প্রোডাক্ট কোড কপি করার ফাংশন ---
-        function copyProductCode(btn, code) {
+        // --- অর্ডার আইডি কপি করার ফাংশন ---
+        function copyOrderId(btn, orderId) {
             function showCopied() {
                 let original = btn.innerHTML;
                 btn.innerHTML = '<i class="fas fa-check"></i> হয়েছে';
@@ -314,11 +314,11 @@
             }
 
             if (navigator.clipboard && window.isSecureContext) {
-                navigator.clipboard.writeText(code).then(showCopied).catch(() => {
-                    fallbackCopyText(code, showCopied);
+                navigator.clipboard.writeText(orderId).then(showCopied).catch(() => {
+                    fallbackCopyText(orderId, showCopied);
                 });
             } else {
-                fallbackCopyText(code, showCopied);
+                fallbackCopyText(orderId, showCopied);
             }
         }
 

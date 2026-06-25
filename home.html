@@ -84,10 +84,18 @@
         .trending-section { padding: 10px 15px; }
         .product-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; }
         .product-card {
-            background-color: white; border-radius: 15px; padding: 12px;
-            position: relative; box-shadow: 0 4px 12px rgba(0,0,0,0.05);
-            text-align: center; transition: 0.3s; cursor: pointer;
-        }
+    background-color: white; 
+    border-radius: 15px; 
+    padding: 12px;
+    position: relative; 
+    box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+    text-align: center; 
+    transition: 0.3s; 
+    cursor: pointer;
+    min-width: 0; /* এটি গ্রিড লেআউট ভেঙে যাওয়া রোধ করবে */
+    overflow: hidden; /* অতিরিক্ত অংশ কেটে প্রোডাক্ট কার্ডের সেপ ঠিক রাখবে */
+}
+
         .product-card:active { transform: scale(0.98); }
         .product-card .badge {
             position: absolute; top: 10px; left: 10px;
@@ -160,61 +168,99 @@
         * { box-sizing: border-box; }
         body { overflow-x: hidden; width: 100%; }
 
-        /* --- New Features: Product Details Modal --- */
-        .product-modal-overlay {
-            display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0, 0, 0, 0.6); z-index: 300; justify-content: center; align-items: center;
-            padding: 20px; backdrop-filter: blur(3px);
+        /* --- Full-Screen Product Details Modal --- */
+        .pdetail-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.5); z-index: 300;
+            display: none; opacity: 0; transition: opacity 0.3s;
         }
-        .product-modal-box {
-            background: white; border-radius: 24px; max-width: 360px; width: 100%;
-            padding: 18px; position: relative; box-shadow: 0 10px 25px rgba(0,0,0,0.2);
-            animation: modalFadeIn 0.3s ease-out;
+        .pdetail-overlay.active { display: block; opacity: 1; }
+
+        .pdetail-modal {
+            position: fixed; top: 100%; left: 0; width: 100%; height: 100%;
+            background: white; z-index: 301; transition: top 0.35s ease-in-out;
+            display: flex; flex-direction: column;
         }
-        @keyframes modalFadeIn {
-            from { transform: translateY(30px); opacity: 0; }
-            to { transform: translateY(0); opacity: 1; }
+        .pdetail-modal.active { top: 0; }
+
+        .pdetail-header {
+            padding: 14px 15px; display: flex; justify-content: space-between; align-items: center;
+            background: white; position: sticky; top: 0; z-index: 10; border-bottom: 1px solid #f1f5f9;
         }
-        .modal-close-icon {
-            position: absolute; top: 25px; right: 25px; font-size: 18px; color: #78909c;
-            cursor: pointer; z-index: 320; background: rgba(255,255,255,0.8);
-            width: 26px; height: 26px; display: flex; align-items: center; justify-content: center; border-radius: 50%;
-        }
-        .modal-slider-box {
-            position: relative; width: 100%; height: 180px; border-radius: 15px;
-            overflow: hidden; margin-bottom: 12px; background: #f5f5f5;
-        }
-        .modal-slide-img { display: none; width: 100%; height: 100%; object-fit: cover; }
-        .modal-nav-btn {
+        .pdetail-header h3 { margin: 0; font-size: 16px; color: #1e293b; }
+        .pdetail-close { font-size: 24px; color: #64748b; cursor: pointer; line-height: 1; }
+
+        .pdetail-body { flex-grow: 1; overflow-y: auto; padding: 0 15px 15px 15px; }
+
+       .pdetail-slider {
+    position: relative;
+    width: calc(100% + 30px); /* ডানে-বামে ১৫px করে মার্জিন মেলাতে এটি ব্যবহার করতে হবে */
+    height: 280px;
+    border-radius: 0 0 14px 14px;
+    overflow: hidden;
+    margin: 0 -15px 16px -15px;
+    background-color: #f1f5f9;
+}
+
+.pdetail-slider-wrapper img {
+    width: 100%;
+    min-width: 100%; /* ছবি যেন পুরো স্লাইডারের জায়গা ঠিকমতো নেয় */
+    height: 100%;
+    object-fit: cover;
+    flex-shrink: 0;
+}
+
+        .pdetail-slider-wrapper { display: flex; width: 100%; height: 100%; transition: transform 0.3s ease-in-out; }
+              .pdetail-slide-btn {
             position: absolute; top: 50%; transform: translateY(-50%);
-            background: rgba(0,0,0,0.3); color: white; border: none; width: 28px; height: 28px;
-            border-radius: 50%; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 12px;
+            background: rgba(15,23,42,0.4); color: white; border: none;
+            width: 34px; height: 34px; cursor: pointer; border-radius: 50%;
+            font-size: 14px; z-index: 5; display: flex; align-items: center; justify-content: center;
         }
-        .modal-prev-btn { left: 8px; }
-        .modal-next-btn { right: 8px; }
-        .modal-dots-container { position: absolute; bottom: 8px; width: 100%; text-align: center; }
-        .modal-dot {
-            cursor: pointer; height: 7px; width: 7px; margin: 0 3px; background-color: rgba(255,255,255,0.5);
-            border-radius: 50%; display: inline-block; transition: 0.3s;
+        .pdetail-prev-btn { left: 10px; }
+        .pdetail-next-btn { right: 10px; }
+        .pdetail-dots {
+            position: absolute; bottom: 10px; left: 50%; transform: translateX(-50%);
+            display: flex; gap: 6px; z-index: 5;
         }
-        .modal-dot.active-dot { background-color: white; width: 15px; border-radius: 4px; }
-        
-        .modal-p-title { font-size: 18px; color: #1e293b; font-weight: 700; margin: 0 0 6px 0; }
-        .modal-p-price { color: #ef4444; font-weight: 700; font-size: 15px; margin: 0 0 8px 0; }
-        .modal-p-desc { font-size: 12px; color: #64748b; line-height: 1.5; margin: 0 0 15px 0; text-align: left; }
-        
-        .modal-dash-box {
-            border: 1.5px dashed #cbd5e1; border-radius: 12px; padding: 10px 12px;
-            display: flex; justify-content: space-between; align-items: center; background: #f8fafc;
+        .pdetail-dot { width: 8px; height: 8px; background: rgba(255,255,255,0.55); border-radius: 50%; cursor: pointer; }
+        .pdetail-dot.active { background: white; width: 14px; border-radius: 4px; }
+
+        .pdetail-title { font-size: 21px; color: #1e293b; margin: 4px 0 6px 0; font-weight: 700; }
+        .pdetail-price { font-size: 18px; color: #ef4444; font-weight: 700; margin-bottom: 10px; }
+        .pdetail-desc { font-size: 14px; color: #475569; line-height: 1.6; margin-bottom: 18px; }
+
+        /* --- Specifications Box (Modified) --- */
+        .pdetail-specs-box {
+            padding: 15px; background: #f8fafc; border-radius: 12px;
+            border: 1px solid #e2e8f0; margin-bottom: 20px;
         }
-        .modal-info-left { display: flex; flex-direction: column; gap: 4px; text-align: left; }
-        .modal-info-price { font-size: 13px; font-weight: 700; color: #334155; }
-        .modal-info-code { font-size: 11px; color: #1e3a8a; font-weight: 600; }
-        
-        .modal-add-cart-btn {
-            background: linear-gradient(135deg, #f97316, #ea580c); color: white; border: none;
-            padding: 10px 14px; border-radius: 10px; font-size: 12px; font-weight: 700;
-            cursor: pointer; display: flex; align-items: center; gap: 6px; box-shadow: 0 4px 10px rgba(234,88,12,0.25);
+        .pdetail-specs-box h4 {
+            margin: 0 0 10px 0; font-size: 14.5px; color: #3f51b5; font-weight: 700;
+            display: flex; align-items: center; gap: 6px;
+        }
+        .pdetail-specs-list { display: flex; flex-direction: column; gap: 8px; }
+        .pdetail-spec-row {
+            display: flex; justify-content: space-between; align-items: center; gap: 10px;
+            background: white; border-radius: 8px; padding: 8px 12px;
+            border: 1px solid #eef1f5; font-size: 12.5px;
+        }
+        .pdetail-spec-row .spec-key { color: #64748b; font-weight: 600; }
+        .pdetail-spec-row .spec-val { color: #1e293b; font-weight: 700; text-align: right; }
+
+        .pdetail-footer {
+            padding: 12px 15px; background: white; border-top: 1px solid #e2e8f0;
+            display: flex; justify-content: space-between; align-items: center; gap: 10px;
+        }
+        .pdetail-footer-info { display: flex; flex-direction: column; gap: 2px; }
+        .pdetail-footer-info .price-line { font-size: 14px; font-weight: 700; color: #334155; }
+        .pdetail-footer-info .code-line { font-size: 11.5px; color: #1e3a8a; font-weight: 600; }
+
+        .pdetail-cart-btn {
+            background: linear-gradient(135deg, #f59e0b, #ea580c); color: white; border: none;
+            padding: 13px 18px; border-radius: 10px; font-size: 14px; font-weight: 700;
+            cursor: pointer; display: flex; align-items: center; gap: 8px;
+            box-shadow: 0 4px 10px rgba(234,88,12,0.25); flex-shrink: 0;
         }
 
         /* --- New Features: Toast Notification --- */
@@ -421,9 +467,9 @@
         <!-- Banner Slider -->
         <div class="banner-container">
             <div class="banner-slider">
-                <img class="mySlides" src="https://res.cloudinary.com/dykw2sacb/image/upload/f_auto,q_auto/banner1_gpesej" alt="Banner 1" onerror="this.src='https://via.placeholder.com/600x200?text=Banner+1'">
-                <img class="mySlides" src="https://res.cloudinary.com/dykw2sacb/image/upload/v1782056977/banner2_qhiszb.jpg" alt="Banner 2" onerror="this.src='https://via.placeholder.com/600x200?text=Banner+2'">
-                <img class="mySlides" src="https://res.cloudinary.com/dykw2sacb/image/upload/v1782056977/banner3_q6bbte.jpg" alt="Banner 3" onerror="this.src='https://via.placeholder.com/600x200?text=Banner+3'">
+                <img class="mySlides" src="https://res.cloudinary.com/dykw2sacb/image/upload/f_auto,q_auto/banner1_gpesej" alt="Banner 1" onerror="this.src='https://placehold.co/600x200?text=Banner+1'">
+                <img class="mySlides" src="https://res.cloudinary.com/dykw2sacb/image/upload/v1782056977/banner2_qhiszb.jpg" alt="Banner 2" onerror="this.src='https://placehold.co/600x200?text=Banner+2'">
+                <img class="mySlides" src="https://res.cloudinary.com/dykw2sacb/image/upload/v1782056977/banner3_q6bbte.jpg" alt="Banner 3" onerror="this.src='https://placehold.co/600x200?text=Banner+3'">
             </div>
         </div>
 
@@ -459,31 +505,31 @@
         <div class="trending-section">
             <h2 class="section-title">ট্রেন্ডিং প্রোডাক্ট 🔥</h2>
             <div class="product-grid">
-                <div class="product-card" onclick="openProductModal('Amazing Wall-boards', 200, ['https://res.cloudinary.com/dzuwta6lc/image/upload/v1782296291/1000018460_ifdjp3.webp','https://res.cloudinary.com/dzuwta6lc/image/upload/v1782296291/1000018458_yhmjlz.webp','https://res.cloudinary.com/dzuwta6lc/image/upload/v1782296292/1000018461_x6ipvm.webp','https://res.cloudinary.com/dzuwta6lc/image/upload/v1782296291/1000018457_mqqkga.webp'], '', 'এটি আপনার ঘরের দেয়াল সাজানোর জন্য একটি আকর্ষণীয় ও চমৎকার প্রিমিয়াম কোয়ালিটির ওয়াল-বোর্ড।')">
-<div class="badge">Trending</div>
-    <img src="https://res.cloudinary.com/dzuwta6lc/image/upload/v1782296292/1000018461_x6ipvm.webp" alt="প্রোডাক্ট" class="product-img" onerror="this.src='https://via.placeholder.com/150'">
+<div class="product-card" onclick="openProductModal('Amazing Wall-boards', 200, ['https://res.cloudinary.com/dzuwta6lc/image/upload/v1782296291/1000018460_ifdjp3.webp','https://res.cloudinary.com/dzuwta6lc/image/upload/v1782296291/1000018458_yhmjlz.webp','https://res.cloudinary.com/dzuwta6lc/image/upload/v1782296292/1000018461_x6ipvm.webp','https://res.cloudinary.com/dzuwta6lc/image/upload/v1782296291/1000018457_mqqkga.webp'], '', 'এটি আপনার ঘরের দেয়াল সাজানোর জন্য একটি আকর্ষণীয় ও চমৎকার প্রিমিয়াম কোয়ালিটির ওয়াল-বোর্ড।', ['ম্যাটেরিয়াল: পিভিসি (PVC)', 'সাইজ: ৪০ x ৬০ সেমি', 'ইনস্টলেশন: সহজ DIY ফিটিং', 'ওয়ারেন্টি: ৬ মাস'])">
+    <div class="badge">Trending</div>
+    <img src="https://res.cloudinary.com/dzuwta6lc/image/upload/v1782296292/1000018461_x6ipvm.webp" alt="প্রোডাক্ট" class="product-img" onerror="this.src='https://placehold.co/150'">
     <h3 class="product-name">Amazing Wall-boards</h3>
     <p class="product-price">এখনই অর্ডার করুন</p>
-    <button class="buy-btn"><i class="fas fa-shopping-cart"></i>৳২০০</button> 
+    <button class="buy-btn"><i class="fas fa-shopping-cart"></i>৳২০০</button>
 </div>
 
-<div class="product-card" onclick="openProductModal('আগে পরীক্ষায় পাশ করি', 350, ['https://via.placeholder.com/150?text=Book+Front', 'https://via.placeholder.com/150?text=Book+Back'], 'G-BOOK-02', 'পরীক্ষায় ভালো ফলাফল অর্জন ও পড়াশোনায় মনোযোগ বৃদ্ধির জন্য বিশেষ দিকনির্দেশনামূলক একটি বই।')">
+<div class="product-card" onclick="openProductModal('আগে পরীক্ষায় পাশ করি', 350, ['https://placehold.co/150?text=Book+Front', 'https://placehold.co/150?text=Book+Back'], 'G-BOOK-02', 'পরীক্ষায় ভালো ফলাফল অর্জন ও পড়াশোনায় মনোযোগ বৃদ্ধির জন্য বিশেষ দিকনির্দেশনামূলক একটি বই।', ['ভাষা: বাংলা', 'পৃষ্ঠা সংখ্যা: ১২০', 'কভার: পেপারব্যাক', 'প্রকাশনী: Ideas Publication'])">
     <div class="badge" style="background: #ff9800;">Hot</div>
-    <img src="https://via.placeholder.com/150" alt="প্রোডাক্ট" class="product-img">
+    <img src="https://placehold.co/150" alt="প্রোডাক্ট" class="product-img">
     <h3 class="product-name">আগে পরীক্ষায় পাশ করি</h3>
     <p class="product-price">এখনই অর্ডার করুন</p>
     <button class="buy-btn"><i class="fas fa-shopping-cart"></i>৳৩৫০</button>
 </div>
 
-<div class="product-card" onclick="openProductModal('ক্যাজুয়াল গ্যাবার্ডিন প্যান্ট', 580, ['https://via.placeholder.com/150?text=Pant+1', 'https://via.placeholder.com/150?text=Pant+2'], 'G-PANT-03', 'অত্যಂತ আরামদায়ক ও টেকসই ফেব্রিক দিয়ে তৈরি স্টাইলিশ ক্যাজুয়াল গ্যাবার্ডিন প্যান্ট।')">
-    <img src="https://via.placeholder.com/150" alt="প্রোডাক্ট" class="product-img">
+<div class="product-card" onclick="openProductModal('ক্যাজুয়াল গ্যাবার্ডিন প্যান্ট', 580, ['https://placehold.co/150?text=Pant+1', 'https://placehold.co/150?text=Pant+2'], 'G-PANT-03', 'অত্যಂತ আরামদায়ক ও টেকসই ফেব্রিক দিয়ে তৈরি স্টাইলিশ ক্যাজুয়াল গ্যাবার্ডিন প্যান্ট।', ['ফেব্রিক: গ্যাবার্ডিন কটন', 'সাইজ: M, L, XL, XXL', 'ফিট: রেগুলার ফিট', 'কালার অপশন: ব্ল্যাক, নেভি, গ্রে'])">
+    <img src="https://placehold.co/150" alt="প্রোডাক্ট" class="product-img">
     <h3 class="product-name">ক্যাজুয়াল গ্যাবার্ডিন প্যান্ট</h3>
     <p class="product-price">এখনই অর্ডার করুন</p>
     <button class="buy-btn"><i class="fas fa-shopping-cart"></i>৳৫৮০</button>
 </div>
 
-<div class="product-card" onclick="openProductModal('ফরমাল ফুল স্লিভ শার্ট', 750, ['https://via.placeholder.com/150?text=Shirt+1', 'https://via.placeholder.com/150?text=Shirt+2'], 'G-SHIRT-01', 'এটি শতভাগ প্রিমিয়াম কটন কাপড়ে তৈরি আরামদায়ক ক্যাজুয়াল শার্ট। অফিস বা যেকোনো অনুষ্ঠানে পরার জন্য পারফেক্ট।')">
-    <img src="https://via.placeholder.com/150" alt="প্রোডাক্ট" class="product-img">
+<div class="product-card" onclick="openProductModal('ফরমাল ফুল স্লিভ শার্ট', 750, ['https://placehold.co/150?text=Shirt+1', 'https://placehold.co/150?text=Shirt+2'], 'G-SHIRT-01', 'এটি শতভাগ প্রিমিয়াম কটন কাপড়ে তৈরি আরামদায়ক ক্যাজুয়াল শার্ট। অফিস বা যেকোনো অনুষ্ঠানে পরার জন্য পারফেক্ট।', ['ফেব্রিক: ১০০% প্রিমিয়াম কটন', 'সাইজ: M, L, XL, XXL', 'স্লিভ: ফুল স্লিভ', 'কালার অপশন: হোয়াইট, স্কাই ব্লু'])">
+    <img src="https://placehold.co/150" alt="প্রোডাক্ট" class="product-img">
     <h3 class="product-name">ফরমাল ফুল স্লিভ শার্ট</h3>
     <p class="product-price">এখনই অর্ডার করুন</p>
     <button class="buy-btn"><i class="fas fa-shopping-cart"></i>৳৭৫০</button>
@@ -496,31 +542,31 @@
         <div class="trending-section" style="padding-bottom: 20px;">
             <h2 class="section-title">Recommended 💝</h2>
             <div class="product-grid">
-               <div class="product-card" onclick="openProductModal('Amazing Wall-boards', 200, ['products flyer.png', 'https://via.placeholder.com/150?text=Wall-board+2'], 'G-BOARD-01', 'এটি আপনার ঘরের দেয়াল সাজানোর জন্য একটি আকর্ষণীয় ও চমৎকার প্রিমিয়াম কোয়ালিটির ওয়াল-বোর্ড।')">
+               <div class="product-card" onclick="openProductModal('Amazing Wall-boards', 200, ['products flyer.png', 'https://placehold.co/150?text=Wall-board+2'], 'G-BOARD-01', 'এটি আপনার ঘরের দেয়াল সাজানোর জন্য একটি আকর্ষণীয় ও চমৎকার প্রিমিয়াম কোয়ালিটির ওয়াল-বোর্ড।', ['ম্যাটেরিয়াল: পিভিসি (PVC)', 'সাইজ: ৪০ x ৬০ সেমি', 'ইনস্টলেশন: সহজ DIY ফিটিং', 'ওয়ারেন্টি: ৬ মাস'])">
     <div class="badge">Trending</div>
-    <img src="products flyer.png" alt="প্রোডাক্ট" class="product-img" onerror="this.src='https://via.placeholder.com/150'">
+    <img src="products flyer.png" alt="প্রোডাক্ট" class="product-img" onerror="this.src='https://placehold.co/150'">
     <h3 class="product-name">Amazing Wall-boards</h3>
     <p class="product-price">এখনই অর্ডার করুন</p>
     <button class="buy-btn"><i class="fas fa-shopping-cart"></i>৳২০০</button>
 </div>
 
-<div class="product-card" onclick="openProductModal('আগে পরীক্ষায় পাশ করি', 350, ['https://via.placeholder.com/150?text=Book+Front', 'https://via.placeholder.com/150?text=Book+Back'], 'G-BOOK-02', 'পরীক্ষায় ভালো ফলাফল অর্জন ও পড়াশোনায় মনোযোগ বৃদ্ধির জন্য বিশেষ দিকনির্দেশনামূলক একটি বই।')">
+<div class="product-card" onclick="openProductModal('আগে পরীক্ষায় পাশ করি', 350, ['https://placehold.co/150?text=Book+Front', 'https://placehold.co/150?text=Book+Back'], 'G-BOOK-02', 'পরীক্ষায় ভালো ফলাফল অর্জন ও পড়াশোনায় মনোযোগ বৃদ্ধির জন্য বিশেষ দিকনির্দেশনামূলক একটি বই।', ['ভাষা: বাংলা', 'পৃষ্ঠা সংখ্যা: ১২০', 'কভার: পেপারব্যাক', 'প্রকাশনী: Ideas Publication'])">
     <div class="badge" style="background: #ff9800;">Hot</div>
-    <img src="https://via.placeholder.com/150" alt="প্রোডাক্ট" class="product-img">
+    <img src="https://placehold.co/150" alt="প্রোডাক্ট" class="product-img">
     <h3 class="product-name">আগে পরীক্ষায় পাশ করি</h3>
     <p class="product-price">এখনই অর্ডার করুন</p>
     <button class="buy-btn"><i class="fas fa-shopping-cart"></i>৳৩৫০</button>
 </div>
 
-<div class="product-card" onclick="openProductModal('ক্যাজুয়াল গ্যাবার্ডিন প্যান্ট', 580, ['https://via.placeholder.com/150?text=Pant+1', 'https://via.placeholder.com/150?text=Pant+2'], 'G-PANT-03', 'অত্যಂತ আরামদায়ক ও টেকসই ফেব্রিক দিয়ে তৈরি স্টাইলিশ ক্যাজুয়াল গ্যাবার্ডিন প্যান্ট।')">
-    <img src="https://via.placeholder.com/150" alt="প্রোডাক্ট" class="product-img">
+<div class="product-card" onclick="openProductModal('ক্যাজুয়াল গ্যাবার্ডিন প্যান্ট', 580, ['https://placehold.co/150?text=Pant+1', 'https://placehold.co/150?text=Pant+2'], 'G-PANT-03', 'অত্যಂತ আরামদায়ক ও টেকসই ফেব্রিক দিয়ে তৈরি স্টাইলিশ ক্যাজুয়াল গ্যাবার্ডিন প্যান্ট।', ['ফেব্রিক: গ্যাবার্ডিন কটন', 'সাইজ: M, L, XL, XXL', 'ফিট: রেগুলার ফিট', 'কালার অপশন: ব্ল্যাক, নেভি, গ্রে'])">
+    <img src="https://placehold.co/150" alt="প্রোডাক্ট" class="product-img">
     <h3 class="product-name">ক্যাজুয়াল গ্যাবার্ডিন প্যান্ট</h3>
     <p class="product-price">এখনই অর্ডার করুন</p>
     <button class="buy-btn"><i class="fas fa-shopping-cart"></i>৳৫৮০</button>
 </div>
 
-<div class="product-card" onclick="openProductModal('ফরমাল ফুল স্লিভ শার্ট', 750, ['https://via.placeholder.com/150?text=Shirt+1', 'https://via.placeholder.com/150?text=Shirt+2'], 'G-SHIRT-01', 'এটি শতভাগ প্রিমিয়াম কটন কাপড়ে তৈরি আরামদায়ক ক্যাজুয়াল শার্ট। অফিস বা যেকোনো অনুষ্ঠানে পরার জন্য পারফেক্ট।')">
-    <img src="https://via.placeholder.com/150" alt="প্রোডাক্ট" class="product-img">
+<div class="product-card" onclick="openProductModal('ফরমাল ফুল স্লিভ শার্ট', 750, ['https://placehold.co/150?text=Shirt+1', 'https://placehold.co/150?text=Shirt+2'], 'G-SHIRT-01', 'এটি শতভাগ প্রিমিয়াম কটন কাপড়ে তৈরি আরামদায়ক ক্যাজুয়াল শার্ট। অফিস বা যেকোনো অনুষ্ঠানে পরার জন্য পারফেক্ট।', ['ফেব্রিক: ১০০% প্রিমিয়াম কটন', 'সাইজ: M, L, XL, XXL', 'স্লিভ: ফুল স্লিভ', 'কালার অপশন: হোয়াইট, স্কাই ব্লু'])">
+    <img src="https://placehold.co/150" alt="প্রোডাক্ট" class="product-img">
     <h3 class="product-name">ফরমাল ফুল স্লিভ শার্ট</h3>
     <p class="product-price">এখনই অর্ডার করুন</p>
     <button class="buy-btn"><i class="fas fa-shopping-cart"></i>৳৭৫০</button>
@@ -530,49 +576,41 @@
         </div>
     </main>
 
-    <!-- Product Details Modal Window -->
-    <div id="productModal" class="product-modal-overlay" onclick="closeProductModal()">
-        <div class="product-modal-box" onclick="event.stopPropagation()">
-            <span class="modal-close-icon" onclick="closeProductModal()">&times;</span>
-            
-            <!-- Image Slider inside Modal -->
-            <div class="modal-slider-box" id="modalSliderBox">
-                <!-- Slides will be dynamic generated via JS -->
+    <!-- Product Details Modal Window (Full-Screen) -->
+    <div id="productModalOverlay" class="pdetail-overlay" onclick="closeProductModal()"></div>
+    <div id="productModal" class="pdetail-modal">
+        <div class="pdetail-header">
+            <h3>প্রোডাক্ট ডিটেলস</h3>
+            <span class="pdetail-close" onclick="closeProductModal()">&times;</span>
+        </div>
+
+        <div class="pdetail-body">
+            <!-- Image Slider -->
+            <div class="pdetail-slider" id="modalSliderContainer">
+                <button class="pdetail-slide-btn pdetail-prev-btn" onclick="changeModalSlide(-1)"><i class="fas fa-chevron-left"></i></button>
+                <div class="pdetail-slider-wrapper" id="modalSliderWrapper"></div>
+                <button class="pdetail-slide-btn pdetail-next-btn" onclick="changeModalSlide(1)"><i class="fas fa-chevron-right"></i></button>
+                <div class="pdetail-dots" id="modalSliderDots"></div>
             </div>
-            
-            <!-- Product Details -->
-           
-   <div class="header-section">
-    
-    <div class="title-and-price">
-        <h3 id="modalTitle" class="modal-title"></h3>
-        <div id="modalPrice" class="modal-price"></div>
-    </div>
-    
-    <div class="store-link-section">
-        <a href="store.html" id="modalStoreLink" class="store-button">
-            স্টোর
-            <svg viewBox="0 0 24 24" class="verified-icon">
-                <path d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10 10-4.5 10-10S17.5 2 12 2zm-1.25 15L6 12.25l1.5-1.5 3.25 3.25 7.5-7.5 1.5 1.5L10.75 17z"></path>
-            </svg>
-        </a>
-    </div>
 
-</div>
+            <h2 id="modalTitle" class="pdetail-title"></h2>
+            <div id="modalPrice" class="pdetail-price"></div>
+            <p id="modalDesc" class="pdetail-desc"></p>
 
-<p id="modalDesc" class="modal-desc"></p>
-
- 
-        <p class="modal-p-desc" id="modalDesc">প্রোডাক্ট এর বিস্তারিত বিবরণ এখানে দেখাবে।</p>
-            
-            <!-- Bottom Dash Box Info -->
-            <div class="modal-dash-box">
-                <div class="modal-info-left">
-                    <span class="modal-info-price" id="modalDashPrice">মূল্য: ৳০০০</span>
-                    <span class="modal-info-code" id="modalDashCode">কোড: 000</span>
-                </div>
-                <button class="modal-add-cart-btn" onclick="addToCart()"><span id="cartBtnText">কার্টে যোগ করুন</span> <i class="fas fa-shopping-cart"></i></button>
+            <!-- Specifications Box (Modified) -->
+            <div class="pdetail-specs-box" id="modalSpecsBox" style="display:none;">
+                <h4><i class="fas fa-list-ul"></i> প্রোডাক্ট স্পেসিফিকেশন</h4>
+                <div class="pdetail-specs-list" id="modalSpecsContainer"></div>
             </div>
+        </div>
+
+        <!-- Bottom Footer Info + Add to Cart -->
+        <div class="pdetail-footer">
+            <div class="pdetail-footer-info">
+                <span class="price-line" id="modalDashPrice">মূল্য: ৳০০০</span>
+                <span class="code-line" id="modalDashCode">কোড: 000</span>
+            </div>
+            <button class="pdetail-cart-btn" onclick="addToCart()"><span id="cartBtnText">কার্টে যোগ করুন</span> <i class="fas fa-shopping-cart"></i></button>
         </div>
     </div>
 
@@ -586,7 +624,7 @@
         <div class="drawer-header">
             <span class="close-btn" onclick="closeDrawer()">&times;</span>
             <div class="drawer-logo">
-                <img src="logo.png" alt="Logo" onerror="this.src='https://via.placeholder.com/80'">
+                <img src="logo.png" alt="Logo" onerror="this.src='https://placehold.co/80'">
             </div>
             <div class="drawer-title">Ideas SHOP</div>
         </div>
@@ -707,82 +745,103 @@
         }
 
                    // --- Dynamic Product Modal & Notification System ---
-        let modalSlideIndex = 1;
-        let currentProductData = null; 
+        let modalImages = [];
+        let currentImageIndex = 0;
+        let currentProductData = null;
 
-        function openProductModal(name, price, images, code, description) {
-            // মডালে সুন্দরভাবে দেখানোর জন্য ৳ চিহ্নসহ দাম সেট করা
+        function openProductModal(name, price, images, code, description, specsArray) {
             document.getElementById("modalTitle").innerText = name;
             document.getElementById("modalPrice").innerText = "মূল্য: ৳" + price;
             document.getElementById("modalDashPrice").innerText = "মূল্য: ৳" + price;
-            document.getElementById("modalDashCode").innerText = "কোড: " + code;
+            document.getElementById("modalDashCode").innerText = "কোড: " + (code || "Spcial-Products");
             document.getElementById("modalDesc").innerText = description;
-            
-            // সরাসরি নম্বর ফরম্যাটে কার্টের জন্য ডেটা প্রস্তুত
+
+            // স্পেসিফিকেশন বক্স রেন্ডার করা (Modified)
+            const specsBox = document.getElementById("modalSpecsBox");
+            const specsContainer = document.getElementById("modalSpecsContainer");
+            specsContainer.innerHTML = "";
+            if (specsArray && specsArray.length > 0) {
+                specsBox.style.display = "block";
+                specsArray.forEach(spec => {
+                    let key = spec, val = "";
+                    if (typeof spec === 'string' && spec.includes(':')) {
+                        let parts = spec.split(':');
+                        key = parts[0].trim();
+                        val = parts.slice(1).join(':').trim();
+                    }
+                    const row = document.createElement('div');
+                    row.className = 'pdetail-spec-row';
+                    if (val) {
+                        row.innerHTML = `<span class="spec-key">${key}</span><span class="spec-val">${val}</span>`;
+                    } else {
+                        row.innerHTML = `<span class="spec-val" style="text-align:left;">${key}</span>`;
+                    }
+                    specsContainer.appendChild(row);
+                });
+            } else {
+                specsBox.style.display = "none";
+            }
+
+            // কার্টের জন্য ডেটা প্রস্তুত (ছবি ও কোডসহ, যাতে order.html-এর কার্ট থাম্বনেইল কাজ করে)
             currentProductData = {
                 name: name,
                 price: parseInt(price),
-                qty: 1
+                qty: 1,
+                image: (images && images.length > 0) ? images[0] : '',
+                code: code || ''
             };
-            
-            let sliderBox = document.getElementById("modalSliderBox");
-            sliderBox.innerHTML = "";
-            
-            images.forEach((imgUrl) => {
-                let imgTag = document.createElement("img");
-                imgTag.className = "modal-slide-img";
-                imgTag.src = imgUrl;
-                imgTag.alt = name;
-                imgTag.onerror = function() { this.src = 'https://via.placeholder.com/150'; };
-                sliderBox.appendChild(imgTag);
+
+            // স্লাইডার সেটআপ
+            modalImages = images && images.length > 0 ? images : ['https://placehold.co/500'];
+            currentImageIndex = 0;
+            const wrapper = document.getElementById('modalSliderWrapper');
+            const dotsContainer = document.getElementById('modalSliderDots');
+            wrapper.innerHTML = ''; dotsContainer.innerHTML = '';
+
+            modalImages.forEach((imgSrc, index) => {
+                const img = document.createElement('img');
+                img.src = imgSrc;
+                img.onerror = function() { this.src = 'https://placehold.co/500'; };
+                wrapper.appendChild(img);
+                const dot = document.createElement('div');
+                dot.className = 'pdetail-dot' + (index === 0 ? ' active' : '');
+                dot.onclick = () => goToModalSlide(index);
+                dotsContainer.appendChild(dot);
             });
-            
-            sliderBox.innerHTML += `<button class="modal-nav-btn modal-prev-btn" onclick="changeModalSlide(-1)">&#10094;</button>`;
-            sliderBox.innerHTML += `<button class="modal-nav-btn modal-next-btn" onclick="changeModalSlide(1)">&#10095;</button>`;
-            
-            let dotsContainer = document.createElement("div");
-            dotsContainer.className = "modal-dots-container";
-            images.forEach((_, index) => {
-                dotsContainer.innerHTML += `<span class="modal-dot" onclick="currentModalSlide(${index + 1})"></span>`;
+
+            document.querySelector('.pdetail-prev-btn').style.display = modalImages.length > 1 ? 'flex' : 'none';
+            document.querySelector('.pdetail-next-btn').style.display = modalImages.length > 1 ? 'flex' : 'none';
+            updateModalSliderPosition();
+
+            // ফুল-স্ক্রিন মডাল খোলা (নিচ থেকে স্লাইড করে উপরে আসবে)
+            document.getElementById('productModalOverlay').classList.add('active');
+            document.getElementById('productModal').classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function changeModalSlide(direction) {
+            currentImageIndex += direction;
+            if (currentImageIndex >= modalImages.length) currentImageIndex = 0;
+            if (currentImageIndex < 0) currentImageIndex = modalImages.length - 1;
+            updateModalSliderPosition();
+        }
+
+        function goToModalSlide(index) {
+            currentImageIndex = index;
+            updateModalSliderPosition();
+        }
+
+        function updateModalSliderPosition() {
+            document.getElementById('modalSliderWrapper').style.transform = `translateX(-${currentImageIndex * 100}%)`;
+            document.querySelectorAll('.pdetail-dot').forEach((dot, index) => {
+                dot.classList.toggle('active', index === currentImageIndex);
             });
-            sliderBox.appendChild(dotsContainer);
-            
-            document.getElementById("productModal").style.display = "flex";
-            modalSlideIndex = 1;
-            renderModalSlides(modalSlideIndex);
         }
 
         function closeProductModal() {
-            document.getElementById("productModal").style.display = "none";
-        }
-
-        function changeModalSlide(n) {
-            renderModalSlides(modalSlideIndex += n);
-        }
-
-        function currentModalSlide(n) {
-            renderModalSlides(modalSlideIndex = n);
-        }
-
-        function renderModalSlides(n) {
-            let slides = document.getElementsByClassName("modal-slide-img");
-            let dots = document.getElementsByClassName("modal-dot");
-            if (slides.length === 0) return;
-            
-            if (n > slides.length) { modalSlideIndex = 1 }
-            if (n < 1) { modalSlideIndex = slides.length }
-            
-            for (let i = 0; i < slides.length; i++) {
-                slides[i].style.display = "none";
-            }
-            for (let i = 0; i < dots.length; i++) {
-                dots[i].className = dots[i].className.replace(" active-dot", "");
-            }
-            
-            slides[modalSlideIndex - 1].style.display = "block";
-            if(dots[modalSlideIndex - 1]) {
-                dots[modalSlideIndex - 1].className += " active-dot";
-            }
+            document.getElementById('productModalOverlay').classList.remove('active');
+            document.getElementById('productModal').classList.remove('active');
+            document.body.style.overflow = 'auto';
         }
 
         // কার্ট ডেটা লোকাল স্টোরেজে সেভ করার ফাংশন
@@ -816,14 +875,33 @@
         updateCartBadge();
 
         function triggerCartNotification() {
-            closeProductModal();
-            let toast = document.getElementById("toastNotification");
-            toast.className = "toast-box active-toast";
-            
-            setTimeout(() => {
-                toast.className = "toast-box";
-            }, 3500);
-        }
+    const modal = document.getElementById('productModal');
+    
+    // একটি সুন্দর জুম-আউট ও ফেড এনিমেশন অ্যাপ্লাই করা হচ্ছে
+    modal.style.transition = "transform 0.4s cubic-bezier(0.25, 0.8, 0.25, 1), opacity 0.4s ease";
+    modal.style.transform = "scale(0.85) translateY(30px)";
+    modal.style.opacity = "0";
+
+    // এনিমেশন শেষ হওয়ার জন্য ৩৫০ মিলি-সেকেন্ড অপেক্ষা করে তারপর উইন্ডো ক্লোজ করা
+    setTimeout(() => {
+        closeProductModal(); // উইন্ডো হাইড করা
+        
+        // পরেরবার ওপেন করার জন্য উইন্ডোর স্টাইল আগের অবস্থায় রিসেট করা
+        setTimeout(() => {
+            modal.style.transition = "top 0.35s ease-in-out";
+            modal.style.transform = "none";
+            modal.style.opacity = "1";
+        }, 100);
+    }, 350); 
+
+    // টোস্ট নোটিফিকেশন দেখানো (রেড ডট ও অন্যান্য লজিক আগের মতোই কাজ করবে)
+    let toast = document.getElementById("toastNotification");
+    toast.className = "toast-box active-toast";
+    
+    setTimeout(() => {
+        toast.className = "toast-box";
+    }, 3500);
+}
 
 
      // হোমপেজের window.onload বা স্ক্রিপ্টের শুরুতে এটা যোগ করুন
