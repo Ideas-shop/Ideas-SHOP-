@@ -162,6 +162,29 @@
         .row { display: flex; gap: 10px; }
         .col { flex: 1; }
 
+        /* --- Delivery Type Toggle Buttons --- */
+        .delivery-type-toggle { display: flex; gap: 10px; }
+        .delivery-type-btn {
+            flex: 1; padding: 12px 8px; border-radius: 10px;
+            border: 1.5px solid #e0e0e0; background-color: #f9f9f9; color: #555;
+            font-size: 13px; font-weight: 600; cursor: pointer;
+            display: flex; align-items: center; justify-content: center; gap: 6px;
+            transition: 0.2s;
+        }
+        .delivery-type-btn i { font-size: 14px; }
+        .delivery-type-btn.active {
+            background: linear-gradient(135deg, #3f51b5, #5c6bc0);
+            border-color: #3f51b5; color: white;
+            box-shadow: 0 4px 10px rgba(63, 81, 181, 0.25);
+        }
+        .delivery-type-btn:disabled {
+            background-color: #f1f1f1; color: #bbb; border-color: #eee;
+            cursor: not-allowed;
+        }
+        .delivery-type-hint {
+            font-size: 11.5px; color: #999; margin-top: 6px; line-height: 1.4;
+        }
+
         /* --- Order Summary --- */
         .summary-row { display: flex; justify-content: space-between; font-size: 14px; margin-bottom: 8px; color: #555; }
         .summary-total { font-size: 16px; font-weight: 700; color: #333; border-top: 1px solid #eee; padding-top: 10px; margin-top: 10px; }
@@ -450,11 +473,38 @@
                     </select>
                 </div>
                 <div class="col input-group">
-                    <label>জেলা/উপজেলা</label>
-                    <select id="districtSelect">
+                    <label>জেলা</label>
+                    <select id="districtSelect" onchange="loadUpazilas()">
                         <option value="">প্রথমে বিভাগ নির্বাচন করুন</option>
                     </select>
                 </div>
+            </div>
+
+            <div class="input-group">
+                <label>উপজেলা</label>
+                <select id="upazilaSelect" onchange="updateDeliveryTypeAvailability(); calculateTotal()">
+                    <option value="">প্রথমে জেলা নির্বাচন করুন</option>
+                </select>
+            </div>
+
+            <div class="input-group">
+                <label>ডেলিভারি ধরন</label>
+                <div class="delivery-type-toggle">
+                    <button type="button" class="delivery-type-btn active" id="btnHomeDelivery" onclick="selectDeliveryType('home')">
+                        <i class="fas fa-home"></i> হোম ডেলিভারি
+                    </button>
+                    <button type="button" class="delivery-type-btn" id="btnRoadDelivery" onclick="selectDeliveryType('road')" disabled>
+                        <i class="fas fa-map-marker-alt"></i> রোড রিসিভ ডেলিভারি
+                    </button>
+                </div>
+                <div class="delivery-type-hint" id="roadDeliveryHint">শুধুমাত্র কুষ্টিয়া সদর উপজেলার জন্য রোড রিসিভ ডেলিভারি সুবিধা প্রযোজ্য।</div>
+            </div>
+
+            <div class="input-group" id="roadPointGroup" style="display:none;">
+                <label>রোড পয়েন্ট নির্বাচন করুন</label>
+                <select id="roadPointSelect" onchange="calculateTotal()">
+                    <option value="">নির্বাচন করুন</option>
+                </select>
             </div>
 
             <div class="input-group">
@@ -544,17 +594,119 @@
     </div>
 
     <script>
+        // --- বিভাগ → জেলা → উপজেলা (সম্পূর্ণ তালিকা) ---
         const locations = {
-            "💡কুষ্টিয়া সদর জেলা":["বটতল","চৌরহাঁস", "সাদ্দাম বাজার","কলেজ মোড়","জেলখানা মোড়","মজমপুর গেট"],
-            "ঢাকা": ["ঢাকা", "গাজীপুর", "নারায়ণগঞ্জ", "টাঙ্গাইল", "কিশোরগঞ্জ", "মানিকগঞ্জ", "মুন্সীগঞ্জ", "রাজবাড়ী", "মাদারীপুর", "গোপালগঞ্জ", "ফরিদপুর", "শরীয়তপুর", "নরসিংদী"],
-            "চট্টগ্রাম": ["চট্টগ্রাম", "কক্সবাজার", "রাঙ্গামাটি", "বান্দরবান", "খাগড়াছড়ি", "ফেনী", "নোয়াখালী", "লক্ষ্মীপুর", "কুমিল্লা", "চাঁদপুর", "ব্রাহ্মণবাড়িয়া"],
-            "রাজশাহী": ["রাজশাহী", "নাটোর", "নওগাঁ", "চাঁপাইনবাবগঞ্জ", "পাবনা", "সিরাজগঞ্জ", "বগুড়া", "জয়পুরহাট"],
-            "খুলনা": ["খুলনা", "বাগেরহাট", "সাতক্ষীরা", "যশোর", "মাগুরা", "ঝিনাইদহ", "নড়াইল", "কুষ্টিয়া", "চুয়াডাঙ্গা", "মেহেরপুর"],
-            "বরিশাল": ["বরিশাল", "পটুয়াখালী", "ভোলা", "পিরোজপুর", "বরগুনা", "ঝালকাঠি"],
-            "সিলেট": ["সিলেট", "مওলভীবাজার", "হবিগঞ্জ", "সুনামগঞ্জ"],
-            "রংপুর": ["রংপুর", "দিনাজপুর", "কুড়িগ্রাম", "গাইবান্ধা", "নীলফামারী", "পঞ্চগড়", "ঠাকুরগাঁও", "লালমনিরহাট"],
-            "ময়মনসিংহ": ["ময়মনসিংহ", "জামালপুর", "শেরপুর", "নেত্রকোনা"]
+            "ঢাকা": {
+                "ঢাকা": ["সাভার", "ধামরাই", "কেরানীগঞ্জ", "নবাবগঞ্জ", "দোহার"],
+                "গাজীপুর": ["গাজীপুর সদর", "কালীগঞ্জ", "কালিয়াকৈর", "কাপাসিয়া", "শ্রীপুর"],
+                "নারায়ণগঞ্জ": ["নারায়ণগঞ্জ সদর", "বন্দর", "রূপগঞ্জ", "সোনারগাঁ", "আড়াইহাজার"],
+                "টাঙ্গাইল": ["টাঙ্গাইল সদর", "সখীপুর", "বাসাইল", "মির্জাপুর", "গোপালপুর", "ঘাটাইল", "কালিহাতী", "নাগরপুর", "মধুপুর", "ধনবাড়ী", "ভূঞাপুর", "দেলদুয়ার"],
+                "কিশোরগঞ্জ": ["কিশোরগঞ্জ সদর", "বাজিতপুর", "ভৈরব", "পাকুন্দিয়া", "কটিয়াদী", "তাড়াইল", "হোসেনপুর", "করিমগঞ্জ", "কুলিয়ারচর", "ইটনা", "মিঠামইন", "অষ্টগ্রাম", "নিকলী"],
+                "মানিকগঞ্জ": ["মানিকগঞ্জ সদর", "সাটুরিয়া", "ঘিওর", "দৌলতপুর", "শিবালয়", "সিংগাইর", "হরিরামপুর"],
+                "মুন্সীগঞ্জ": ["মুন্সীগঞ্জ সদর", "শ্রীনগর", "সিরাজদিখান", "লৌহজং", "গজারিয়া", "টংগিবাড়ী"],
+                "রাজবাড়ী": ["রাজবাড়ী সদর", "গোয়ালন্দ", "পাংশা", "বালিয়াকান্দি", "কালুখালী"],
+                "মাদারীপুর": ["মাদারীপুর সদর", "রাজৈর", "কালকিনি", "শিবচর", "ডাসার"],
+                "গোপালগঞ্জ": ["গোপালগঞ্জ সদর", "কাশিয়ানী", "টুংগিপাড়া", "কোটালীপাড়া", "মুকসুদপুর"],
+                "ফরিদপুর": ["ফরিদপুর সদর", "আলফাডাঙ্গা", "বোয়ালমারী", "সদরপুর", "নগরকান্দা", "ভাঙ্গা", "মধুখালী", "চরভদ্রাসন", "সালথা"],
+                "শরীয়তপুর": ["শরীয়তপুর সদর", "নড়িয়া", "জাজিরা", "গোসাইরহাট", "ভেদরগঞ্জ", "ডামুড্যা"],
+                "নরসিংদী": ["নরসিংদী সদর", "পলাশ", "বেলাবো", "মনোহরদী", "শিবপুর", "রায়পুরা"]
+            },
+            "চট্টগ্রাম": {
+                "চট্টগ্রাম": ["চট্টগ্রাম সদর", "সীতাকুণ্ড", "মীরসরাই", "পটিয়া", "সন্দ্বীপ", "বাঁশখালী", "বোয়ালখালী", "আনোয়ারা", "চন্দনাইশ", "সাতকানিয়া", "লোহাগাড়া", "হাটহাজারী", "রাউজান", "ফটিকছড়ি", "রাঙ্গুনিয়া", "কর্ণফুলী"],
+                "কক্সবাজার": ["কক্সবাজার সদর", "চকরিয়া", "কুতুবদিয়া", "মহেশখালী", "উখিয়া", "টেকনাফ", "রামু", "পেকুয়া", "ঈদগাঁও"],
+                "রাঙ্গামাটি": ["রাঙ্গামাটি সদর", "কাপ্তাই", "কাউখালী", "বাঘাইছড়ি", "বরকল", "লংগদু", "নানিয়ারচর", "রাজস্থলী", "বিলাইছড়ি", "জুরাইছড়ি"],
+                "বান্দরবান": ["বান্দরবান সদর", "রুমা", "থানচি", "রোয়াংছড়ি", "লামা", "আলীকদম", "নাইক্ষ্যংছড়ি"],
+                "খাগড়াছড়ি": ["খাগড়াছড়ি সদর", "পানছড়ি", "দীঘিনালা", "মাটিরাঙ্গা", "মানিকছড়ি", "রামগড়", "লক্ষ্মীছড়ি", "মহালছড়ি", "গুইমারা"],
+                "ফেনী": ["ফেনী সদর", "ছাগলনাইয়া", "দাগনভূঞা", "পরশুরাম", "ফুলগাজী", "সোনাগাজী"],
+                "নোয়াখালী": ["নোয়াখালী সদর", "বেগমগঞ্জ", "সেনবাগ", "সুবর্ণচর", "কবিরহাট", "চাটখিল", "সোনাইমুড়ী", "হাতিয়া", "কোম্পানীগঞ্জ"],
+                "লক্ষ্মীপুর": ["লক্ষ্মীপুর সদর", "রায়পুর", "রামগঞ্জ", "রামগতি", "কমলনগর"],
+                "কুমিল্লা": ["কুমিল্লা সদর", "দেবিদ্বার", "বরুড়া", "ব্রাহ্মণপাড়া", "চান্দিনা", "চৌদ্দগ্রাম", "দাউদকান্দি", "হোমনা", "লাকসাম", "মুরাদনগর", "নাঙ্গলকোট", "মেঘনা", "মনোহরগঞ্জ", "লালমাই", "বুড়িচং", "তিতাস", "সদর দক্ষিণ"],
+                "চাঁদপুর": ["চাঁদপুর সদর", "ফরিদগঞ্জ", "হাজীগঞ্জ", "কচুয়া", "মতলব উত্তর", "মতলব দক্ষিণ", "হাইমচর", "শাহরাস্তি"],
+                "ব্রাহ্মণবাড়িয়া": ["ব্রাহ্মণবাড়িয়া সদর", "আশুগঞ্জ", "আখাউড়া", "কসবা", "নবীনগর", "নাসিরনগর", "বাঞ্ছারামপুর", "সরাইল", "বিজয়নগর"]
+            },
+            "রাজশাহী": {
+                "রাজশাহী": ["রাজশাহী সদর", "পবা", "গোদাগাড়ী", "তানোর", "চারঘাট", "বাঘা", "দুর্গাপুর", "পুঠিয়া", "মোহনপুর", "বাগমারা"],
+                "নাটোর": ["নাটোর সদর", "বড়াইগ্রাম", "বাগাতিপাড়া", "লালপুর", "সিংড়া", "গুরুদাসপুর", "নলডাঙ্গা"],
+                "নওগাঁ": ["নওগাঁ সদর", "রানীনগর", "আত্রাই", "বদলগাছী", "মান্দা", "ধামইরহাট", "পত্নীতলা", "সাপাহার", "পোরশা", "নিয়ামতপুর", "মহাদেবপুর"],
+                "চাঁপাইনবাবগঞ্জ": ["চাঁপাইনবাবগঞ্জ সদর", "গোমস্তাপুর", "নাচোল", "ভোলাহাট", "শিবগঞ্জ"],
+                "পাবনা": ["পাবনা সদর", "ঈশ্বরদী", "ভাঙ্গুড়া", "চাটমোহর", "ফরিদপুর", "আটঘরিয়া", "সাঁথিয়া", "সুজানগর", "বেড়া"],
+                "সিরাজগঞ্জ": ["সিরাজগঞ্জ সদর", "বেলকুচি", "চৌহালি", "কামারখন্দ", "কাজীপুর", "রায়গঞ্জ", "শাহজাদপুর", "তাড়াশ", "উল্লাপাড়া"],
+                "বগুড়া": ["বগুড়া সদর", "আদমদীঘি", "সারিয়াকান্দি", "শাজাহানপুর", "দুপচাঁচিয়া", "কাহালু", "নন্দীগ্রাম", "শিবগঞ্জ", "ধুনট", "গাবতলী", "সোনাতলা", "শেরপুর"],
+                "জয়পুরহাট": ["জয়পুরহাট সদর", "আক্কেলপুর", "কালাই", "ক্ষেতলাল", "পাঁচবিবি"]
+            },
+            "খুলনা": {
+                "খুলনা": ["খুলনা সদর", "দাকোপ", "ডুমুরিয়া", "বটিয়াঘাটা", "রূপসা", "তেরখাদা", "পাইকগাছা", "ফুলতলা", "দিঘলিয়া", "কয়রা"],
+                "বাগেরহাট": ["বাগেরহাট সদর", "মোরেলগঞ্জ", "শরণখোলা", "রামপাল", "মোল্লাহাট", "ফকিরহাট", "চিতলমারী", "কচুয়া"],
+                "সাতক্ষীরা": ["সাতক্ষীরা সদর", "আশাশুনি", "কালিগঞ্জ", "কলারোয়া", "দেবহাটা", "শ্যামনগর", "তালা"],
+                "যশোর": ["যশোর সদর", "অভয়নগর", "বাঘারপাড়া", "চৌগাছা", "ঝিকরগাছা", "কেশবপুর", "মণিরামপুর", "শার্শা"],
+                "মাগুরা": ["মাগুরা সদর", "শালিখা", "শ্রীপুর", "মহম্মদপুর"],
+                "ঝিনাইদহ": ["ঝিনাইদহ সদর", "কালীগঞ্জ", "কোটচাঁদপুর", "মহেশপুর", "শৈলকুপা", "হরিণাকুণ্ডু"],
+                "নড়াইল": ["নড়াইল সদর", "কালিয়া", "লোহাগড়া"],
+                "কুষ্টিয়া": ["কুষ্টিয়া সদর", "কুমারখালী", "খোকসা", "মিরপুর", "ভেড়ামারা", "দৌলতপুর"],
+                "চুয়াডাঙ্গা": ["চুয়াডাঙ্গা সদর", "আলমডাঙ্গা", "দামুড়হুদা", "জীবননগর"],
+                "মেহেরপুর": ["মেহেরপুর সদর", "গাংনী", "মুজিবনগর"]
+            },
+            "বরিশাল": {
+                "বরিশাল": ["বরিশাল সদর", "বাকেরগঞ্জ", "বাবুগঞ্জ", "উজিরপুর", "বানারীপাড়া", "গৌরনদী", "আগৈলঝাড়া", "মুলাদী", "মেহেন্দিগঞ্জ", "হিজলা"],
+                "পটুয়াখালী": ["পটুয়াখালী সদর", "বাউফল", "দশমিনা", "গলাচিপা", "কলাপাড়া", "মির্জাগঞ্জ", "দুমকি", "রাঙ্গাবালী"],
+                "ভোলা": ["ভোলা সদর", "বোরহানউদ্দিন", "চরফ্যাশন", "দৌলতখান", "লালমোহন", "মনপুরা", "তজুমদ্দিন"],
+                "পিরোজপুর": ["পিরোজপুর সদর", "নাজিরপুর", "কাউখালী", "ভান্ডারিয়া", "মঠবাড়িয়া", "নেছারাবাদ", "ইন্দুরকানী"],
+                "বরগুনা": ["বরগুনা সদর", "আমতলী", "বেতাগী", "বামনা", "পাথরঘাটা", "তালতলী"],
+                "ঝালকাঠি": ["ঝালকাঠি সদর", "কাঁঠালিয়া", "নলছিটি", "রাজাপুর"]
+            },
+            "সিলেট": {
+                "সিলেট": ["সিলেট সদর", "জৈন্তাপুর", "কানাইঘাট", "গোয়াইনঘাট", "বিশ্বনাথ", "বিয়ানীবাজার", "গোলাপগঞ্জ", "কোম্পানীগঞ্জ", "ফেঞ্চুগঞ্জ", "বালাগঞ্জ", "দক্ষিণ সুরমা", "ওসমানীনগর", "জকিগঞ্জ"],
+                "মৌলভীবাজার": ["মৌলভীবাজার সদর", "শ্রীমঙ্গল", "কমলগঞ্জ", "কুলাউড়া", "বড়লেখা", "জুড়ী", "রাজনগর"],
+                "হবিগঞ্জ": ["হবিগঞ্জ সদর", "বানিয়াচং", "আজমিরীগঞ্জ", "বাহুবল", "চুনারুঘাট", "মাধবপুর", "নবীগঞ্জ", "লাখাই", "শায়েস্তাগঞ্জ"],
+                "সুনামগঞ্জ": ["সুনামগঞ্জ সদর", "বিশ্বম্ভরপুর", "ছাতক", "দক্ষিণ সুনামগঞ্জ", "দিরাই", "ধর্মপাশা", "জগন্নাথপুর", "জামালগঞ্জ", "শাল্লা", "তাহিরপুর", "দোয়ারাবাজার", "মধ্যনগর"]
+            },
+            "রংপুর": {
+                "রংপুর": ["রংপুর সদর", "বদরগঞ্জ", "গংগাচড়া", "কাউনিয়া", "মিঠাপুকুর", "পীরগঞ্জ", "পীরগাছা", "তারাগঞ্জ"],
+                "দিনাজপুর": ["দিনাজপুর সদর", "বিরল", "বিরামপুর", "বোচাগঞ্জ", "বীরগঞ্জ", "চিরিরবন্দর", "ফুলবাড়ী", "ঘোড়াঘাট", "হাকিমপুর", "কাহারোল", "খানসামা", "নবাবগঞ্জ", "পার্বতীপুর"],
+                "কুড়িগ্রাম": ["কুড়িগ্রাম সদর", "ভুরুংগামারী", "চিলমারী", "ফুলবাড়ী", "নাগেশ্বরী", "রাজারহাট", "রাজীবপুর", "রৌমারী", "উলিপুর"],
+                "গাইবান্ধা": ["গাইবান্ধা সদর", "ফুলছড়ি", "গোবিন্দগঞ্জ", "পলাশবাড়ী", "সাদুল্লাপুর", "সাঘাটা", "সুন্দরগঞ্জ"],
+                "নীলফামারী": ["নীলফামারী সদর", "ডিমলা", "জলঢাকা", "কিশোরগঞ্জ", "সৈয়দপুর", "ডোমার"],
+                "পঞ্চগড়": ["পঞ্চগড় সদর", "আটোয়ারী", "বোদা", "দেবীগঞ্জ", "তেতুলিয়া"],
+                "ঠাকুরগাঁও": ["ঠাকুরগাঁও সদর", "বালিয়াডাঙ্গী", "হরিপুর", "পীরগঞ্জ", "রানীশংকাইল"],
+                "লালমনিরহাট": ["লালমনিরহাট সদর", "আদিতমারী", "কালীগঞ্জ", "হাতীবান্ধা", "পাটগ্রাম"]
+            },
+            "ময়মনসিংহ": {
+                "ময়মনসিংহ": ["ময়মনসিংহ সদর", "মুক্তাগাছা", "ফুলবাড়ীয়া", "ত্রিশাল", "ভালুকা", "গৌরীপুর", "ঈশ্বরগঞ্জ", "নান্দাইল", "গফরগাঁও", "ফুলপুর", "হালুয়াঘাট", "ধোবাউড়া", "তারাকান্দা"],
+                "জামালপুর": ["জামালপুর সদর", "মেলান্দহ", "ইসলামপুর", "দেওয়ানগঞ্জ", "সরিষাবাড়ী", "মাদারগঞ্জ", "বকশীগঞ্জ"],
+                "শেরপুর": ["শেরপুর সদর", "নকলা", "নালিতাবাড়ী", "শ্রীবরদী", "ঝিনাইগাতী"],
+                "নেত্রকোনা": ["নেত্রকোনা সদর", "আটপাড়া", "বারহাট্টা", "দুর্গাপুর", "কলমাকান্দা", "কেন্দুয়া", "মদন", "মোহনগঞ্জ", "খালিয়াজুরী", "পূর্বধলা"]
+            }
         };
+
+        // --- ⚙️ ডেলিভারি চার্জ সেটিংস (এখানে আপনি ইচ্ছামতো এডিট করতে পারবেন) ---
+        // ডিফল্ট চার্জ: কোনো উপজেলার নাম নিচের লিস্টে না থাকলে এই চার্জ বসবে
+        const DEFAULT_DELIVERY_CHARGE = 110;
+
+        // নিচে যেকোনো উপজেলার নাম লিখে তার পাশে চার্জ বসিয়ে দিলে
+        // সেই উপজেলা সিলেক্ট করলে ডিফল্টের বদলে এই চার্জটি প্রযোজ্য হবে।
+        // উদাহরণ: "কুষ্টিয়া সদর": 20  → কুষ্টিয়া সদর উপজেলার জন্য ২০ টাকা ডেলিভারি চার্জ
+        const upazilaDeliveryCharges = {
+            "কুষ্টিয়া সদর": 75
+            // "আপনার উপজেলার নাম": চার্জ,   <-- এভাবে নতুন লাইন যুক্ত করুন
+        };
+
+        // --- 🚌 রোড রিসিভ ডেলিভারি সেটিংস ---
+        // এই সুবিধা শুধুমাত্র নিচের জেলা ও উপজেলার জন্য চালু থাকবে
+        const ROAD_RECEIVE_DISTRICT = "কুষ্টিয়া";
+        const ROAD_RECEIVE_UPAZILA = "কুষ্টিয়া সদর";
+
+        // রোড পয়েন্টের তালিকা ও প্রতিটার ডেলিভারি চার্জ (এখানে এডিট করুন)
+        const roadReceivePoints = {
+            "ভাদালিয়া": 20,
+            "বটতল": 20,
+            "চৌরহাঁস": 20,
+            "কলেজ মোড়": 20,
+            "সাদ্দাম বাজার": 20,
+            "মরজমপুর গেট": 20,
+            "থানার মোড়": 20
+        };
+
+        let deliveryType = "home"; // "home" বা "road"
 
         let cart = JSON.parse(localStorage.getItem('myCart')) || [];
 
@@ -580,14 +732,79 @@
         function loadDistricts() {
             let divSelect = document.getElementById("divisionSelect").value;
             let distSelect = document.getElementById("districtSelect");
+            let upaSelect = document.getElementById("upazilaSelect");
+
             distSelect.innerHTML = '<option value="">নির্বাচন করুন</option>';
-            
+            upaSelect.innerHTML = '<option value="">প্রথমে জেলা নির্বাচন করুন</option>';
+
             if (divSelect !== "") {
-                locations[divSelect].forEach(dist => {
+                for (let dist in locations[divSelect]) {
                     distSelect.options.add(new Option(dist, dist));
+                }
+            }
+            calculateTotal();
+        }
+
+        function loadUpazilas() {
+            let divSelect = document.getElementById("divisionSelect").value;
+            let distSelect = document.getElementById("districtSelect").value;
+            let upaSelect = document.getElementById("upazilaSelect");
+
+            upaSelect.innerHTML = '<option value="">নির্বাচন করুন</option>';
+
+            if (divSelect !== "" && distSelect !== "") {
+                locations[divSelect][distSelect].forEach(upa => {
+                    upaSelect.options.add(new Option(upa, upa));
                 });
             }
-            calculateTotal(); 
+            updateDeliveryTypeAvailability();
+            calculateTotal();
+        }
+
+        // --- রোড রিসিভ ডেলিভারি বাটন কখন এনাবল থাকবে তা চেক করে ---
+        function updateDeliveryTypeAvailability() {
+            let district = document.getElementById("districtSelect").value;
+            let upazila = document.getElementById("upazilaSelect").value;
+            let roadBtn = document.getElementById("btnRoadDelivery");
+
+            let isEligible = (district === ROAD_RECEIVE_DISTRICT && upazila === ROAD_RECEIVE_UPAZILA);
+
+            roadBtn.disabled = !isEligible;
+
+            // উপজেলা বদলে গিয়ে আর এলিজিবল না থাকলে অটোমেটিক হোম ডেলিভারিতে ফিরিয়ে দেওয়া হবে
+            if (!isEligible && deliveryType === "road") {
+                selectDeliveryType("home");
+            }
+        }
+
+        // --- হোম ডেলিভারি / রোড রিসিভ ডেলিভারি টগল বাটনের ফাংশন ---
+        function selectDeliveryType(type) {
+            let roadBtn = document.getElementById("btnRoadDelivery");
+            if (type === "road" && roadBtn.disabled) return; // এলিজিবল না হলে কিছু হবে না
+
+            deliveryType = type;
+
+            document.getElementById("btnHomeDelivery").classList.toggle("active", type === "home");
+            document.getElementById("btnRoadDelivery").classList.toggle("active", type === "road");
+
+            let roadPointGroup = document.getElementById("roadPointGroup");
+            if (type === "road") {
+                roadPointGroup.style.display = "block";
+                loadRoadPoints();
+            } else {
+                roadPointGroup.style.display = "none";
+                document.getElementById("roadPointSelect").value = "";
+            }
+            calculateTotal();
+        }
+
+        // --- রোড পয়েন্ট ড্রপডাউন লোড করার ফাংশন ---
+        function loadRoadPoints() {
+            let roadSelect = document.getElementById("roadPointSelect");
+            roadSelect.innerHTML = '<option value="">নির্বাচন করুন</option>';
+            for (let point in roadReceivePoints) {
+                roadSelect.options.add(new Option(point, point));
+            }
         }
 
         function renderCart() {
@@ -697,13 +914,27 @@
                 }
             });
 
-            let division = document.getElementById("divisionSelect").value;
+            let upazila = document.getElementById("upazilaSelect").value;
+            let district = document.getElementById("districtSelect").value;
             let deliveryCharge = 0;
-            
-            if(selectedItemsCount > 0) {
-                if (division === "💡কুষ্টিয়া সদর জেলা") deliveryCharge = 20;
-                else if (division !== "") deliveryCharge = 110;
-                else deliveryCharge = 0; 
+
+            if (selectedItemsCount > 0) {
+                if (deliveryType === "road") {
+                    let roadPoint = document.getElementById("roadPointSelect").value;
+                    if (roadPoint !== "" && roadReceivePoints.hasOwnProperty(roadPoint)) {
+                        deliveryCharge = roadReceivePoints[roadPoint];
+                    } else {
+                        deliveryCharge = 0;
+                    }
+                } else {
+                    if (upazila !== "" && upazilaDeliveryCharges.hasOwnProperty(upazila)) {
+                        deliveryCharge = upazilaDeliveryCharges[upazila];
+                    } else if (district !== "") {
+                        deliveryCharge = DEFAULT_DELIVERY_CHARGE;
+                    } else {
+                        deliveryCharge = 0;
+                    }
+                }
             }
 
             let grandTotal = subTotal + deliveryCharge;
@@ -741,6 +972,7 @@
             let phone = document.getElementById('orderPhone').value.trim();
             let division = document.getElementById('divisionSelect').value;
             let district = document.getElementById('districtSelect').value;
+            let upazila = document.getElementById('upazilaSelect').value;
             let address = document.getElementById('orderAddress').value.trim();
 
             let checkboxes = document.querySelectorAll('.item-check');
@@ -757,12 +989,20 @@
                 alert("অর্ডার করার জন্য অন্তত একটি প্রোডাক্ট সিলেক্ট করুন!");
                 return;
             }
-            if (name === "" || phone === "" || division === "" || district === "" || address === "") {
-                alert("অনুগ্রহ করে আপনার নাম, নম্বর, বিভাগ, জেলা এবং বিস্তারিত ঠিকানা লিখুন!");
+            if (name === "" || phone === "" || division === "" || district === "" || upazila === "" || address === "") {
+                alert("অনুগ্রহ করে আপনার নাম, নম্বর, বিভাগ, জেলা, উপজেলা এবং বিস্তারিত ঠিকানা লিখুন!");
                 return;
             }
 
-            let fullAddress = address + ", " + district + ", " + division;
+            let roadPoint = document.getElementById('roadPointSelect').value;
+            if (deliveryType === "road" && roadPoint === "") {
+                alert("অনুগ্রহ করে আপনার রোড পয়েন্ট নির্বাচন করুন!");
+                return;
+            }
+
+            let fullAddress = (deliveryType === "road")
+                ? (address + ", রোড পয়েন্ট: " + roadPoint + " (রোড রিসিভ ডেলিভারি), " + upazila + ", " + district + ", " + division)
+                : (address + ", " + upazila + ", " + district + ", " + division);
 
             let subTotalText = document.getElementById("subTotal").innerText;
             let deliveryText = document.getElementById("deliveryCharge").innerText;
@@ -792,6 +1032,7 @@
             let phone = document.getElementById('orderPhone').value.trim();
             let division = document.getElementById('divisionSelect').value;
             let district = document.getElementById('districtSelect').value;
+            let upazila = document.getElementById('upazilaSelect').value;
             let address = document.getElementById('orderAddress').value.trim();
 
             let checkboxes = document.querySelectorAll('.item-check');
@@ -803,7 +1044,9 @@
                 }
             });
 
-            let fullAddress = address + ", " + district + ", " + division;
+            let fullAddress = (deliveryType === "road")
+                ? (address + ", রোড পয়েন্ট: " + document.getElementById('roadPointSelect').value + " (রোড রিসিভ ডেলিভারি), " + upazila + ", " + district + ", " + division)
+                : (address + ", " + upazila + ", " + district + ", " + division);
             let subTotalText = document.getElementById("subTotal").innerText;
             let deliveryText = document.getElementById("deliveryCharge").innerText;
             let grandTotalText = document.getElementById("grandTotal").innerText;
