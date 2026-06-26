@@ -94,24 +94,33 @@
 
         .progress-track {
             display: flex;
-            justify-content: space-between;
-            align-items: center;
+            flex-direction: column-reverse;
+            align-items: flex-start;
+            gap: 26px;
             position: relative;
             margin-bottom: 36px;
-            padding: 0 6px;
+            padding: 6px 6px 6px 0;
+            text-align: left;
         }
 
         .progress-track::before {
             content: '';
             position: absolute;
-            top: 50%;
             left: 16px;
-            right: 16px;
-            height: 4px;
+            top: 16px;
+            bottom: 16px;
+            width: 4px;
             background: #eef0f0;
             z-index: 1;
-            transform: translateY(-50%);
             border-radius: 4px;
+        }
+
+        .step-row {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            position: relative;
+            z-index: 2;
         }
 
         .step {
@@ -129,12 +138,11 @@
             font-weight: 700;
             transition: 0.4s;
             border: 3px solid #fff;
+            flex-shrink: 0;
         }
 
         .step-label {
-            position: absolute;
-            top: 42px;
-            font-size: 11.5px;
+            font-size: 13.5px;
             color: #777;
             white-space: nowrap;
             font-weight: 500;
@@ -145,7 +153,7 @@
             color: white;
             box-shadow: 0 0 0 4px rgba(40, 167, 69, 0.15);
         }
-        .step.active .step-label {
+        .step.active + .step-label {
             color: #28a745;
             font-weight: 700;
         }
@@ -165,6 +173,27 @@
             color: #777;
             font-weight: 500;
         }
+
+        .status-updated-at {
+            margin-top: 10px;
+            font-size: 12.5px;
+            color: #999;
+            font-weight: 500;
+        }
+        .status-updated-at i { margin-right: 5px; }
+
+        .status-note {
+            margin-top: 8px;
+            padding: 10px 14px;
+            background: #fffaf0;
+            border: 1px dashed #f0c987;
+            border-radius: 10px;
+            color: #8a6d3b;
+            font-size: 13px;
+            text-align: left;
+            line-height: 1.5;
+        }
+        .status-note i { margin-right: 6px; color: #d99a3a; }
 
         .canceled-box {
             display: none;
@@ -191,11 +220,31 @@
 
         @media (max-width: 360px) {
             .step-label {
-                font-size: 10px;
+                font-size: 12px;
             }
             .search-box button {
                 padding: 0 14px;
                 font-size: 14px;
+            }
+        }
+
+        .progress-track.compact-steps {
+            gap: 18px;
+        }
+        .progress-track.compact-steps .step {
+            width: 28px;
+            height: 28px;
+            font-size: 12px;
+        }
+        .progress-track.compact-steps::before {
+            left: 13px;
+        }
+        .progress-track.compact-steps .step-label {
+            font-size: 12px;
+        }
+        @media (max-width: 360px) {
+            .progress-track.compact-steps .step-label {
+                font-size: 11px;
             }
         }
 
@@ -431,13 +480,10 @@
     </div>
 
     <div id="regularTracking">
-        <div class="progress-track">
-            <div class="step" id="step-Pending">1<span class="step-label">Pending</span></div>
-            <div class="step" id="step-Processing">2<span class="step-label">Processing</span></div>
-            <div class="step" id="step-Shipped">3<span class="step-label">Shipped</span></div>
-            <div class="step" id="step-Delivered">4<span class="step-label">Delivered</span></div>
-        </div>
+        <div class="progress-track" id="progressTrack"></div>
         <p id="statusMessage" class="neutral">আপনার অর্ডার আইডি লিখে Track বাটনে চাপুন</p>
+        <p id="statusUpdatedAt" class="status-updated-at" style="display:none;"></p>
+        <p id="statusNote" class="status-note" style="display:none;"></p>
     </div>
 
     <div id="cancelTracking" class="canceled-box">
@@ -454,6 +500,55 @@
 </div>
 
 <script>
+    // --- ডেলিভারি টাইপ অনুযায়ী স্টেপ লিস্ট ---
+    // হোম ডেলিভারি: ৭ স্টেপ (ডিভিশন ও ডিস্ট্রিক্ট আলাদাভাবে দেখানো হয়)
+    const HOME_STEPS = [
+        { key: 'Pending',     label: 'Pending' },
+        { key: 'Processing',  label: 'Processing' },
+        { key: 'Shipped',     label: 'Shipped' },
+        { key: 'InDivision',  label: 'In Division' },
+        { key: 'InDistrict',  label: 'In District' },
+        { key: 'WithRider',   label: 'Out for Delivery' },
+        { key: 'Delivered',   label: 'Delivered' }
+    ];
+    // রোড রিসিভ ডেলিভারি: ৫ স্টেপ (ডিভিশন/ডিস্ট্রিক্ট স্কিপ, সরাসরি রাইডারের কাছে)
+    const ROAD_STEPS = [
+        { key: 'Pending',     label: 'Pending' },
+        { key: 'Processing',  label: 'Processing' },
+        { key: 'Shipped',     label: 'Shipped' },
+        { key: 'WithRider',   label: 'Out for Delivery' },
+        { key: 'Delivered',   label: 'Delivered' }
+    ];
+
+    // শীটের Status কলামের টেক্সট (lowercase) থেকে স্টেপ-কী এর ম্যাপ
+    const STATUS_KEY_MAP = {
+        'pending': 'Pending',
+        'processing': 'Processing',
+        'shipped': 'Shipped',
+        'in division': 'InDivision',
+        'in district': 'InDistrict',
+        'with rider': 'WithRider',
+        'delivered': 'Delivered'
+    };
+
+    // ঠিকানার টেক্সট দেখে বোঝা হয় এটা রোড রিসিভ ডেলিভারি কিনা
+    function isRoadReceiveAddress(address) {
+        return (address || "").includes("রোড রিসিভ ডেলিভারি");
+    }
+
+    // বর্তমান ডেলিভারি টাইপ অনুযায়ী প্রগ্রেস-ট্র্যাকের সার্কেলগুলো (re)তৈরি করা
+    function buildProgressSteps(steps) {
+        const track = document.getElementById('progressTrack');
+        track.innerHTML = '';
+        track.classList.toggle('compact-steps', steps.length >= 6);
+        steps.forEach((s, i) => {
+            const row = document.createElement('div');
+            row.className = 'step-row';
+            row.innerHTML = `<div class="step" id="step-${s.key}">${i + 1}</div><span class="step-label">${s.label}</span>`;
+            track.appendChild(row);
+        });
+    }
+
     function trackOrder() {
         const orderId = document.getElementById('orderInput').value.trim();
         
@@ -465,9 +560,11 @@
         // UI রিসেট করা (প্রগ্রেস বার সবসময় দেখানো থাকে, শুধু একটিভ স্টেট রিসেট হয়)
         document.getElementById('cancelTracking').style.display = 'none';
         document.getElementById('regularTracking').style.display = 'block';
-        resetSteps("খোঁজা হচ্ছে, অপেক্ষা করুন...");
+        buildProgressSteps(HOME_STEPS);
+        resetSteps("খোঁজা হচ্ছে, অপেক্ষা করুন...", HOME_STEPS);
         document.getElementById('loadingMsg').style.display = 'block';
         hideOrderInfo();
+        hideStatusMeta();
 
         // ⚠️ গুরুত্বপূর্ণ: এখানে "আপনার_API_ID_এখানে" এর জায়গায় আপনার আসল SheetDB API ID/URL বসান, নাহলে ট্র্যাকিং কাজ করবে না
         const sheetdbUrl = `https://sheetdb.io/api/v1/g5k93bim98aob/search?${new URLSearchParams({'Order ID': orderId})}`;
@@ -493,23 +590,60 @@
                         document.getElementById('regularTracking').style.display = 'none';
                         document.getElementById('cancelTracking').style.display = 'block';
                         document.getElementById('cancelReasonText').innerText = cancelReason || "কোনো কারণ উল্লেখ করা হয়নি।";
+                        hideStatusMeta();
                     } else {
                         document.getElementById('regularTracking').style.display = 'block';
-                        updateProgressBar(status);
+                        const isRoad = isRoadReceiveAddress(order.Address);
+                        const activeSteps = isRoad ? ROAD_STEPS : HOME_STEPS;
+                        buildProgressSteps(activeSteps);
+                        updateProgressBar(status, activeSteps);
+                        showStatusMeta(order);
                     }
                 } else {
-                    resetSteps("আপনার অর্ডার আইডি লিখে Track বাটনে চাপুন");
+                    buildProgressSteps(HOME_STEPS);
+                    resetSteps("আপনার অর্ডার আইডি লিখে Track বাটনে চাপুন", HOME_STEPS);
                     hideOrderInfo();
+                    hideStatusMeta();
                     showToast("দুঃখিত! এই আইডি দিয়ে কোনো অর্ডার পাওয়া যায়নি।", "error");
                 }
             })
             .catch(error => {
                 console.error('Error fetching data:', error);
                 document.getElementById('loadingMsg').style.display = 'none';
-                resetSteps("আপনার অর্ডার আইডি লিখে Track বাটনে চাপুন");
+                buildProgressSteps(HOME_STEPS);
+                resetSteps("আপনার অর্ডার আইডি লিখে Track বাটনে চাপুন", HOME_STEPS);
                 hideOrderInfo();
+                hideStatusMeta();
                 showToast("সার্ভার এরর! দয়া করে কিছুক্ষণ পর আবার চেষ্টা করুন।", "error");
             });
+    }
+
+    // স্ট্যাটাস কখন আপডেট হলো (Status Updated At) এবং এডমিনের ছোট নোট (Status Note) দেখানো —
+    // Sheet-এ এই দুই কলাম খালি থাকলে এই অংশটা চুপচাপ হাইড হয়ে যাবে, কোনো এরর দেখাবে না
+    function showStatusMeta(order) {
+        const updatedAt = (order["Status Updated At"] || "").trim();
+        const note = (order["Status Note"] || "").trim();
+
+        const updatedEl = document.getElementById('statusUpdatedAt');
+        if (updatedAt) {
+            updatedEl.innerHTML = `<i class="fas fa-clock"></i> সর্বশেষ আপডেট: ${updatedAt}`;
+            updatedEl.style.display = 'block';
+        } else {
+            updatedEl.style.display = 'none';
+        }
+
+        const noteEl = document.getElementById('statusNote');
+        if (note) {
+            noteEl.innerHTML = `<i class="fas fa-sticky-note"></i> ${note}`;
+            noteEl.style.display = 'block';
+        } else {
+            noteEl.style.display = 'none';
+        }
+    }
+
+    function hideStatusMeta() {
+        document.getElementById('statusUpdatedAt').style.display = 'none';
+        document.getElementById('statusNote').style.display = 'none';
     }
 
     // কাস্টমারের তথ্য (নাম, নম্বর, ঠিকানা, অর্ডারের সময়) সুন্দর কার্ডে দেখানো — একই API রেসপন্স থেকেই, এক্সট্রা রিকোয়েস্ট লাগে না
@@ -533,45 +667,56 @@
         card.classList.remove('show');
     }
 
-    function resetSteps(neutralMessage) {
-        const steps = ['Pending', 'Processing', 'Shipped', 'Delivered'];
-        steps.forEach(s => document.getElementById(`step-${s}`).classList.remove('active'));
+    function resetSteps(neutralMessage, steps) {
+        (steps || HOME_STEPS).forEach(s => {
+            const el = document.getElementById(`step-${s.key}`);
+            if (el) el.classList.remove('active');
+        });
         const msgEl = document.getElementById('statusMessage');
         msgEl.innerText = neutralMessage || "";
         msgEl.classList.add('neutral');
     }
 
-    function updateProgressBar(rawStatus) {
-        const steps = ['Pending', 'Processing', 'Shipped', 'Delivered'];
-        steps.forEach(s => document.getElementById(`step-${s}`).classList.remove('active'));
+    function updateProgressBar(rawStatus, steps) {
+        steps = steps || HOME_STEPS;
+        steps.forEach(s => {
+            const el = document.getElementById(`step-${s.key}`);
+            if (el) el.classList.remove('active');
+        });
 
         // শিটে স্ট্যাটাসের আগে/পরে স্পেস বা ছোট-বড় হাতের অক্ষরের তফাৎ থাকলেও মেলানোর জন্য
         const status = (rawStatus || "").trim().toLowerCase();
+        const activeKey = STATUS_KEY_MAP[status];
 
         let message = "";
         const msgEl = document.getElementById('statusMessage');
         msgEl.classList.remove('neutral');
 
-        if (status === "pending") {
-            document.getElementById('step-Pending').classList.add('active');
-            message = "আপনার অর্ডারটি গৃহীত হয়েছে। আমরা খুব দ্রুত কাজ শুরু করবো।";
-        } 
-        else if (status === "processing") {
-            document.getElementById('step-Pending').classList.add('active');
-            document.getElementById('step-Processing').classList.add('active');
-            message = "আপনার অর্ডারটি বর্তমানে প্যাকেজিং করা হচ্ছে।";
-        } 
-        else if (status === "shipped") {
-            document.getElementById('step-Pending').classList.add('active');
-            document.getElementById('step-Processing').classList.add('active');
-            document.getElementById('step-Shipped').classList.add('active');
-            message = "আপনার অর্ডারটি কুরিয়ারে দেওয়া হয়েছে। খুব শীঘ্রই পেয়ে যাবেন!";
-        } 
-        else if (status === "delivered") {
-            steps.forEach(s => document.getElementById(`step-${s}`).classList.add('active'));
-            message = "আপনার অর্ডারটি সফলভাবে ডেলিভারি সম্পন্ন হয়েছে! ধন্যবাদ।";
-        }
-        else {
+        const STATUS_MESSAGES = {
+            'Pending': "আপনার অর্ডারটি গৃহীত হয়েছে। আমরা খুব দ্রুত কাজ শুরু করবো।",
+            'Processing': "আপনার অর্ডারটি বর্তমানে প্যাকেজিং করা হচ্ছে।",
+            'Shipped': "আপনার অর্ডারটি কুরিয়ারে দেওয়া হয়েছে। খুব শীঘ্রই পেয়ে যাবেন!",
+            'InDivision': "আপনার অর্ডারটি আপনার বিভাগে পৌঁছে গেছে।",
+            'InDistrict': "আপনার অর্ডারটি আপনার জেলায় পৌঁছে গেছে।",
+            'WithRider': "আপনার অর্ডারটি রাইডারের কাছে আছে, খুব শীঘ্রই পেয়ে যাবেন!",
+            'Delivered': "আপনার অর্ডারটি সফলভাবে ডেলিভারি সম্পন্ন হয়েছে! ধন্যবাদ।"
+        };
+
+        if (activeKey) {
+            // স্ট্যাটাসের ক্রম অনুযায়ী, ম্যাচ হওয়া স্টেপ পর্যন্ত সবগুলো active করা হলো
+            const activeIndex = steps.findIndex(s => s.key === activeKey);
+            if (activeIndex !== -1) {
+                for (let i = 0; i <= activeIndex; i++) {
+                    const el = document.getElementById(`step-${steps[i].key}`);
+                    if (el) el.classList.add('active');
+                }
+                message = STATUS_MESSAGES[activeKey] || "";
+            } else {
+                // ম্যাচ হওয়া স্টেপ এই ডেলিভারি টাইপের তালিকায় নেই (যেমন রোড রিসিভে In Division)
+                msgEl.classList.add('neutral');
+                message = "এই অর্ডারের সর্বশেষ স্ট্যাটাস: " + (rawStatus || "অজানা") + "। বিস্তারিত জানতে আমাদের সাথে যোগাযোগ করুন।";
+            }
+        } else {
             msgEl.classList.add('neutral');
             message = "এই অর্ডারের সর্বশেষ স্ট্যাটাস: " + (rawStatus || "অজানা") + "। বিস্তারিত জানতে আমাদের সাথে যোগাযোগ করুন।";
             showToast("স্ট্যাটাস সনাক্ত করা যায়নি, সাপোর্টে যোগাযোগ করুন।", "error");
@@ -584,6 +729,7 @@
         void msgEl.offsetWidth;
         msgEl.classList.add('status-animate');
     }
+
 
     function showToast(message, type) {
         const toast = document.getElementById('toastNotification');
@@ -612,6 +758,7 @@
         }
     }
     updateCartBadge();
+    buildProgressSteps(HOME_STEPS);
 </script>
    
    <footer class="bottom-nav">
