@@ -17,12 +17,12 @@
 
         /* --- Header --- */
         .header {
-            background: linear-gradient(135deg, #3f51b5, #5c6bc0);
+            background: linear-gradient(135deg, #e8870e, #f4ad42);
             color: white;
             display: flex;
             align-items: center;
             padding: 20px 15px;
-            box-shadow: 0 4px 12px rgba(63, 81, 181, 0.2);
+            box-shadow: 0 4px 12px rgba(232, 135, 14, 0.2);
             border-bottom-left-radius: 20px;
             border-bottom-right-radius: 20px;
         }
@@ -49,7 +49,7 @@
 
         .card h3 {
             margin-top: 0;
-            color: #3f51b5;
+            color: #e8870e;
             font-size: 16px;
             font-weight: 700;
             margin-bottom: 15px;
@@ -95,7 +95,7 @@
         .toggle-icon {
             color: #999; font-size: 13px; transition: transform 0.3s ease;
         }
-        .cart-item-card.open .toggle-icon { transform: rotate(180deg); color: #3f51b5; }
+        .cart-item-card.open .toggle-icon { transform: rotate(180deg); color: #e8870e; }
 
         .cart-item-body {
             max-height: 0;
@@ -132,17 +132,17 @@
         }
         .qty-stepper button {
             width: 26px; height: 26px; border-radius: 50%; border: none;
-            background-color: #3f51b5; color: white; font-size: 14px; font-weight: 700;
+            background-color: #e8870e; color: white; font-size: 14px; font-weight: 700;
             display: flex; align-items: center; justify-content: center; cursor: pointer;
         }
-        .qty-stepper button:disabled { background-color: #c5c8e8; cursor: not-allowed; }
+        .qty-stepper button:disabled { background-color: #f5d9b0; cursor: not-allowed; }
         .qty-stepper span { font-size: 14px; font-weight: 700; min-width: 18px; text-align: center; }
 
         .empty-cart { text-align: center; color: #999; font-size: 14px; padding: 10px 0; }
 
         /* --- Custom Checkbox --- */
         input[type="checkbox"] {
-            width: 18px; height: 18px; accent-color: #3f51b5; cursor: pointer;
+            width: 18px; height: 18px; accent-color: #e8870e; cursor: pointer;
         }
 
         /* --- Form Inputs --- */
@@ -156,11 +156,60 @@
             font-size: 14px; box-sizing: border-box; background-color: #f9f9f9;
         }
         .input-group select:focus, .input-group input:focus, .input-group textarea:focus {
-            outline: none; border-color: #3f51b5; background-color: #fff;
+            outline: none; border-color: #e8870e; background-color: #fff;
         }
         
         .row { display: flex; gap: 10px; }
         .col { flex: 1; }
+
+        /* --- Unified Address Box (Accordion Style) --- */
+        .address-box {
+            border: 1px solid #e0e0e0; border-radius: 12px;
+            background-color: #f9f9f9; overflow: hidden;
+        }
+        .address-box-summary {
+            display: flex; align-items: center; gap: 10px;
+            padding: 12px 14px; cursor: pointer;
+        }
+        .addr-pin-icon { color: #e8870e; font-size: 15px; }
+        .address-box-summary span#addressSummaryText {
+            flex: 1; font-size: 13.5px; color: #555;
+            overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+        }
+        .addr-toggle-icon { color: #999; font-size: 13px; transition: transform 0.3s ease; }
+        .address-box.open .addr-toggle-icon { transform: rotate(180deg); color: #e8870e; }
+
+        .address-box-body {
+            max-height: 0; overflow: hidden;
+            transition: max-height 0.3s ease;
+            border-top: 1px solid transparent;
+            padding: 0 14px;
+        }
+        .address-box.open .address-box-body {
+            border-top: 1px dashed #eee;
+            padding: 14px;
+        }
+
+        .addr-step { margin-bottom: 14px; transition: opacity 0.25s ease; }
+        .addr-step:last-child { margin-bottom: 0; }
+        .addr-step label { display: block; font-size: 13px; color: #555; margin-bottom: 6px; font-weight: 600; }
+        .addr-step select, .addr-step textarea {
+            width: 100%; padding: 12px 14px;
+            border: 1px solid #e0e0e0; border-radius: 10px;
+            font-size: 14px; box-sizing: border-box; background-color: #fff;
+        }
+        .addr-step select:focus, .addr-step textarea:focus {
+            outline: none; border-color: #e8870e;
+        }
+        .addr-step-hidden { display: none !important; }
+
+        .road-note {
+            display: flex; align-items: flex-start; gap: 8px;
+            font-size: 12.5px; line-height: 1.5; color: #8a5a05;
+            background-color: #fff5e6; border: 1px dashed #f4ad42;
+            border-radius: 10px; padding: 10px 12px;
+        }
+        .road-note i { margin-top: 1px; color: #e8870e; }
 
         /* --- Delivery Type Toggle Buttons --- */
         .delivery-type-toggle { display: flex; gap: 10px; }
@@ -173,9 +222,9 @@
         }
         .delivery-type-btn i { font-size: 14px; }
         .delivery-type-btn.active {
-            background: linear-gradient(135deg, #3f51b5, #5c6bc0);
-            border-color: #3f51b5; color: white;
-            box-shadow: 0 4px 10px rgba(63, 81, 181, 0.25);
+            background: linear-gradient(135deg, #e8870e, #f4ad42);
+            border-color: #e8870e; color: white;
+            box-shadow: 0 4px 10px rgba(232, 135, 14, 0.25);
         }
         .delivery-type-btn:disabled {
             background-color: #f1f1f1; color: #bbb; border-color: #eee;
@@ -188,6 +237,14 @@
         /* --- Order Summary --- */
         .summary-row { display: flex; justify-content: space-between; font-size: 14px; margin-bottom: 8px; color: #555; }
         .summary-total { font-size: 16px; font-weight: 700; color: #333; border-top: 1px solid #eee; padding-top: 10px; margin-top: 10px; }
+        .summary-title-en { font-size: 13px !important; letter-spacing: 0.3px; }
+        .cod-row {
+            display: flex; align-items: center; gap: 6px;
+            font-size: 12.5px; color: #8a5a05; background-color: #fff5e6;
+            border: 1px dashed #f4ad42; border-radius: 8px;
+            padding: 7px 10px; margin-top: 10px;
+        }
+        .cod-row i { color: #e8870e; }
 
         /* --- Frozen / Sticky Total Price Card ---
              যাতে কার্ট আইটেম বিস্তারিত (accordion) খোলা হলে পেজ বড় হয়ে গেলেও
@@ -223,11 +280,11 @@
 
         /* --- Professional Submit Button --- */
         .order-btn {
-            background: linear-gradient(135deg, #3f51b5, #5c6bc0);
+            background: linear-gradient(135deg, #e8870e, #f4ad42);
             color: white; border: none; width: 100%; padding: 16px;
             font-size: 16px; font-weight: 700; border-radius: 12px;
             cursor: pointer; display: flex; justify-content: center; align-items: center; gap: 10px;
-            box-shadow: 0 6px 15px rgba(63, 81, 181, 0.3); margin-top: 10px;
+            box-shadow: 0 6px 15px rgba(232, 135, 14, 0.3); margin-top: 10px;
             transition: 0.3s;
         }
         .order-btn:disabled {
@@ -293,7 +350,7 @@
         }
 
         .nav-item { text-align: center; color: #9e9e9e; text-decoration: none; flex-grow: 1; transition: 0.3s; }
-        .nav-item.active { color: #3f51b5; transform: translateY(-2px); }
+        .nav-item.active { color: #e8870e; transform: translateY(-2px); }
         .nav-item i { font-size: 22px; margin-bottom: 4px; }
         .nav-item p { margin: 0; font-size: 12px; font-weight: 600; }
 
@@ -342,17 +399,17 @@
 .success-box p { color: #777; font-size: 13px; margin-bottom: 15px; }
 .order-id-box {
     display: flex; align-items: center; justify-content: space-between;
-    background: #f5f5f9; border: 1px dashed #3f51b5; border-radius: 10px;
+    background: #f5f5f9; border: 1px dashed #e8870e; border-radius: 10px;
     padding: 10px 14px; margin-bottom: 18px;
 }
-.order-id-box span { font-weight: 700; color: #3f51b5; font-size: 14px; }
+.order-id-box span { font-weight: 700; color: #e8870e; font-size: 14px; }
 .copy-btn {
-    background: #3f51b5; color: white; border: none; border-radius: 8px;
+    background: #e8870e; color: white; border: none; border-radius: 8px;
     padding: 6px 10px; font-size: 13px; cursor: pointer;
 }
 .copy-btn.copied { background: #4CAF50; }
 .success-close-btn {
-    background: linear-gradient(135deg, #3f51b5, #5c6bc0); color: white;
+    background: linear-gradient(135deg, #e8870e, #f4ad42); color: white;
     border: none; width: 100%; padding: 12px; border-radius: 10px;
     font-weight: 700; font-size: 14px; cursor: pointer;
 }
@@ -412,8 +469,8 @@
     }
     .btn-recheck:active { background: #e4e5ee; }
     .btn-confirm-final {
-        background: linear-gradient(135deg, #3f51b5, #5c6bc0); color: white;
-        box-shadow: 0 6px 14px rgba(63, 81, 181, 0.3);
+        background: linear-gradient(135deg, #e8870e, #f4ad42); color: white;
+        box-shadow: 0 6px 14px rgba(232, 135, 14, 0.3);
     }
     .btn-confirm-final:active { transform: scale(0.97); }
 
@@ -455,66 +512,86 @@
         <div class="card">
             <h3><i class="fas fa-map-marker-alt"></i> ডেলিভারি তথ্য</h3>
             
-            <div class="input-group">
-                <label>আপনার নাম</label>
-                <input type="text" id="orderName" placeholder="নাম লিখুন">
-            </div>
-
-            <div class="input-group">
-                <label>মোবাইল নম্বর</label>
-                <input type="number" id="orderPhone" placeholder="01XXXXXXXXX">
-            </div>
-
             <div class="row">
                 <div class="col input-group">
-                    <label>বিভাগ</label>
-                    <select id="divisionSelect" onchange="loadDistricts()">
-                        <option value="">নির্বাচন করুন</option>
-                    </select>
+                    <label>আপনার নাম</label>
+                    <input type="text" id="orderName" placeholder="নাম লিখুন">
                 </div>
                 <div class="col input-group">
-                    <label>জেলা</label>
-                    <select id="districtSelect" onchange="loadUpazilas()">
-                        <option value="">প্রথমে বিভাগ নির্বাচন করুন</option>
-                    </select>
+                    <label>মোবাইল নম্বর</label>
+                    <input type="number" id="orderPhone" placeholder="01XXXXXXXXX">
                 </div>
             </div>
 
             <div class="input-group">
-                <label>উপজেলা</label>
-                <select id="upazilaSelect" onchange="updateDeliveryTypeAvailability(); calculateTotal()">
-                    <option value="">প্রথমে জেলা নির্বাচন করুন</option>
-                </select>
-            </div>
+                <label>ঠিকানা</label>
+                <div class="address-box" id="addressBox">
+                    <div class="address-box-summary" id="addressBoxSummary" onclick="toggleAddressBox()">
+                        <i class="fas fa-map-marker-alt addr-pin-icon"></i>
+                        <span id="addressSummaryText">ঠিকানা নির্বাচন করতে এখানে ট্যাপ করুন</span>
+                        <i class="fas fa-chevron-down addr-toggle-icon" id="addressToggleIcon"></i>
+                    </div>
 
-            <div class="input-group">
-                <label>ডেলিভারি ধরন</label>
-                <div class="delivery-type-toggle">
-                    <button type="button" class="delivery-type-btn active" id="btnHomeDelivery" onclick="selectDeliveryType('home')">
-                        <i class="fas fa-home"></i> হোম ডেলিভারি
-                    </button>
-                    <button type="button" class="delivery-type-btn" id="btnRoadDelivery" onclick="selectDeliveryType('road')" disabled>
-                        <i class="fas fa-map-marker-alt"></i> রোড রিসিভ ডেলিভারি
-                    </button>
+                    <div class="address-box-body" id="addressBoxBody">
+                        <div class="addr-step" id="stepDivision">
+                            <label>বিভাগ নির্বাচন করুন</label>
+                            <select id="divisionSelect" onchange="loadDistricts()">
+                                <option value="">নির্বাচন করুন</option>
+                            </select>
+                        </div>
+
+                        <div class="addr-step addr-step-hidden" id="stepDistrict">
+                            <label>জেলা নির্বাচন করুন</label>
+                            <select id="districtSelect" onchange="loadUpazilas()">
+                                <option value="">প্রথমে বিভাগ নির্বাচন করুন</option>
+                            </select>
+                        </div>
+
+                        <div class="addr-step addr-step-hidden" id="stepUpazila">
+                            <label>উপজেলা নির্বাচন করুন</label>
+                            <select id="upazilaSelect" onchange="updateDeliveryTypeAvailability(); calculateTotal()">
+                                <option value="">প্রথমে জেলা নির্বাচন করুন</option>
+                            </select>
+                        </div>
+
+                        <div class="addr-step addr-step-hidden" id="stepDeliveryType">
+                            <label>ডেলিভারি ধরন</label>
+                            <div class="delivery-type-toggle">
+                                <button type="button" class="delivery-type-btn active" id="btnHomeDelivery" onclick="selectDeliveryType('home')">
+                                    <i class="fas fa-home"></i> হোম ডেলিভারি
+                                </button>
+                                <button type="button" class="delivery-type-btn" id="btnRoadDelivery" onclick="selectDeliveryType('road')" disabled>
+                                    <i class="fas fa-map-marker-alt"></i> রোড রিসিভ ডেলিভারি
+                                </button>
+                            </div>
+                            <div class="delivery-type-hint" id="roadDeliveryHint">শুধুমাত্র কুষ্টিয়া সদর উপজেলার জন্য রোড রিসিভ ডেলিভারি সুবিধা প্রযোজ্য।</div>
+                        </div>
+
+                        <div class="addr-step addr-step-hidden" id="roadPointGroup">
+                            <label>রোড পয়েন্ট নির্বাচন করুন</label>
+                            <select id="roadPointSelect" onchange="calculateTotal(); updateAddressSummary();">
+                                <option value="">নির্বাচন করুন</option>
+                            </select>
+                        </div>
+
+                        <div class="addr-step addr-step-hidden" id="roadDeliveryNote">
+                            <div class="road-note">
+                                <i class="fas fa-info-circle"></i>
+                                নির্বাচিত রোড পয়েন্টের আশেপাশে থেকে আপনি অর্ডারটি রিসিভ করতে পারবেন। এই ডেলিভারিতে থানা বা এলাকা লিখে দেওয়া আবশ্যক নয়।
+                            </div>
+                        </div>
+
+                        <div class="addr-step addr-step-hidden" id="stepFullAddress">
+                            <label>বিস্তারিত ঠিকানা</label>
+                            <textarea id="orderAddress" rows="2" placeholder="গ্রাম/রাস্তা, এলাকা, থানা ।" oninput="updateAddressSummary()"></textarea>
+                        </div>
+                    </div>
                 </div>
-                <div class="delivery-type-hint" id="roadDeliveryHint">শুধুমাত্র কুষ্টিয়া সদর উপজেলার জন্য রোড রিসিভ ডেলিভারি সুবিধা প্রযোজ্য।</div>
-            </div>
-
-            <div class="input-group" id="roadPointGroup" style="display:none;">
-                <label>রোড পয়েন্ট নির্বাচন করুন</label>
-                <select id="roadPointSelect" onchange="calculateTotal()">
-                    <option value="">নির্বাচন করুন</option>
-                </select>
-            </div>
-
-            <div class="input-group">
-                <label>বিস্তারিত ঠিকানা</label>
-                <textarea id="orderAddress" rows="2" placeholder="গ্রাম/রাস্তা, এলাকা, থানা ।"></textarea>
             </div>
         </div>
 
         <div class="card summary-card-sticky">
-            <h3><i class="fas fa-receipt"></i> পেমেন্ট সামারি</h3>
+            <h3 class="summary-title-en"><i class="fas fa-receipt"></i> Payment Summary</h3>
             <div class="summary-row">
                 <span>প্রোডাক্টের দাম:</span>
                 <span id="subTotal">০ ৳</span>
@@ -525,7 +602,10 @@
             </div>
             <div class="summary-row summary-total">
                 <span>সর্বমোট:</span>
-                <span id="grandTotal" style="color: #3f51b5;">০ ৳</span>
+                <span id="grandTotal" style="color: #e8870e;">০ ৳</span>
+            </div>
+            <div class="cod-row">
+                <i class="fas fa-money-bill-wave"></i> পেমেন্ট মেথড: <strong>Cash On Delivery (COD)</strong>
             </div>
             <input type="hidden" name="order_id" id="order_id" value="">
 
@@ -559,7 +639,7 @@
                 <div class="crow"><span class="clabel">মোবাইল নম্বর</span><span class="cvalue" id="confPhone"></span></div>
                 <div class="crow"><span class="clabel">ঠিকানা</span><span class="cvalue" id="confAddress"></span></div>
                 <div class="crow"><span class="clabel">প্রোডাক্ট</span><span class="citems" id="confItems"></span></div>
-                <div class="crow"><span class="clabel">সর্বমোট বিল</span><span class="cvalue" id="confTotal" style="color:#3f51b5;"></span></div>
+                <div class="crow"><span class="clabel">সর্বমোট বিল</span><span class="cvalue" id="confTotal" style="color:#e8870e;"></span></div>
             </div>
 
             <div class="confirm-warning">
@@ -722,6 +802,50 @@
             </svg>
         `);
         
+        // --- ঠিকানা বক্স ওপেন/ক্লোজ করার ফাংশন ---
+        function toggleAddressBox() {
+            let box = document.getElementById('addressBox');
+            let body = document.getElementById('addressBoxBody');
+            let isOpen = box.classList.contains('open');
+            if (isOpen) {
+                box.classList.remove('open');
+                body.style.maxHeight = '0px';
+            } else {
+                box.classList.add('open');
+                body.style.maxHeight = body.scrollHeight + 'px';
+            }
+        }
+
+        // --- ঠিকানা বক্সের ভেতরের কোনো ধাপ দেখানো/উঁচুতা রিফ্রেশ করার ফাংশন ---
+        function refreshAddressBoxHeight() {
+            let box = document.getElementById('addressBox');
+            let body = document.getElementById('addressBoxBody');
+            if (box.classList.contains('open')) {
+                body.style.maxHeight = body.scrollHeight + 'px';
+            }
+        }
+
+        // --- উপরের সামারি লাইনে নির্বাচিত ঠিকানা তথ্য দেখানোর ফাংশন ---
+        function updateAddressSummary() {
+            let division = document.getElementById("divisionSelect").value;
+            let district = document.getElementById("districtSelect").value;
+            let upazila = document.getElementById("upazilaSelect").value;
+            let address = document.getElementById("orderAddress").value.trim();
+            let roadPoint = document.getElementById("roadPointSelect") ? document.getElementById("roadPointSelect").value : "";
+
+            let parts = [];
+            if (deliveryType === "road" && roadPoint) {
+                parts.push("রোড পয়েন্ট: " + roadPoint);
+            } else if (address) {
+                parts.push(address);
+            }
+            if (upazila) parts.push(upazila);
+            if (district) parts.push(district);
+            if (division) parts.push(division);
+
+            let summaryEl = document.getElementById("addressSummaryText");
+            summaryEl.textContent = parts.length ? parts.join(", ") : "ঠিকানা নির্বাচন করতে এখানে ট্যাপ করুন";
+        }
         function loadDivisions() {
             let divSelect = document.getElementById("divisionSelect");
             for (let div in locations) {
@@ -741,7 +865,18 @@
                 for (let dist in locations[divSelect]) {
                     distSelect.options.add(new Option(dist, dist));
                 }
+                document.getElementById("stepDistrict").classList.remove("addr-step-hidden");
+            } else {
+                document.getElementById("stepDistrict").classList.add("addr-step-hidden");
             }
+            document.getElementById("stepUpazila").classList.add("addr-step-hidden");
+            document.getElementById("stepDeliveryType").classList.add("addr-step-hidden");
+            document.getElementById("stepFullAddress").classList.add("addr-step-hidden");
+            document.getElementById("roadPointGroup").classList.add("addr-step-hidden");
+            document.getElementById("roadDeliveryNote").classList.add("addr-step-hidden");
+
+            refreshAddressBoxHeight();
+            updateAddressSummary();
             calculateTotal();
         }
 
@@ -756,25 +891,46 @@
                 locations[divSelect][distSelect].forEach(upa => {
                     upaSelect.options.add(new Option(upa, upa));
                 });
+                document.getElementById("stepUpazila").classList.remove("addr-step-hidden");
+            } else {
+                document.getElementById("stepUpazila").classList.add("addr-step-hidden");
             }
+            document.getElementById("stepDeliveryType").classList.add("addr-step-hidden");
+            document.getElementById("stepFullAddress").classList.add("addr-step-hidden");
+            document.getElementById("roadPointGroup").classList.add("addr-step-hidden");
+            document.getElementById("roadDeliveryNote").classList.add("addr-step-hidden");
+
             updateDeliveryTypeAvailability();
+            refreshAddressBoxHeight();
+            updateAddressSummary();
             calculateTotal();
         }
 
         // --- রোড রিসিভ ডেলিভারি বাটন কখন এনাবল থাকবে তা চেক করে ---
         function updateDeliveryTypeAvailability() {
+            let upazilaVal = document.getElementById("upazilaSelect").value;
             let district = document.getElementById("districtSelect").value;
-            let upazila = document.getElementById("upazilaSelect").value;
+            let upazila = upazilaVal;
             let roadBtn = document.getElementById("btnRoadDelivery");
 
             let isEligible = (district === ROAD_RECEIVE_DISTRICT && upazila === ROAD_RECEIVE_UPAZILA);
 
             roadBtn.disabled = !isEligible;
 
+            // উপজেলা নির্বাচন হয়ে গেলে ডেলিভারি ধরন ও ঠিকানা ধাপ দেখানো হবে
+            if (upazilaVal !== "") {
+                document.getElementById("stepDeliveryType").classList.remove("addr-step-hidden");
+                selectDeliveryType(deliveryType === "road" && isEligible ? "road" : "home");
+            } else {
+                document.getElementById("stepDeliveryType").classList.add("addr-step-hidden");
+                document.getElementById("stepFullAddress").classList.add("addr-step-hidden");
+            }
+
             // উপজেলা বদলে গিয়ে আর এলিজিবল না থাকলে অটোমেটিক হোম ডেলিভারিতে ফিরিয়ে দেওয়া হবে
             if (!isEligible && deliveryType === "road") {
                 selectDeliveryType("home");
             }
+            refreshAddressBoxHeight();
         }
 
         // --- হোম ডেলিভারি / রোড রিসিভ ডেলিভারি টগল বাটনের ফাংশন ---
@@ -788,13 +944,24 @@
             document.getElementById("btnRoadDelivery").classList.toggle("active", type === "road");
 
             let roadPointGroup = document.getElementById("roadPointGroup");
+            let roadDeliveryNote = document.getElementById("roadDeliveryNote");
+            let fullAddressStep = document.getElementById("stepFullAddress");
+
             if (type === "road") {
-                roadPointGroup.style.display = "block";
+                // রোড রিসিভ হলে: রোড পয়েন্ট + নোট দেখাবে, বিস্তারিত ঠিকানার বক্স আসবেই না
+                roadPointGroup.classList.remove("addr-step-hidden");
+                roadDeliveryNote.classList.remove("addr-step-hidden");
+                fullAddressStep.classList.add("addr-step-hidden");
                 loadRoadPoints();
             } else {
-                roadPointGroup.style.display = "none";
+                // হোম ডেলিভারি হলে: রোড পয়েন্ট/নোট হাইড হবে, বিস্তারিত ঠিকানা বক্স দেখাবে
+                roadPointGroup.classList.add("addr-step-hidden");
+                roadDeliveryNote.classList.add("addr-step-hidden");
                 document.getElementById("roadPointSelect").value = "";
+                fullAddressStep.classList.remove("addr-step-hidden");
             }
+            refreshAddressBoxHeight();
+            updateAddressSummary();
             calculateTotal();
         }
 
@@ -989,8 +1156,12 @@
                 alert("অর্ডার করার জন্য অন্তত একটি প্রোডাক্ট সিলেক্ট করুন!");
                 return;
             }
-            if (name === "" || phone === "" || division === "" || district === "" || upazila === "" || address === "") {
-                alert("অনুগ্রহ করে আপনার নাম, নম্বর, বিভাগ, জেলা, উপজেলা এবং বিস্তারিত ঠিকানা লিখুন!");
+            if (name === "" || phone === "" || division === "" || district === "" || upazila === "") {
+                alert("অনুগ্রহ করে আপনার নাম, নম্বর, বিভাগ, জেলা এবং উপজেলা পূরণ করুন!");
+                return;
+            }
+            if (deliveryType !== "road" && address === "") {
+                alert("অনুগ্রহ করে আপনার বিস্তারিত ঠিকানা লিখুন!");
                 return;
             }
 
@@ -1001,7 +1172,7 @@
             }
 
             let fullAddress = (deliveryType === "road")
-                ? (address + ", রোড পয়েন্ট: " + roadPoint + " (রোড রিসিভ ডেলিভারি), " + upazila + ", " + district + ", " + division)
+                ? ("রোড পয়েন্ট: " + roadPoint + (address ? " (" + address + ")" : "") + " - রোড রিসিভ ডেলিভারি, " + upazila + ", " + district + ", " + division)
                 : (address + ", " + upazila + ", " + district + ", " + division);
 
             let subTotalText = document.getElementById("subTotal").innerText;
@@ -1044,8 +1215,9 @@
                 }
             });
 
+            let roadPointVal = document.getElementById('roadPointSelect').value;
             let fullAddress = (deliveryType === "road")
-                ? (address + ", রোড পয়েন্ট: " + document.getElementById('roadPointSelect').value + " (রোড রিসিভ ডেলিভারি), " + upazila + ", " + district + ", " + division)
+                ? ("রোড পয়েন্ট: " + roadPointVal + (address ? " (" + address + ")" : "") + " - রোড রিসিভ ডেলিভারি, " + upazila + ", " + district + ", " + division)
                 : (address + ", " + upazila + ", " + district + ", " + division);
             let subTotalText = document.getElementById("subTotal").innerText;
             let deliveryText = document.getElementById("deliveryCharge").innerText;
