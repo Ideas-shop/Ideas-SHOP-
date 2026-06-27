@@ -23,8 +23,8 @@
             justify-content: space-between;
             padding: 15px 20px;
             box-shadow: 0 4px 12px rgba(63, 81, 181, 0.2);
-            border-bottom-left-radius: 20px;
-            border-bottom-right-radius: 20px;
+            border-bottom-left-radius: 10px;
+            border-bottom-right-radius: 10px;
         }
 
         .header-left { display: flex; align-items: center; }
@@ -37,7 +37,7 @@
         .search-container { padding: 20px 15px 10px; }
         .search-bar {
             background-color: white; border: 1px solid #e0e0e0;
-            border-radius: 30px; padding: 12px 20px;
+            border-radius: 10px; padding: 12px 20px;
             display: flex; align-items: center;
             box-shadow: 0 4px 15px rgba(0,0,0,0.05);
             transition: 0.3s;
@@ -48,7 +48,7 @@
 
         /* --- Banner Slider --- */
         .banner-container { padding: 10px 15px; }
-        .banner-slider { width: 100%; position: relative; border-radius: 15px; overflow: hidden; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
+        .banner-slider { width: 100%; position: relative; border-radius: 8px; overflow: hidden; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
         .mySlides { display: none; width: 100%; height: 180px; object-fit: cover; animation: fadeEffect 1.5s; }
         @keyframes fadeEffect { from {opacity: .4} to {opacity: 1} }
 
@@ -59,7 +59,7 @@
         .shortcut-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; }
         .shortcut-item {
             text-align: center; background-color: white; padding: 12px 5px;
-            border-radius: 14px; box-shadow: 0 4px 10px rgba(63, 81, 181, 0.08);
+            border-radius: 8px; box-shadow: 0 4px 10px rgba(63, 81, 181, 0.08);
             border: 1px solid #e0e6ed; cursor: pointer; transition: transform 0.2s;
             text-decoration: none; display: flex; flex-direction: column; align-items: center; justify-content: center;
         }
@@ -85,29 +85,32 @@
         .product-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; }
         .product-card {
     background-color: white; 
-    border-radius: 15px; 
+    border-radius: 8px; 
     padding: 12px;
     position: relative; 
-    box-shadow: 0 4px 12px rgba(0,0,0,0.05);
-    text-align: center; 
-    transition: 0.3s; 
+    box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+    border: 1px solid #edf0f5;
+    text-align: left; 
+    transition: 0.2s; 
     cursor: pointer;
-    min-width: 0; /* এটি গ্রিড লেআউট ভেঙে যাওয়া রোধ করবে */
-    overflow: hidden; /* অতিরিক্ত অংশ কেটে প্রোডাক্ট কার্ডের সেপ ঠিক রাখবে */
+    min-width: 0; /* prevents grid layout from breaking */
+    overflow: hidden; /* keeps the card shape clean */
 }
 
-        .product-card:active { transform: scale(0.98); }
+        .product-card:active { transform: scale(0.98); box-shadow: 0 1px 4px rgba(0,0,0,0.08); }
         .product-card .badge {
             position: absolute; top: 10px; left: 10px;
             background: #ff4081; color: white; padding: 4px 10px;
-            border-radius: 12px; font-size: 10px; font-weight: bold; z-index: 10;
+            border-radius: 4px; font-size: 10px; font-weight: bold; z-index: 10; letter-spacing: 0.3px;
         }
-        .product-img { width: 100%; height: 130px; object-fit: cover; border-radius: 10px; margin-bottom: 10px; }
-        .product-name { font-size: 14px; color: #333; font-weight: 600; margin: 0 0 5px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-        .product-price { color: #3f51b5; font-weight: 700; margin: 0 0 12px; font-size: 15px; }
+        .product-img { width: 100%; height: 130px; object-fit: cover; border-radius: 6px; margin-bottom: 10px; }
+        .product-rating { display: flex; align-items: center; gap: 4px; font-size: 11.5px; color: #f59e0b; font-weight: 700; margin-bottom: 4px; }
+        .product-rating span { color: #9aa3af; font-weight: 600; }
+        .product-name { font-size: 14px; color: #333; font-weight: 600; margin: 0 0 6px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .product-price { color: #3f51b5; font-weight: 700; margin: 0 0 12px; font-size: 16px; }
         .buy-btn {
             background: #e8eaf6; color: #3f51b5; border: none; padding: 10px;
-            border-radius: 10px; width: 100%; font-weight: 700; font-size: 13px;
+            border-radius: 6px; width: 100%; font-weight: 700; font-size: 13px;
             cursor: pointer; transition: 0.2s; display: flex; justify-content: center; align-items: center; gap: 5px;
         }
         .buy-btn:active { background: #3f51b5; color: white; }
@@ -137,7 +140,7 @@
             position: fixed; bottom: 0; left: 0; width: 100%;
             background-color: white; display: flex; justify-content: space-around;
             padding: 12px 0; box-shadow: 0 -4px 15px rgba(0,0,0,0.05); z-index: 100;
-            border-top-left-radius: 20px; border-top-right-radius: 20px;
+            border-top-left-radius: 10px; border-top-right-radius: 10px;
         }
         .nav-item { text-align: center; color: #9e9e9e; text-decoration: none; flex-grow: 1; transition: 0.3s; }
         .nav-item.active { color: #3f51b5; transform: translateY(-2px); }
@@ -459,7 +462,7 @@
         <!-- Smart Search Bar -->
         <div class="search-container">
             <div class="search-bar">
-                <input type="text" id="searchInput" placeholder="কী খুঁজছেন? (যেমন: শার্ট, ঘড়ি)..." onkeypress="handleSearchKeyPress(event)">
+                <input type="text" id="searchInput" placeholder="What are you looking for? (e.g. shirt, watch)..." onkeypress="handleSearchKeyPress(event)">
                 <button class="search-icon-btn" onclick="executeSearch()"><i class="fas fa-search"></i></button>
             </div>
         </div>
@@ -503,36 +506,40 @@
 
         <!-- Trending Products Section -->
         <div class="trending-section">
-            <h2 class="section-title">ট্রেন্ডিং প্রোডাক্ট 🔥</h2>
+            <h2 class="section-title">Trending Products 🔥</h2>
             <div class="product-grid">
-<div class="product-card" onclick="openProductModal('16 Feet Rgb Remote Control Led Strip Light - Rgb Light', 380, ['https://res.cloudinary.com/dzuwta6lc/image/upload/v1782296291/1000018460_ifdjp3.webp','https://res.cloudinary.com/dzuwta6lc/image/upload/v1782296291/1000018458_yhmjlz.webp','https://res.cloudinary.com/dzuwta6lc/image/upload/v1782296292/1000018461_x6ipvm.webp','https://res.cloudinary.com/dzuwta6lc/image/upload/v1782296291/1000018457_mqqkga.webp'], '', ' এটি দিয়ে  লাল, সবুজ, এবং নীল রঙের মিশ্রণে কয়েকশ ভিন্ন ভিন্ন কালার তৈরি করা যায়। ', ['*Light Srap', '*Size !6 feet', 'remote sensor box Power supply', 'No Warranty', 'Hand to Hand Return policy'])">
+<div class="product-card" onclick="openProductModal('Amazing Wall-boards', 200, ['https://res.cloudinary.com/dzuwta6lc/image/upload/v1782296291/1000018460_ifdjp3.webp','https://res.cloudinary.com/dzuwta6lc/image/upload/v1782296291/1000018458_yhmjlz.webp','https://res.cloudinary.com/dzuwta6lc/image/upload/v1782296292/1000018461_x6ipvm.webp','https://res.cloudinary.com/dzuwta6lc/image/upload/v1782296291/1000018457_mqqkga.webp'], '', 'An attractive and beautiful premium quality wall board to decorate your home walls.', ['Material: PVC', 'Size: 40 x 60 cm', 'Installation: Easy DIY Fitting', 'Warranty: 6 Months'])">
     <div class="badge">Trending</div>
-    <img src="https://res.cloudinary.com/dzuwta6lc/image/upload/v1782296292/1000018461_x6ipvm.webp" alt="প্রোডাক্ট" class="product-img" onerror="this.src='https://placehold.co/150'">
-    <h3 class="product-name">RGB light 16feet</h3>
-    <p class="product-price">এখনই অর্ডার করুন</p>
-    <button class="buy-btn"><i class="fas fa-shopping-cart"></i>৳380</button>
+    <img src="https://res.cloudinary.com/dzuwta6lc/image/upload/v1782296292/1000018461_x6ipvm.webp" alt="Product" class="product-img" onerror="this.src='https://placehold.co/150'">
+    <div class="product-rating"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star-half-alt"></i> <span>(4.5)</span></div>
+    <h3 class="product-name">Amazing Wall-boards</h3>
+    <p class="product-price">৳200</p>
+    <button class="buy-btn"><i class="fas fa-shopping-cart"></i> Buy Now</button>
 </div>
 
-<div class="product-card" onclick="openProductModal('আগে পরীক্ষায় পাশ করি', 350, ['https://placehold.co/150?text=Book+Front', 'https://placehold.co/150?text=Book+Back'], 'G-BOOK-02', 'পরীক্ষায় ভালো ফলাফল অর্জন ও পড়াশোনায় মনোযোগ বৃদ্ধির জন্য বিশেষ দিকনির্দেশনামূলক একটি বই।', ['ভাষা: বাংলা', 'পৃষ্ঠা সংখ্যা: ১২০', 'কভার: পেপারব্যাক', 'প্রকাশনী: Ideas Publication'])">
+<div class="product-card" onclick="openProductModal('Exam Success Guide', 350, ['https://placehold.co/150?text=Book+Front', 'https://placehold.co/150?text=Book+Back'], 'G-BOOK-02', 'A special guidebook to help you achieve great exam results and improve study focus.', ['Language: Bengali', 'Pages: 120', 'Cover: Paperback', 'Publisher: Ideas Publication'])">
     <div class="badge" style="background: #ff9800;">Hot</div>
-    <img src="https://placehold.co/150" alt="প্রোডাক্ট" class="product-img">
-    <h3 class="product-name">আগে পরীক্ষায় পাশ করি</h3>
-    <p class="product-price">এখনই অর্ডার করুন</p>
-    <button class="buy-btn"><i class="fas fa-shopping-cart"></i>৳৩৫০</button>
+    <img src="https://placehold.co/150" alt="Product" class="product-img">
+    <div class="product-rating"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star-half-alt"></i> <span>(4.5)</span></div>
+    <h3 class="product-name">Exam Success Guide</h3>
+    <p class="product-price">৳350</p>
+    <button class="buy-btn"><i class="fas fa-shopping-cart"></i> Buy Now</button>
 </div>
 
-<div class="product-card" onclick="openProductModal('ক্যাজুয়াল গ্যাবার্ডিন প্যান্ট', 580, ['https://placehold.co/150?text=Pant+1', 'https://placehold.co/150?text=Pant+2'], 'G-PANT-03', 'অত্যಂತ আরামদায়ক ও টেকসই ফেব্রিক দিয়ে তৈরি স্টাইলিশ ক্যাজুয়াল গ্যাবার্ডিন প্যান্ট।', ['ফেব্রিক: গ্যাবার্ডিন কটন', 'সাইজ: M, L, XL, XXL', 'ফিট: রেগুলার ফিট', 'কালার অপশন: ব্ল্যাক, নেভি, গ্রে'])">
-    <img src="https://placehold.co/150" alt="প্রোডাক্ট" class="product-img">
-    <h3 class="product-name">ক্যাজুয়াল গ্যাবার্ডিন প্যান্ট</h3>
-    <p class="product-price">এখনই অর্ডার করুন</p>
-    <button class="buy-btn"><i class="fas fa-shopping-cart"></i>৳৫৮০</button>
+<div class="product-card" onclick="openProductModal('Casual Gabardine Pants', 580, ['https://placehold.co/150?text=Pant+1', 'https://placehold.co/150?text=Pant+2'], 'G-PANT-03', 'Stylish casual gabardine pants made with extremely comfortable and durable fabric.', ['Fabric: Gabardine Cotton', 'Size: M, L, XL, XXL', 'Fit: Regular Fit', 'Color Options: Black, Navy, Grey'])">
+    <img src="https://placehold.co/150" alt="Product" class="product-img">
+    <div class="product-rating"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star-half-alt"></i> <span>(4.5)</span></div>
+    <h3 class="product-name">Casual Gabardine Pants</h3>
+    <p class="product-price">৳580</p>
+    <button class="buy-btn"><i class="fas fa-shopping-cart"></i> Buy Now</button>
 </div>
 
-<div class="product-card" onclick="openProductModal('ফরমাল ফুল স্লিভ শার্ট', 750, ['https://placehold.co/150?text=Shirt+1', 'https://placehold.co/150?text=Shirt+2'], 'G-SHIRT-01', 'এটি শতভাগ প্রিমিয়াম কটন কাপড়ে তৈরি আরামদায়ক ক্যাজুয়াল শার্ট। অফিস বা যেকোনো অনুষ্ঠানে পরার জন্য পারফেক্ট।', ['ফেব্রিক: ১০০% প্রিমিয়াম কটন', 'সাইজ: M, L, XL, XXL', 'স্লিভ: ফুল স্লিভ', 'কালার অপশন: হোয়াইট, স্কাই ব্লু'])">
-    <img src="https://placehold.co/150" alt="প্রোডাক্ট" class="product-img">
-    <h3 class="product-name">ফরমাল ফুল স্লিভ শার্ট</h3>
-    <p class="product-price">এখনই অর্ডার করুন</p>
-    <button class="buy-btn"><i class="fas fa-shopping-cart"></i>৳৭৫০</button>
+<div class="product-card" onclick="openProductModal('Formal Full Sleeve Shirt', 750, ['https://placehold.co/150?text=Shirt+1', 'https://placehold.co/150?text=Shirt+2'], 'G-SHIRT-01', 'A comfortable casual shirt made with 100% premium cotton fabric. Perfect for office or any occasion.', ['Fabric: 100% Premium Cotton', 'Size: M, L, XL, XXL', 'Sleeve: Full Sleeve', 'Color Options: White, Sky Blue'])">
+    <img src="https://placehold.co/150" alt="Product" class="product-img">
+    <div class="product-rating"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star-half-alt"></i> <span>(4.5)</span></div>
+    <h3 class="product-name">Formal Full Sleeve Shirt</h3>
+    <p class="product-price">৳750</p>
+    <button class="buy-btn"><i class="fas fa-shopping-cart"></i> Buy Now</button>
 </div>
 
             </div>
@@ -542,34 +549,38 @@
         <div class="trending-section" style="padding-bottom: 20px;">
             <h2 class="section-title">Recommended 💝</h2>
             <div class="product-grid">
-               <div class="product-card" onclick="openProductModal('Amazing Wall-boards', 200, ['products flyer.png', 'https://placehold.co/150?text=Wall-board+2'], 'G-BOARD-01', 'এটি আপনার ঘরের দেয়াল সাজানোর জন্য একটি আকর্ষণীয় ও চমৎকার প্রিমিয়াম কোয়ালিটির ওয়াল-বোর্ড।', ['ম্যাটেরিয়াল: পিভিসি (PVC)', 'সাইজ: ৪০ x ৬০ সেমি', 'ইনস্টলেশন: সহজ DIY ফিটিং', 'ওয়ারেন্টি: ৬ মাস'])">
+               <div class="product-card" onclick="openProductModal('Amazing Wall-boards', 200, ['products flyer.png', 'https://placehold.co/150?text=Wall-board+2'], 'G-BOARD-01', 'An attractive and beautiful premium quality wall board to decorate your home walls.', ['Material: PVC', 'Size: 40 x 60 cm', 'Installation: Easy DIY Fitting', 'Warranty: 6 Months'])">
     <div class="badge">Trending</div>
-    <img src="products flyer.png" alt="প্রোডাক্ট" class="product-img" onerror="this.src='https://placehold.co/150'">
+    <img src="products flyer.png" alt="Product" class="product-img" onerror="this.src='https://placehold.co/150'">
+    <div class="product-rating"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star-half-alt"></i> <span>(4.5)</span></div>
     <h3 class="product-name">Amazing Wall-boards</h3>
-    <p class="product-price">এখনই অর্ডার করুন</p>
-    <button class="buy-btn"><i class="fas fa-shopping-cart"></i>৳২০০</button>
+    <p class="product-price">৳200</p>
+    <button class="buy-btn"><i class="fas fa-shopping-cart"></i> Buy Now</button>
 </div>
 
-<div class="product-card" onclick="openProductModal('আগে পরীক্ষায় পাশ করি', 350, ['https://placehold.co/150?text=Book+Front', 'https://placehold.co/150?text=Book+Back'], 'G-BOOK-02', 'পরীক্ষায় ভালো ফলাফল অর্জন ও পড়াশোনায় মনোযোগ বৃদ্ধির জন্য বিশেষ দিকনির্দেশনামূলক একটি বই।', ['ভাষা: বাংলা', 'পৃষ্ঠা সংখ্যা: ১২০', 'কভার: পেপারব্যাক', 'প্রকাশনী: Ideas Publication'])">
+<div class="product-card" onclick="openProductModal('Exam Success Guide', 350, ['https://placehold.co/150?text=Book+Front', 'https://placehold.co/150?text=Book+Back'], 'G-BOOK-02', 'A special guidebook to help you achieve great exam results and improve study focus.', ['Language: Bengali', 'Pages: 120', 'Cover: Paperback', 'Publisher: Ideas Publication'])">
     <div class="badge" style="background: #ff9800;">Hot</div>
-    <img src="https://placehold.co/150" alt="প্রোডাক্ট" class="product-img">
-    <h3 class="product-name">আগে পরীক্ষায় পাশ করি</h3>
-    <p class="product-price">এখনই অর্ডার করুন</p>
-    <button class="buy-btn"><i class="fas fa-shopping-cart"></i>৳৩৫০</button>
+    <img src="https://placehold.co/150" alt="Product" class="product-img">
+    <div class="product-rating"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star-half-alt"></i> <span>(4.5)</span></div>
+    <h3 class="product-name">Exam Success Guide</h3>
+    <p class="product-price">৳350</p>
+    <button class="buy-btn"><i class="fas fa-shopping-cart"></i> Buy Now</button>
 </div>
 
-<div class="product-card" onclick="openProductModal('ক্যাজুয়াল গ্যাবার্ডিন প্যান্ট', 580, ['https://placehold.co/150?text=Pant+1', 'https://placehold.co/150?text=Pant+2'], 'G-PANT-03', 'অত্যಂತ আরামদায়ক ও টেকসই ফেব্রিক দিয়ে তৈরি স্টাইলিশ ক্যাজুয়াল গ্যাবার্ডিন প্যান্ট।', ['ফেব্রিক: গ্যাবার্ডিন কটন', 'সাইজ: M, L, XL, XXL', 'ফিট: রেগুলার ফিট', 'কালার অপশন: ব্ল্যাক, নেভি, গ্রে'])">
-    <img src="https://placehold.co/150" alt="প্রোডাক্ট" class="product-img">
-    <h3 class="product-name">ক্যাজুয়াল গ্যাবার্ডিন প্যান্ট</h3>
-    <p class="product-price">এখনই অর্ডার করুন</p>
-    <button class="buy-btn"><i class="fas fa-shopping-cart"></i>৳৫৮০</button>
+<div class="product-card" onclick="openProductModal('Casual Gabardine Pants', 580, ['https://placehold.co/150?text=Pant+1', 'https://placehold.co/150?text=Pant+2'], 'G-PANT-03', 'Stylish casual gabardine pants made with extremely comfortable and durable fabric.', ['Fabric: Gabardine Cotton', 'Size: M, L, XL, XXL', 'Fit: Regular Fit', 'Color Options: Black, Navy, Grey'])">
+    <img src="https://placehold.co/150" alt="Product" class="product-img">
+    <div class="product-rating"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star-half-alt"></i> <span>(4.5)</span></div>
+    <h3 class="product-name">Casual Gabardine Pants</h3>
+    <p class="product-price">৳580</p>
+    <button class="buy-btn"><i class="fas fa-shopping-cart"></i> Buy Now</button>
 </div>
 
-<div class="product-card" onclick="openProductModal('ফরমাল ফুল স্লিভ শার্ট', 750, ['https://placehold.co/150?text=Shirt+1', 'https://placehold.co/150?text=Shirt+2'], 'G-SHIRT-01', 'এটি শতভাগ প্রিমিয়াম কটন কাপড়ে তৈরি আরামদায়ক ক্যাজুয়াল শার্ট। অফিস বা যেকোনো অনুষ্ঠানে পরার জন্য পারফেক্ট।', ['ফেব্রিক: ১০০% প্রিমিয়াম কটন', 'সাইজ: M, L, XL, XXL', 'স্লিভ: ফুল স্লিভ', 'কালার অপশন: হোয়াইট, স্কাই ব্লু'])">
-    <img src="https://placehold.co/150" alt="প্রোডাক্ট" class="product-img">
-    <h3 class="product-name">ফরমাল ফুল স্লিভ শার্ট</h3>
-    <p class="product-price">এখনই অর্ডার করুন</p>
-    <button class="buy-btn"><i class="fas fa-shopping-cart"></i>৳৭৫০</button>
+<div class="product-card" onclick="openProductModal('Formal Full Sleeve Shirt', 750, ['https://placehold.co/150?text=Shirt+1', 'https://placehold.co/150?text=Shirt+2'], 'G-SHIRT-01', 'A comfortable casual shirt made with 100% premium cotton fabric. Perfect for office or any occasion.', ['Fabric: 100% Premium Cotton', 'Size: M, L, XL, XXL', 'Sleeve: Full Sleeve', 'Color Options: White, Sky Blue'])">
+    <img src="https://placehold.co/150" alt="Product" class="product-img">
+    <div class="product-rating"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star-half-alt"></i> <span>(4.5)</span></div>
+    <h3 class="product-name">Formal Full Sleeve Shirt</h3>
+    <p class="product-price">৳750</p>
+    <button class="buy-btn"><i class="fas fa-shopping-cart"></i> Buy Now</button>
 </div>
 
             </div>
@@ -580,7 +591,7 @@
     <div id="productModalOverlay" class="pdetail-overlay" onclick="closeProductModal()"></div>
     <div id="productModal" class="pdetail-modal">
         <div class="pdetail-header">
-            <h3>প্রোডাক্ট ডিটেলস</h3>
+            <h3>Product Details</h3>
             <span class="pdetail-close" onclick="closeProductModal()">&times;</span>
         </div>
 
@@ -599,7 +610,7 @@
 
             <!-- Specifications Box (Modified) -->
             <div class="pdetail-specs-box" id="modalSpecsBox" style="display:none;">
-                <h4><i class="fas fa-list-ul"></i> প্রোডাক্ট স্পেসিফিকেশন</h4>
+                <h4><i class="fas fa-list-ul"></i> Product Specifications</h4>
                 <div class="pdetail-specs-list" id="modalSpecsContainer"></div>
             </div>
         </div>
@@ -607,16 +618,16 @@
         <!-- Bottom Footer Info + Add to Cart -->
         <div class="pdetail-footer">
             <div class="pdetail-footer-info">
-                <span class="price-line" id="modalDashPrice">মূল্য: ৳০০০</span>
-                <span class="code-line" id="modalDashCode">কোড: 000</span>
+                <span class="price-line" id="modalDashPrice">Price: ৳000</span>
+                <span class="code-line" id="modalDashCode">Code: 000</span>
             </div>
-            <button class="pdetail-cart-btn" onclick="addToCart()"><span id="cartBtnText">কার্টে যোগ করুন</span> <i class="fas fa-shopping-cart"></i></button>
+            <button class="pdetail-cart-btn" onclick="addToCart()"><span id="cartBtnText">Add to Cart</span> <i class="fas fa-shopping-cart"></i></button>
         </div>
     </div>
 
     <!-- Toast Notification View -->
     <div id="toastNotification" class="toast-box">
-        <i class="fas fa-check-circle"></i> প্রোডাক্টটি সফলভাবে কার্টে যোগ করা হয়েছে!
+        <i class="fas fa-check-circle"></i> Product added to cart successfully!
     </div>
 
     <!-- Drawer Menu -->
@@ -634,7 +645,7 @@
             <a href="order.html"><i class="fas fa-shopping-bag"></i>My Order</a>
             <a href="IdeasSHOPChat.html"><i class="far fa-comments" style="color: #ff5722;"></i> IdeasSHOP Chat</a>
             <a href="Orderpageinfo (1).html"><i class="fas fa-map-marker-alt" style="color: #4caf50;"></i>Track My order </a>
-            <a href="https://www.facebook.com/share/18mjVpaJiV/" target="_blank"><i class="fab fa-facebook" style="color: #1877F2;"></i> ফেসবুক পেজ</a>
+            <a href="https://www.facebook.com/share/18mjVpaJiV/" target="_blank"><i class="fab fa-facebook" style="color: #1877F2;"></i> Facebook Page</a>
             <a href="help.html"><i class="fas fa-question-circle"></i>Customer care</a>
         </div>
         <div style="position: absolute; bottom: 20px; left: 0; width: 100%; text-align: center;">
@@ -751,9 +762,9 @@
 
         function openProductModal(name, price, images, code, description, specsArray) {
             document.getElementById("modalTitle").innerText = name;
-            document.getElementById("modalPrice").innerText = "মূল্য: ৳" + price;
-            document.getElementById("modalDashPrice").innerText = "মূল্য: ৳" + price;
-            document.getElementById("modalDashCode").innerText = "কোড: " + (code || "Spcial-Products");
+            document.getElementById("modalPrice").innerText = "Price: ৳" + price;
+            document.getElementById("modalDashPrice").innerText = "Price: ৳" + price;
+            document.getElementById("modalDashCode").innerText = "Code: " + (code || "Special-Products");
             document.getElementById("modalDesc").innerText = description;
 
             // স্পেসিফিকেশন বক্স রেন্ডার করা (Modified)
