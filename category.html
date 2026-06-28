@@ -19,17 +19,24 @@
 
         /* --- Header --- */
         .header {
-            background: linear-gradient(135deg, #3f51b5, #5c6bc0); 
+            background: linear-gradient(135deg, #f59e0b, #ea580c); 
             color: white; display: flex; align-items: center;
-            padding: 16px; box-shadow: 0 4px 12px rgba(63, 81, 181, 0.15); z-index: 10;
+            padding: 16px; box-shadow: 0 4px 12px rgba(234, 88, 12, 0.2); z-index: 10;
             width: 100%;
         }
         .header-title { font-size: 18px; font-weight: 700; margin-left: 15px; }
 
-        /* --- Search Bar --- */
+        /* --- Search Bar (Collapsible) --- */
         .search-container {
-            background-color: white; padding: 10px 15px; border-bottom: 1px solid #e2e8f0;
-            width: 100%;
+            background-color: white; padding: 0 15px; border-bottom: none;
+            width: 100%; max-height: 0; overflow: hidden;
+            transition: max-height 0.3s ease, padding 0.3s ease;
+        }
+        .search-container.open {
+            padding: 10px 15px; max-height: 70px; border-bottom: 1px solid #e2e8f0;
+        }
+        .header-search-icon {
+            margin-left: auto; font-size: 19px; cursor: pointer; padding: 6px;
         }
         .search-bar {
             display: flex; align-items: center; background-color: #f1f5f9;
@@ -41,7 +48,7 @@
             padding: 12px 15px; font-size: 14px; color: #1e293b;
         }
         .search-icon-btn {
-            border: none; background: #3f51b5; color: white;
+            border: none; background: #ea580c; color: white;
             padding: 12px 16px; cursor: pointer; font-size: 14px; flex-shrink: 0;
         }
 
@@ -59,8 +66,8 @@
             cursor: pointer; transition: all 0.2s ease; outline: none;
         }
         .filter-btn.active {
-            background-color: #3f51b5; color: white; border-color: #3f51b5;
-            box-shadow: 0 4px 10px rgba(63, 81, 181, 0.3);
+            background-color: #ea580c; color: white; border-color: #ea580c;
+            box-shadow: 0 4px 10px rgba(234, 88, 12, 0.3);
         }
 
         /* --- Content Area & Grid --- */
@@ -90,6 +97,14 @@
             margin: 0; font-size: 14px; font-weight: 700; color: #ef4444; 
             background: #fef2f2; padding: 4px; border-radius: 6px;
         }
+
+        .type-tooltip {
+            display: none; position: relative; margin-top: 10px; background: #fef2f2; color: #b91c1c;
+            border: 1px solid #fecaca; font-size: 12.5px; font-weight: 600; padding: 9px 12px; border-radius: 9px;
+            align-items: center; gap: 7px;
+        }
+        .type-tooltip i { color: #ef4444; }
+        .type-tooltip.show { display: flex; }
 
         .hide { display: none !important; }
 
@@ -146,8 +161,77 @@
         .extra-details {
             padding: 15px; background: #f8fafc; border-radius: 8px; border: 1px solid #e2e8f0; margin-bottom: 20px;
         }
-        .extra-details h4 { margin-top: 0; font-size: 15px; color: #3f51b5; margin-bottom: 10px; }
+        .extra-details h4 { margin-top: 0; font-size: 15px; color: #ea580c; margin-bottom: 10px; }
         .extra-details p { font-size: 13px; color: #64748b; margin: 5px 0; font-weight: 500; }
+
+        /* --- Product Type Custom Dropdown (Professional) --- */
+        .type-select-section { margin-bottom: 20px; }
+        .type-select-title {
+            font-size: 13px; font-weight: 700; color: #92400e; margin-bottom: 9px;
+            text-transform: uppercase; letter-spacing: 0.4px; display: flex; align-items: center; gap: 6px;
+        }
+        .type-select-title i { font-size: 12px; color: #f59e0b; }
+
+        .type-select-wrapper { position: relative; }
+
+        .type-trigger {
+            width: 100%; display: flex; align-items: center; justify-content: space-between;
+            padding: 13px 16px; border-radius: 12px; border: 1.5px solid #e2e8f0;
+            background: linear-gradient(180deg, #ffffff, #fbfbfc); cursor: pointer;
+            transition: all 0.2s ease; box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+        }
+        .type-trigger .type-trigger-left { display: flex; align-items: center; gap: 10px; }
+        .type-trigger .type-trigger-left i.tag-icon {
+            color: #f59e0b; font-size: 14px; background: #fff7ed; padding: 7px;
+            border-radius: 8px; width: 14px; height: 14px; display: flex; align-items: center; justify-content: center;
+        }
+        .type-trigger span.type-trigger-text { font-size: 14.5px; font-weight: 600; color: #1e293b; }
+        .type-trigger span.type-trigger-text.placeholder { color: #94a3b8; font-weight: 500; }
+        .type-trigger i.chevron { color: #94a3b8; font-size: 13px; transition: transform 0.25s ease; }
+
+        .type-trigger:hover { border-color: #fbbf24; }
+        .type-select-wrapper.open .type-trigger {
+            border-color: #f59e0b; box-shadow: 0 0 0 3px rgba(245,158,11,0.14);
+        }
+        .type-select-wrapper.open .type-trigger i.chevron { transform: rotate(180deg); color: #f59e0b; }
+
+        .type-options-panel {
+            position: absolute; top: calc(100% + 8px); left: 0; right: 0; z-index: 20;
+            background: #ffffff; border-radius: 12px; border: 1px solid #f1e9da;
+            box-shadow: 0 12px 28px rgba(15, 23, 42, 0.12), 0 2px 6px rgba(15,23,42,0.06);
+            padding: 6px; max-height: 240px; overflow-y: auto;
+            opacity: 0; transform: translateY(-6px) scale(0.98); pointer-events: none;
+            transition: opacity 0.18s ease, transform 0.18s ease;
+        }
+        .type-select-wrapper.open .type-options-panel {
+            opacity: 1; transform: translateY(0) scale(1); pointer-events: auto;
+        }
+
+        .type-option-row {
+            display: flex; align-items: center; justify-content: space-between;
+            padding: 11px 12px; border-radius: 9px; cursor: pointer; font-size: 14px;
+            font-weight: 600; color: #334155; transition: background 0.15s ease;
+        }
+        .type-option-row:hover { background: #fff7ed; }
+        .type-option-row.selected { background: #fff1de; color: #c2410c; }
+        .type-option-row .check-circle {
+            width: 18px; height: 18px; border-radius: 50%; border: 1.5px solid #e2e8f0;
+            display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+        }
+        .type-option-row.selected .check-circle {
+            background: #ea580c; border-color: #ea580c;
+        }
+        .type-option-row.selected .check-circle i { color: #fff; font-size: 9px; }
+
+        .type-select-wrapper.attention .type-trigger {
+            border-color: #ef4444; box-shadow: 0 0 0 3px rgba(239,68,68,0.15);
+            animation: shakeType 0.4s;
+        }
+        @keyframes shakeType {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-4px); }
+            75% { transform: translateX(4px); }
+        }
 
         .modal-footer {
             padding: 15px; background: white; border-top: 1px solid #e2e8f0;
@@ -177,7 +261,7 @@
             box-shadow: 0 -4px 12px rgba(0,0,0,0.05); z-index: 100; border-top: 1px solid #f1f5f9;
         }
         .nav-item { text-align: center; color: #94a3b8; text-decoration: none; flex-grow: 1; }
-        .nav-item.active { color: #3f51b5; font-weight: 600; }
+        .nav-item.active { color: #ea580c; font-weight: 600; }
         .nav-item i { font-size: 19px; }
         .nav-item p { margin: 3px 0 0; font-size: 11px; }
 
@@ -211,9 +295,10 @@
     <header class="header">
         <i class="fas fa-arrow-left" onclick="history.back()" style="cursor:pointer; font-size:18px;"></i>
         <div class="header-title">ক্যাটেগরি সমূহ</div>
+        <i class="fas fa-search header-search-icon" onclick="toggleSearchBar()"></i>
     </header>
 
-    <div class="search-container">
+    <div class="search-container" id="searchContainer">
         <div class="search-bar">
             <input type="text" id="searchInput" placeholder="প্রোডাক্ট কোড দিয়ে খুঁজুন..." onkeypress="handleSearchKeyPress(event)">
             <button class="search-icon-btn" onclick="executeSearch()"><i class="fas fa-search"></i></button>
@@ -252,7 +337,24 @@
             
             <h1 id="modalTitle" class="modal-title"></h1>
             <div id="modalPrice" class="modal-price"></div>
-            
+
+            <div class="type-select-section" id="typeSelectSection" style="display:none;">
+                <div class="type-select-title"><i class="fas fa-tags"></i> Product Type</div>
+                <div class="type-select-wrapper" id="typeSelectWrapper">
+                    <div class="type-trigger" id="typeTrigger" onclick="toggleTypePanel(event)">
+                        <div class="type-trigger-left">
+                            <i class="fas fa-tag tag-icon"></i>
+                            <span class="type-trigger-text placeholder" id="typeTriggerText">Select Type</span>
+                        </div>
+                        <i class="fas fa-chevron-down chevron"></i>
+                    </div>
+                    <div class="type-options-panel" id="typeOptionsPanel"></div>
+                </div>
+                <div class="type-tooltip" id="typeTooltip">
+                    <i class="fas fa-circle-exclamation"></i> <span>Please select a Type above before adding to cart</span>
+                </div>
+            </div>
+
             <div class="extra-details" id="extraDetailsBox">
                 <h4>প্রোডাক্ট স্পেসিফিকেশন:</h4>
                 <div id="dynamicSpecsContainer"></div>
@@ -327,6 +429,11 @@
                 images: ["https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?w=400"],
                 desc: "আরামদায়ক ও স্টাইলিশ পোলো টি-শার্ট, প্রতিদিনের ব্যবহারের জন্য উপযোগী।",
                 specs: ["✔ জিএসএম: ২১০+ হেভি কোয়ালিটি", "✔ সাইজ: M, L, XL", "✔ এক্সক্লুসিভ এক্সপোর্ট কোয়ালিটি"],
+                types: [
+                    { name: "কালো", hex: "#1e293b" },
+                    { name: "নেভি ব্লু", hex: "#1e3a8a" },
+                    { name: "মেরুন", hex: "#7f1d1d" }
+                ],
                 category: "gents", storeId: "store1"
             },
             {
@@ -348,6 +455,11 @@
                 images: ["https://images.unsplash.com/photo-1596755094514-f87e34085b2c?w=400"],
                 desc: "শতভাগ প্রিমিয়াম কটন কাপড়ে তৈরি আরামদায়ক ক্যাজুয়াল শার্ট।",
                 specs: ["✔ ফেব্রিক: ১০০% প্রিমিয়াম কটন", "✔ সাইজ: M, L, XL, XXL এভেইলেবল", "✔ কালার গ্যারান্টি: ১০০%", "✔ ৭ দিনের সহজ রিটার্ন পলিসি"],
+                types: [
+                    { name: "সাদা", hex: "#f8fafc", image: "https://images.unsplash.com/photo-1596755094514-f87e34085b2c?w=400" },
+                    { name: "আকাশী", hex: "#7dd3fc" },
+                    { name: "কালো", hex: "#1e293b" }
+                ],
                 category: "gents", storeId: "store1"
             },
             {
@@ -399,7 +511,7 @@
 // ব্রাউজারে ডাটা আপডেট করার লজিক (লক ভাঙার জন্য)
 // 💡 প্রোডাক্ট লিস্টে যেকোনো পরিবর্তন (নতুন প্রোডাক্ট/এডিট) করলে নিচের DATA_VERSION নাম্বারটি পরিবর্তন করুন,
 // তাহলে পুরনো localStorage ক্যাশ অটোমেটিক রিফ্রেশ হয়ে নতুন ডাটা শো করবে।
-const DATA_VERSION = "vb";
+const DATA_VERSION = "vc";
 
 let allProducts = JSON.parse(localStorage.getItem('megaProductList'));
 let savedVersion = localStorage.getItem('megaProductListVersion');
@@ -422,7 +534,7 @@ function renderProducts() {
         card.setAttribute('data-code', product.code);
         
         card.onclick = () => {
-            openModal(product.title, product.price, product.code, product.images, product.desc, product.specs);
+            openModal(product.title, product.price, product.code, product.images, product.desc, product.specs, product.types);
         };
 
         card.innerHTML = `
@@ -474,6 +586,7 @@ function addNewProductLive(newProd) {
         let currentImageIndex = 0;
         let modalImages = [];
         let currentProductData = {}; 
+        let currentProductTypes = null;
 
         function convertToEnglishNumber(str) {
             const bengaliToEnglish = {'০':'0', '১':'1', '২':'2', '৩':'3', '৪':'4', '৫':'5', '৬':'6', '৭':'7', '৮':'8', '৯':'9'};
@@ -481,7 +594,7 @@ function addNewProductLive(newProd) {
             return parseInt(engStr.replace(/[^0-9]/g, '')) || 0;
         }
 
-        function openModal(title, price, code, imgArray, desc, specsArray) {
+        function openModal(title, price, code, imgArray, desc, specsArray, typesArray) {
             document.getElementById('modalTitle').innerText = title;
             document.getElementById('modalPrice').innerText = price;
             document.getElementById('productCode').innerText = code;
@@ -504,6 +617,36 @@ function addNewProductLive(newProd) {
             let cleanPriceNumber = convertToEnglishNumber(price);
             let mainImage = (imgArray && imgArray.length > 0) ? imgArray[0] : '';
             currentProductData = { name: title + " (" + code + ")", price: cleanPriceNumber, qty: 1, image: mainImage, code: code };
+
+            // --- প্রোডাক্ট টাইপ কাস্টম ড্রপডাউন রেন্ডার ---
+            const typeSection = document.getElementById('typeSelectSection');
+            const typeOptionsPanel = document.getElementById('typeOptionsPanel');
+            const typeTriggerText = document.getElementById('typeTriggerText');
+            const typeTooltip = document.getElementById('typeTooltip');
+            const typeWrapper = document.getElementById('typeSelectWrapper');
+
+            typeOptionsPanel.innerHTML = '';
+            typeTriggerText.innerText = 'Select Type';
+            typeTriggerText.classList.add('placeholder');
+            typeTooltip.classList.remove('show');
+            typeWrapper.classList.remove('attention', 'open');
+
+            currentProductTypes = (typesArray && typesArray.length > 0) ? typesArray : null;
+
+            if (currentProductTypes) {
+                typeSection.style.display = 'block';
+                currentProductTypes.forEach((t) => {
+                    const row = document.createElement('div');
+                    row.className = 'type-option-row';
+                    row.innerHTML = `<span>${t.name}</span><span class="check-circle"><i class="fas fa-check"></i></span>`;
+                    row.onclick = (e) => { e.stopPropagation(); selectType(t.name); };
+                    typeOptionsPanel.appendChild(row);
+                });
+                delete currentProductData.type;
+            } else {
+                typeSection.style.display = 'none';
+                delete currentProductData.type;
+            }
 
             modalImages = imgArray;
             currentImageIndex = 0;
@@ -528,6 +671,45 @@ function addNewProductLive(newProd) {
             document.getElementById('modalOverlay').classList.add('active');
             document.getElementById('productModal').classList.add('active');
             document.body.style.overflow = 'hidden'; 
+        }
+
+        function toggleTypePanel(event) {
+            event.stopPropagation();
+            const wrapper = document.getElementById('typeSelectWrapper');
+            wrapper.classList.toggle('open');
+        }
+
+        // ড্রপডাউনের বাইরে ক্লিক করলে প্যানেল বন্ধ হয়ে যাবে
+        document.addEventListener('click', (e) => {
+            const wrapper = document.getElementById('typeSelectWrapper');
+            if (wrapper && !wrapper.contains(e.target)) {
+                wrapper.classList.remove('open');
+            }
+        });
+
+        function selectType(typeName) {
+            currentProductData.type = typeName;
+
+            const typeTriggerText = document.getElementById('typeTriggerText');
+            typeTriggerText.innerText = typeName;
+            typeTriggerText.classList.remove('placeholder');
+
+            document.querySelectorAll('.type-option-row').forEach(row => {
+                row.classList.toggle('selected', row.querySelector('span').innerText === typeName);
+            });
+
+            document.getElementById('typeTooltip').classList.remove('show');
+            document.getElementById('typeSelectWrapper').classList.remove('attention', 'open');
+
+            // এই টাইপের নিজস্ব ছবি থাকলে স্লাইডারের প্রথম ছবিটি বদলে দেবে
+            const matchedType = currentProductTypes ? currentProductTypes.find(t => t.name === typeName) : null;
+            if (matchedType && matchedType.image) {
+                modalImages[0] = matchedType.image;
+                currentProductData.image = matchedType.image;
+                const firstImg = document.querySelector('#modalSliderWrapper img');
+                if (firstImg) firstImg.src = matchedType.image;
+                goToSlide(0);
+            }
         }
 
         function moveSlider(direction) {
@@ -557,11 +739,29 @@ function addNewProductLive(newProd) {
         }
 
                 function addToCart() {
+            // --- Type নির্বাচন ছাড়া কার্টে যোগ করতে দেওয়া হবে না ---
+            if (currentProductTypes && !currentProductData.type) {
+                document.getElementById('typeTooltip').classList.add('show');
+                const wrapper = document.getElementById('typeSelectWrapper');
+                wrapper.classList.remove('attention');
+                void wrapper.offsetWidth; // animation reset
+                wrapper.classList.add('attention');
+                wrapper.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                return;
+            }
+
+            let cartItemName = currentProductData.type
+                ? currentProductData.name + " - " + currentProductData.type
+                : currentProductData.name;
+
             let cart = JSON.parse(localStorage.getItem('myCart')) || [];
-            let existingItem = cart.find(item => item.name === currentProductData.name);
-            
+            let existingItem = cart.find(item =>
+                item.name === cartItemName &&
+                (item.type || '') === (currentProductData.type || '')
+            );
+
             if (existingItem) existingItem.qty += 1;
-            else cart.push(currentProductData);
+            else cart.push({ ...currentProductData, name: cartItemName });
 
             localStorage.setItem('myCart', JSON.stringify(cart));
             
@@ -601,6 +801,14 @@ function addNewProductLive(newProd) {
 
         function handleSearchKeyPress(event) {
             if (event.key === 'Enter') executeSearch();
+        }
+
+        function toggleSearchBar() {
+            const box = document.getElementById('searchContainer');
+            box.classList.toggle('open');
+            if (box.classList.contains('open')) {
+                setTimeout(() => document.getElementById('searchInput').focus(), 150);
+            }
         }
 
         function executeSearch() {
