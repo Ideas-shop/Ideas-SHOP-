@@ -51,6 +51,18 @@
             border: none; background: #ea580c; color: white;
             padding: 12px 16px; cursor: pointer; font-size: 14px; flex-shrink: 0;
         }
+        .search-container { position: relative; }
+        .search-suggestions {
+            position: absolute; top: calc(100% + 6px); left: 15px; right: 15px; background: white; border: 1px solid #e2e8f0; border-radius: 12px; box-shadow: 0 10px 24px rgba(15,23,42,0.12); max-height: 220px; overflow-y: auto; z-index: 20; display: none;
+        }
+        .search-suggestions.show { display: block; }
+        .search-suggestion-item { display: flex; align-items: center; justify-content: space-between; padding: 10px 12px; cursor: pointer; border-bottom: 1px solid #f1f5f9; }
+        .search-suggestion-item:last-child { border-bottom: none; }
+        .search-suggestion-item:hover { background: #fff7ed; }
+        .suggestion-label { display: flex; flex-direction: column; gap: 2px; }
+        .suggestion-label strong { font-size: 13px; color: #0f172a; }
+        .suggestion-label span { font-size: 11px; color: #64748b; }
+        .suggestion-badge { font-size: 10px; padding: 4px 8px; border-radius: 999px; background: #fff7ed; color: #ea580c; font-weight: 700; text-transform: capitalize; }
 
         /* --- Top Filter Bar --- */
         .filter-container {
@@ -89,10 +101,19 @@
         }
         .product-card img { width: 100%; height: 100%; object-fit: cover; }
         .product-card h4 { 
-            margin: 4px 0 6px 0; font-size: 13px; color: #334155; 
-            height: 36px; overflow: hidden; display: -webkit-box;
-            -webkit-line-clamp: 2; -webkit-box-orient: vertical; line-height: 1.4; font-weight: 600;
-        }
+    margin: 4px 0 6px 0; 
+    font-size: 13px; 
+    color: #334155; 
+    height: 36px; 
+    overflow: hidden; 
+    display: -webkit-box; 
+    display: box;
+    -webkit-line-clamp: 2; 
+    line-clamp: 2; 
+    -webkit-box-orient: vertical; 
+    line-height: 1.4; 
+    font-weight: 600;
+}
         .product-price { 
             margin: 0; font-size: 14px; font-weight: 700; color: #ef4444; 
             background: #fef2f2; padding: 4px; border-radius: 6px;
@@ -300,9 +321,10 @@
 
     <div class="search-container" id="searchContainer">
         <div class="search-bar">
-            <input type="text" id="searchInput" placeholder="প্রোডাক্ট কোড দিয়ে খুঁজুন..." onkeypress="handleSearchKeyPress(event)">
+            <input type="text" id="searchInput" placeholder="প্রোডাক্ট কোড বা নাম দিয়ে খুঁজুন..." onkeypress="handleSearchKeyPress(event)">
             <button class="search-icon-btn" onclick="executeSearch()"><i class="fas fa-search"></i></button>
         </div>
+        <div class="search-suggestions" id="categorySearchSuggestions"></div>
     </div>
 
     <div class="filter-container">
@@ -388,7 +410,19 @@
     <script>
         // --- লোকাল স্টোরেজ ডাটা সেটআপ ---
         const initialProducts = [       
-  {
+ 
+ 
+{
+  code: "P-NEW-01",
+  title: "New Product Name",
+  price: "৳1500",
+  images: ["https://...image.jpg"],
+  desc: "Product description here.",
+  specs: ["Feature 1", "Feature 2"],
+  category: "electronics",
+  storeId: "store1"
+},
+{
     code: "Ideasshop-p1-57", 
     title: "WATCH for Man", 
     price: "৳৩৭৫",
@@ -511,10 +545,12 @@
 // ব্রাউজারে ডাটা আপডেট করার লজিক (লক ভাঙার জন্য)
 // 💡 প্রোডাক্ট লিস্টে যেকোনো পরিবর্তন (নতুন প্রোডাক্ট/এডিট) করলে নিচের DATA_VERSION নাম্বারটি পরিবর্তন করুন,
 // তাহলে পুরনো localStorage ক্যাশ অটোমেটিক রিফ্রেশ হয়ে নতুন ডাটা শো করবে।
-const DATA_VERSION = "vc";
+const DATA_VERSION = "v4.0";
 
 let allProducts = JSON.parse(localStorage.getItem('megaProductList'));
 let savedVersion = localStorage.getItem('megaProductListVersion');
+let currentCategory = 'all';
+let currentSearchQuery = '';
 
 if (!allProducts || savedVersion !== DATA_VERSION) {
     // ভার্সন না মিললে বা ডাটা না থাকলে, কোডের initialProducts দিয়ে রিফ্রেশ হবে
@@ -526,16 +562,38 @@ if (!allProducts || savedVersion !== DATA_VERSION) {
 // --- ডায়নামিক রেন্ডারিং ---
 function renderProducts() {
     const grid = document.getElementById('productGrid');
-    grid.innerHTML = ''; 
+    grid.innerHTML = '';
 
-    allProducts.forEach(product => {
+    const normalizedQuery = currentSearchQuery.trim().toLowerCase();
+
+    const filteredProducts = allProducts.filter(product => {
+        const matchesCategory = currentCategory === 'all' || product.category === currentCategory;
+        const searchableText = `${product.title || ''} ${product.code || ''} ${product.desc || ''} ${product.category || ''} ${(product.specs || []).join(' ')}`.toLowerCase();
+        const matchesQuery = !normalizedQuery || searchableText.includes(normalizedQuery);
+        return matchesCategory && matchesQuery;
+    });
+
+    if (!filteredProducts.length) {
+        grid.innerHTML = '<div style="grid-column: 1 / -1; text-align:center; padding:16px; color:#64748b;">কোনো প্রোডাক্ট পাওয়া যায়নি।</div>';
+        return;
+    }
+
+    filteredProducts.forEach(product => {
         const card = document.createElement('div');
         card.className = `product-card filter-item ${product.category}`;
+        card.tabIndex = 0; // keyboard focus
+        card.setAttribute('role', 'button');
         card.setAttribute('data-code', product.code);
         
         card.onclick = () => {
             openModal(product.title, product.price, product.code, product.images, product.desc, product.specs, product.types);
         };
+        card.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter' || e.key === ' ') {
+                e.preventDefault();
+                card.click();
+            }
+        });
 
         card.innerHTML = `
             <div class="product-img-wrapper"><img src="${product.images[0]}" alt="Product"></div>
@@ -547,17 +605,41 @@ function renderProducts() {
 }
 
 // 💡 বোনাস ফাংশন: কোড বা কনসোল থেকে নতুন প্রোডাক্ট লাইভ অ্যাড করার জন্য
+function normalizeSharedProduct(newProd) {
+    const normalized = { ...newProd };
+    normalized.code = normalized.code || `PRD-${Date.now()}`;
+    normalized.title = normalized.title || 'নতুন পণ্য';
+    normalized.price = normalized.price || '৳০';
+    normalized.images = Array.isArray(normalized.images) && normalized.images.length ? normalized.images : ['https://placehold.co/300x300?text=Ideas+SHOP'];
+    normalized.desc = normalized.desc || 'এই পণ্যটি নতুনভাবে যোগ করা হয়েছে।';
+    normalized.specs = Array.isArray(normalized.specs) ? normalized.specs : [];
+    normalized.category = normalized.category || 'general';
+    normalized.storeId = normalized.storeId || 'store1';
+    return normalized;
+}
+
+function broadcastProductSync() {
+    if (window.BroadcastChannel) {
+        const channel = new BroadcastChannel('ideas-shop-products');
+        channel.postMessage({ type: 'product-list-updated' });
+        channel.close();
+    }
+}
+
 function addNewProductLive(newProd) {
-    allProducts.push(newProd);
+    const normalizedProduct = normalizeSharedProduct(newProd);
+    allProducts.unshift(normalizedProduct);
     localStorage.setItem('megaProductList', JSON.stringify(allProducts));
-    renderProducts(); // পেজ রিফ্রেশ ছাড়াই প্রোডাক্ট চলে আসবে
+    localStorage.setItem('megaProductListVersion', DATA_VERSION);
+    broadcastProductSync();
+    renderProducts();
     filterSelection('all');
 }
 
 
         // --- ক্যাটাগরি ফিল্টার লজিক ---
         function filterSelection(category) {
-            let cards = document.getElementsByClassName("filter-item");
+            currentCategory = category;
             let btns = document.getElementsByClassName("filter-btn");
 
             for (let i = 0; i < btns.length; i++) {
@@ -567,19 +649,25 @@ function addNewProductLive(newProd) {
                 event.currentTarget.classList.add("active");
             }
 
-            if (category == "all") category = "";
-            for (let i = 0; i < cards.length; i++) {
-                cards[i].classList.add("hide");
-                if (cards[i].className.indexOf(category) > -1) {
-                    cards[i].classList.remove("hide");
-                }
-            }
+            renderProducts();
         }
 
         // পেজ লোড হলেই প্রোডাক্ট রেন্ডার হবে এবং "all" ফিল্টার অ্যাপ্লাই হবে
         window.addEventListener('DOMContentLoaded', () => {
             renderProducts();
             filterSelection('all');
+            if (window.BroadcastChannel) {
+                const syncChannel = new BroadcastChannel('ideas-shop-products');
+                syncChannel.onmessage = (event) => {
+                    if (event.data && event.data.type === 'product-list-updated') {
+                        const storedProducts = JSON.parse(localStorage.getItem('megaProductList') || 'null');
+                        if (Array.isArray(storedProducts)) {
+                            allProducts = storedProducts;
+                            renderProducts();
+                        }
+                    }
+                };
+            }
         });
 
         // --- মডাল ও স্লাইডার লজিক (স্পেসিফিকেশন সহ) ---
@@ -670,7 +758,7 @@ function addNewProductLive(newProd) {
 
             document.getElementById('modalOverlay').classList.add('active');
             document.getElementById('productModal').classList.add('active');
-            document.body.style.overflow = 'hidden'; 
+            document.body.classList.add('no-scroll');
         }
 
         function toggleTypePanel(event) {
@@ -735,7 +823,7 @@ function addNewProductLive(newProd) {
         function forceCloseModal() {
             document.getElementById('modalOverlay').classList.remove('active');
             document.getElementById('productModal').classList.remove('active');
-            document.body.style.overflow = 'auto'; 
+            document.body.classList.remove('no-scroll');
         }
 
                 function addToCart() {
@@ -803,6 +891,47 @@ function addNewProductLive(newProd) {
             if (event.key === 'Enter') executeSearch();
         }
 
+        function renderCategorySearchSuggestions(query) {
+            const suggestionsBox = document.getElementById('categorySearchSuggestions');
+            if (!suggestionsBox) return;
+            const value = (query || '').trim().toLowerCase();
+            if (!value) {
+                suggestionsBox.innerHTML = '';
+                suggestionsBox.classList.remove('show');
+                return;
+            }
+
+            const matchedProducts = allProducts.filter(product => {
+                const searchableText = `${product.title || ''} ${product.code || ''} ${product.desc || ''} ${product.category || ''}`.toLowerCase();
+                return searchableText.includes(value);
+            }).slice(0, 5);
+
+            if (!matchedProducts.length) {
+                suggestionsBox.innerHTML = '<div class="search-suggestion-item"><span>কোনো ম্যাচিং প্রোডাক্ট নেই</span></div>';
+                suggestionsBox.classList.add('show');
+                return;
+            }
+
+            suggestionsBox.innerHTML = matchedProducts.map(product => `
+                <div class="search-suggestion-item" onclick="selectCategorySuggestion('${(product.title || '').replace(/'/g, "\\'")}')">
+                    <div class="suggestion-label">
+                        <strong>${product.title || 'Product'}</strong>
+                        <span>${product.code || ''}</span>
+                    </div>
+                    <span class="suggestion-badge">${product.category || 'product'}</span>
+                </div>
+            `).join('');
+            suggestionsBox.classList.add('show');
+        }
+
+        function selectCategorySuggestion(title) {
+            const input = document.getElementById('searchInput');
+            if (input) input.value = title;
+            currentSearchQuery = title;
+            renderCategorySearchSuggestions(title);
+            renderProducts();
+        }
+
         function toggleSearchBar() {
             const box = document.getElementById('searchContainer');
             box.classList.toggle('open');
@@ -812,30 +941,29 @@ function addNewProductLive(newProd) {
         }
 
         function executeSearch() {
-            const query = document.getElementById('searchInput').value.trim().toLowerCase();
-            if (!query) return;
-
-            document.querySelectorAll('.product-card.search-highlight').forEach(c => c.classList.remove('search-highlight'));
-            filterSelection('all');
-
-            const allCards = document.querySelectorAll('.filter-item');
-            let foundCard = null;
-
-            allCards.forEach(card => {
-                const code = (card.getAttribute('data-code') || '').toLowerCase();
-                if (code === query) foundCard = card;
-            });
-
-            if (foundCard) {
-                const grid = document.getElementById('productGrid');
-                grid.prepend(foundCard);
-                foundCard.classList.add('search-highlight');
-                foundCard.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                setTimeout(() => foundCard.classList.remove('search-highlight'), 2500);
-            } else {
-                alert('এই কোডের কোনো প্রোডাক্ট পাওয়া যায়নি।');
+            const query = document.getElementById('searchInput').value.trim();
+            currentSearchQuery = query;
+            renderCategorySearchSuggestions(query);
+            renderProducts();
+            if (query) {
+                document.getElementById('productGrid').scrollIntoView({ behavior: 'smooth', block: 'start' });
             }
         }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const searchInput = document.getElementById('searchInput');
+            if (searchInput) {
+                searchInput.addEventListener('input', () => renderCategorySearchSuggestions(searchInput.value));
+                searchInput.addEventListener('focus', () => renderCategorySearchSuggestions(searchInput.value));
+            }
+        });
+
+        document.addEventListener('click', (event) => {
+            const suggestions = document.getElementById('categorySearchSuggestions');
+            if (suggestions && !suggestions.contains(event.target) && !event.target.closest('.search-bar')) {
+                suggestions.classList.remove('show');
+            }
+        });
     </script>
 </body>
 </html>

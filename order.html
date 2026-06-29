@@ -645,7 +645,7 @@
                 </div>
             </div>
 
-            <div class="input-group addr-step-hidden" id="mainDeliveryTypeGroup" style="margin-bottom: 0;">
+            <div class="input-group" id="mainDeliveryTypeGroup" style="margin-bottom: 0;">
                 <label>ডেলিভারি ধরন</label>
                 <div class="delivery-type-toggle">
                     <button type="button" class="delivery-type-btn active" id="btnHomeDeliveryMain" onclick="selectDeliveryType('home')">
@@ -655,6 +655,33 @@
                         <i class="fas fa-map-marker-alt"></i> রোড রিসিভ ডেলিভারি
                     </button>
                 </div>
+            </div>
+
+            <!-- Road point selector moved here (previously inside drawer) -->
+            <div class="input-group addr-step-hidden" id="roadPointGroup">
+                <label>রোড পয়েন্ট নির্বাচন করুন</label>
+                <div class="custom-select" id="cs-roadPointSelect">
+                    <select id="roadPointSelect" class="native-select-hidden" onchange="calculateTotal(); updateAddressSummary();">
+                        <option value="">নির্বাচন করুন</option>
+                    </select>
+                    <div class="custom-select-trigger placeholder" onclick="toggleCustomSelect('roadPointSelect')">
+                        <span class="cs-trigger-text">নির্বাচন করুন</span>
+                        <i class="fas fa-chevron-down"></i>
+                    </div>
+                    <div class="custom-select-options" id="roadPointSelect_options"></div>
+                </div>
+            </div>
+
+            <div class="input-group addr-step-hidden" id="roadDeliveryNote">
+                <div class="road-note">
+                    <i class="fas fa-info-circle"></i>
+                    নির্বাচিত রোড পয়েন্টের আশেপাশে থেকে আপনি অর্ডারটি রিসিভ করতে পারবেন। এই ডেলিভারিতে থানা বা এলাকা লিখে দেওয়া আবশ্যক নয়।
+                </div>
+            </div>
+
+            <div class="input-group addr-step-hidden" id="stepFullAddress">
+                <label>বিস্তারিত ঠিকানা</label>
+                <textarea id="orderAddress" rows="2" placeholder="গ্রাম/রাস্তা, এলাকা, থানা ।" oninput="updateAddressSummary()"></textarea>
             </div>
 
             <div class="form-error-box" id="deliveryFormError">
@@ -715,44 +742,7 @@
                     </div>
                 </div>
 
-                <div class="addr-step addr-step-hidden" id="stepDeliveryType">
-                    <label>ডেলিভারি ধরন</label>
-                    <div class="delivery-type-toggle">
-                        <button type="button" class="delivery-type-btn active" id="btnHomeDelivery" onclick="selectDeliveryType('home')">
-                            <i class="fas fa-home"></i> হোম ডেলিভারি
-                        </button>
-                        <button type="button" class="delivery-type-btn" id="btnRoadDelivery" onclick="selectDeliveryType('road')" disabled>
-                            <i class="fas fa-map-marker-alt"></i> রোড রিসিভ ডেলিভারি
-                        </button>
-                    </div>
-                    <div class="delivery-type-hint" id="roadDeliveryHint">শুধুমাত্র কুষ্টিয়া সদর উপজেলার জন্য রোড রিসিভ ডেলিভারি সুবিধা প্রযোজ্য।</div>
-                </div>
-
-                <div class="addr-step addr-step-hidden" id="roadPointGroup">
-                    <label>রোড পয়েন্ট নির্বাচন করুন</label>
-                    <div class="custom-select" id="cs-roadPointSelect">
-                        <select id="roadPointSelect" class="native-select-hidden" onchange="calculateTotal(); updateAddressSummary();">
-                            <option value="">নির্বাচন করুন</option>
-                        </select>
-                        <div class="custom-select-trigger placeholder" onclick="toggleCustomSelect('roadPointSelect')">
-                            <span class="cs-trigger-text">নির্বাচন করুন</span>
-                            <i class="fas fa-chevron-down"></i>
-                        </div>
-                        <div class="custom-select-options" id="roadPointSelect_options"></div>
-                    </div>
-                </div>
-
-                <div class="addr-step addr-step-hidden" id="roadDeliveryNote">
-                    <div class="road-note">
-                        <i class="fas fa-info-circle"></i>
-                        নির্বাচিত রোড পয়েন্টের আশেপাশে থেকে আপনি অর্ডারটি রিসিভ করতে পারবেন। এই ডেলিভারিতে থানা বা এলাকা লিখে দেওয়া আবশ্যক নয়।
-                    </div>
-                </div>
-
-                <div class="addr-step addr-step-hidden" id="stepFullAddress">
-                    <label>বিস্তারিত ঠিকানা</label>
-                    <textarea id="orderAddress" rows="2" placeholder="গ্রাম/রাস্তা, এলাকা, থানা ।" oninput="updateAddressSummary()"></textarea>
-                </div>
+                <!-- Delivery-type, road point and full address moved to main form to simplify UX -->
             </div>
             <div class="address-drawer-footer">
                 <button type="button" class="address-drawer-apply-btn" onclick="closeAddressDrawer()">
@@ -1056,14 +1046,14 @@
             clearAllFormErrors();
             document.getElementById('addressDrawerOverlay').classList.add('open');
             document.getElementById('addressDrawer').classList.add('open');
-            document.body.style.overflow = 'hidden';
+            document.body.classList.add('drawer-open');
         }
 
         // --- ঠিকানা ড্রয়ার বন্ধ করার ফাংশন ---
         function closeAddressDrawer() {
             document.getElementById('addressDrawerOverlay').classList.remove('open');
             document.getElementById('addressDrawer').classList.remove('open');
-            document.body.style.overflow = '';
+            document.body.classList.remove('drawer-open');
             saveAddressProfile();
         }
 
@@ -1116,7 +1106,7 @@
                 document.getElementById("stepDistrict").classList.add("addr-step-hidden");
             }
             document.getElementById("stepUpazila").classList.add("addr-step-hidden");
-            document.getElementById("stepDeliveryType").classList.add("addr-step-hidden");
+            document.getElementById("mainDeliveryTypeGroup").classList.add("addr-step-hidden");
             document.getElementById("stepFullAddress").classList.add("addr-step-hidden");
             document.getElementById("roadPointGroup").classList.add("addr-step-hidden");
             document.getElementById("roadDeliveryNote").classList.add("addr-step-hidden");
@@ -1143,7 +1133,7 @@
             } else {
                 document.getElementById("stepUpazila").classList.add("addr-step-hidden");
             }
-            document.getElementById("stepDeliveryType").classList.add("addr-step-hidden");
+            document.getElementById("mainDeliveryTypeGroup").classList.add("addr-step-hidden");
             document.getElementById("stepFullAddress").classList.add("addr-step-hidden");
             document.getElementById("roadPointGroup").classList.add("addr-step-hidden");
             document.getElementById("roadDeliveryNote").classList.add("addr-step-hidden");
@@ -1165,16 +1155,14 @@
 
             let isEligible = (district === ROAD_RECEIVE_DISTRICT && upazila === ROAD_RECEIVE_UPAZILA);
 
-            roadBtn.disabled = !isEligible;
-            roadBtnMain.disabled = !isEligible;
+            if (roadBtn) roadBtn.disabled = !isEligible;
+            if (roadBtnMain) roadBtnMain.disabled = !isEligible;
 
             // উপজেলা নির্বাচন হয়ে গেলে ডেলিভারি ধরন ও ঠিকানা ধাপ দেখানো হবে
             if (upazilaVal !== "") {
-                document.getElementById("stepDeliveryType").classList.remove("addr-step-hidden");
                 document.getElementById("mainDeliveryTypeGroup").classList.remove("addr-step-hidden");
                 selectDeliveryType(deliveryType === "road" && isEligible ? "road" : "home");
             } else {
-                document.getElementById("stepDeliveryType").classList.add("addr-step-hidden");
                 document.getElementById("mainDeliveryTypeGroup").classList.add("addr-step-hidden");
                 document.getElementById("stepFullAddress").classList.add("addr-step-hidden");
             }
@@ -1190,14 +1178,15 @@
         function selectDeliveryType(type) {
             let roadBtn = document.getElementById("btnRoadDelivery");
             let roadBtnMain = document.getElementById("btnRoadDeliveryMain");
-            if (type === "road" && (roadBtn.disabled || roadBtnMain.disabled)) return; // এলিজিবল না হলে কিছু হবে না
+            let disabledRoad = (roadBtn && roadBtn.disabled) || (roadBtnMain && roadBtnMain.disabled);
+            if (type === "road" && disabledRoad) return; // এলিজিবল না হলে কিছু হবে না
 
             deliveryType = type;
 
-            document.getElementById("btnHomeDelivery").classList.toggle("active", type === "home");
-            document.getElementById("btnRoadDelivery").classList.toggle("active", type === "road");
-            document.getElementById("btnHomeDeliveryMain").classList.toggle("active", type === "home");
-            document.getElementById("btnRoadDeliveryMain").classList.toggle("active", type === "road");
+            let btnHome = document.getElementById("btnHomeDeliveryMain");
+            let btnRoad = document.getElementById("btnRoadDeliveryMain");
+            if (btnHome) btnHome.classList.toggle("active", type === "home");
+            if (btnRoad) btnRoad.classList.toggle("active", type === "road");
 
             let roadPointGroup = document.getElementById("roadPointGroup");
             let roadDeliveryNote = document.getElementById("roadDeliveryNote");

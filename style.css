@@ -43,6 +43,42 @@ html, body {
     transform: translateY(-3px); /* হালকা অ্যানিমেশন */
 }
 
+/* Product card press/pop states for smooth micro-interaction */
+.product-card.pressed {
+    transform: translateY(1px) scale(0.995) !important;
+    box-shadow: 0 6px 14px rgba(15,23,42,0.06) !important;
+    transition: transform 120ms ease-out, box-shadow 120ms ease-out !important;
+}
+.product-card.tap-pop {
+    transform: translateY(-10px) scale(1.03) !important;
+    box-shadow: 0 26px 60px rgba(15,23,42,0.12) !important;
+    transition: transform 320ms cubic-bezier(.2,.9,.3,1), box-shadow 320ms ease !important;
+}
+.product-card:focus-visible { outline: 3px solid rgba(63,81,181,0.08); outline-offset: 4px; }
+/* Remove default blue/tap highlight on product cards but keep accessible focus-visible */
+.product-card, .product-card * { -webkit-tap-highlight-color: transparent; }
+.product-card:focus { outline: none !important; box-shadow: none !important; }
+.product-card:focus:not(:focus-visible) { outline: none !important; }
+/* Stronger overrides to remove residual blue/tap highlights inside product cards */
+.product-card, .product-card * {
+    -webkit-tap-highlight-color: transparent !important;
+    -webkit-touch-callout: none !important;
+    touch-action: manipulation !important;
+}
+.product-card a, .product-card button, .product-card img {
+    -webkit-tap-highlight-color: transparent !important;
+    background-color: transparent !important;
+    outline: none !important;
+}
+.product-card *:focus { outline: none !important; box-shadow: none !important; }
+.product-card::selection { background: transparent; }
+
+/* Global safety net: remove tap highlight and default active background across the app */
+html, body, * {
+    -webkit-tap-highlight-color: transparent !important;
+}
+*:active, *:focus { background-color: transparent !important; }
+
 /* ট্রেন্ডিং ব্যাজ (ঐচ্ছিক) */
 .badge {
     position: absolute;
@@ -108,7 +144,7 @@ html, body {
     background-color: #2c3b96;
 }
   
-./* ১. প্রোডাক্ট কন্টেইনার গ্রিড পরিবর্তন */
+/* ১. প্রোডাক্ট কন্টেইনার গ্রিড পরিবর্তন */
 .product-grid {
     display: grid;
     grid-template-columns: repeat(2, 1fr); /* সমান দুই কলাম */
@@ -174,3 +210,195 @@ body {
     padding: 0;
     box-sizing: border-box;
 }
+
+/* === Smooth Footer & Side Drawer Improvements === */
+/* Applies globally to make bottom nav and side drawers feel more polished */
+.bottom-nav {
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    display: flex;
+    gap: 0;
+    align-items: center;
+    justify-content: space-between;
+    background: linear-gradient(180deg, rgba(255,255,255,0.94), rgba(255,255,255,0.98));
+    backdrop-filter: blur(6px);
+    border-top: 1px solid rgba(16,24,40,0.04);
+    box-shadow: 0 -8px 30px rgba(15,23,42,0.06);
+    transition: transform 320ms cubic-bezier(.2,.9,.3,1), box-shadow 320ms;
+    z-index: 1200;
+    padding: 8px 6px;
+}
+
+.bottom-nav.hide {
+    transform: translateY(110%);
+}
+
+.nav-item {
+    text-align: center;
+    color: #9aa4b2;
+    text-decoration: none;
+    flex-grow: 1;
+    transition: transform 260ms cubic-bezier(.2,.9,.3,1), color 220ms;
+    position: relative;
+}
+
+.nav-item i {
+    font-size: 19px;
+    margin-bottom: 3px;
+    transition: transform 360ms cubic-bezier(.2,.9,.3,1), color 220ms;
+    display: block;
+}
+
+.nav-item:hover { transform: translateY(-4px); color: var(--primary); }
+.nav-item.active { transform: translateY(-6px); color: var(--primary); }
+.nav-item:active i { transform: scale(0.92); }
+
+/* Drawer (left) and Address drawer (right) */
+.drawer, .address-drawer {
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    left: -100%;
+    width: 82%;
+    max-width: 420px;
+    background: #fff;
+    box-shadow: 18px 0 46px rgba(12,13,21,0.12);
+    transition: transform 360ms cubic-bezier(.2,.9,.3,1), opacity 260ms;
+    z-index: 1300;
+    transform: translateX(-100%);
+    will-change: transform, opacity;
+    overflow-y: auto;
+}
+
+.drawer.open, .address-drawer.open { transform: translateX(0); left: 0; opacity: 1; }
+
+.overlay, .address-drawer-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.45);
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 260ms ease, visibility 260ms;
+    z-index: 1250;
+}
+
+.overlay.open, .address-drawer-overlay.open { opacity: 1; visibility: visible; }
+
+body.drawer-open, body.no-scroll { overflow: hidden; }
+
+.drawer .drawer-links a { transition: background 220ms, padding-left 180ms; }
+.nav-badge-dot { transition: transform 260ms, opacity 200ms; }
+
+/* Small tweak for accessibility: focus outlines inside drawers */
+.drawer :focus, .address-drawer :focus { outline: 2px solid rgba(63,81,181,0.15); outline-offset: 2px; }
+
+/* End of footer & drawer improvements */
+
+/* === Global Button Enhancements === */
+/* Improve visual style and touch feedback for buttons across the site */
+button, .icon-btn, .buy-btn, .address-drawer-apply-btn, .address-drawer-close, .form-submit {
+    -webkit-tap-highlight-color: transparent; /* remove Android/iOS gray square */
+    -webkit-appearance: none;
+    appearance: none;
+    border: none;
+    background-clip: padding-box;
+    border-radius: 12px;
+    padding: 8px 14px;
+    cursor: pointer;
+    transition: transform 180ms cubic-bezier(.2,.9,.3,1), box-shadow 220ms ease, background-color 180ms;
+    box-shadow: 0 8px 20px rgba(15,23,42,0.06);
+    outline: none;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+}
+
+/* Specific tweaks for icon buttons */
+.icon-btn {
+    width: 40px;
+    height: 40px;
+    padding: 8px;
+    border-radius: 10px;
+    background: rgba(0,0,0,0.03);
+}
+
+.icon-btn:active, button:active { transform: translateY(1px) scale(0.995); box-shadow: 0 4px 10px rgba(15,23,42,0.05); }
+.icon-btn:hover { transform: translateY(-2px); }
+
+/* Primary buy button */
+.buy-btn {
+    border-radius: 12px;
+    padding: 8px 12px;
+    background-color: var(--primary, #3f51b5);
+    color: #fff;
+    font-weight: 600;
+    box-shadow: 0 10px 26px rgba(31,41,55,0.08);
+}
+.buy-btn:hover { filter: brightness(0.98); transform: translateY(-2px); }
+.buy-btn:active { transform: translateY(1px); box-shadow: 0 6px 16px rgba(31,41,55,0.06); }
+.buy-btn:focus-visible { outline: 3px solid rgba(63,81,181,0.12); outline-offset: 3px; }
+
+/* Soft/ghost buttons (links styled as buttons) */
+.btn-ghost {
+    background: transparent;
+    border: 1px solid rgba(16,24,40,0.06);
+    color: inherit;
+}
+
+/* Ensure anchor taps also avoid default highlight */
+a { -webkit-tap-highlight-color: transparent; }
+
+/* Reduce squarish focus on mobile while keeping keyboard accessibility */
+button:focus { outline: none; }
+button:focus-visible { outline: 3px solid rgba(63,81,181,0.12); outline-offset: 3px; }
+
+/* Mobile: slightly larger hit area */
+@media (max-width: 600px) {
+    button, .icon-btn, .buy-btn { padding: 10px 16px; border-radius: 12px; }
+}
+
+/* End of button improvements */
+
+/* === Normalize and smooth all active / tap feedback globally === */
+/* This overrides abrupt or squarish :active styles across pages */
+button:active,
+.icon-btn:active,
+.buy-btn:active,
+.filter-btn:active,
+.slider-btn:active,
+.pdetail-slide-btn:active,
+.search-icon-btn:active,
+.add-cart-btn:active,
+.add-to-cart-btn:active,
+.delivery-type-btn:active,
+.faq-btn:active,
+.btn-recheck:active,
+.btn-confirm-final:active,
+.event-chip:active,
+.shortcut-item:active,
+.product-card:active,
+.address-box-summary:active,
+.custom-select-option:active,
+.nav-item:active,
+.copy-btn:active,
+.oh-copy-btn:active,
+.order-btn:active,
+.delete-btn:active,
+.close-modal-btn:active,
+.slider-arrow:active {
+    transform: translateY(1px) scale(0.995) !important;
+    box-shadow: 0 6px 16px rgba(15,23,42,0.06) !important;
+    transition: transform 160ms cubic-bezier(.2,.9,.3,1), box-shadow 160ms !important;
+    background-color: inherit !important;
+}
+
+/* Also ensure anchors don't show Android/iOS highlight */
+a, a:active, a:focus { -webkit-tap-highlight-color: transparent; }
+
+/* Soft press for small interactive items (icons) */
+.icon-btn:active, .close-modal-btn:active, .copy-btn:active { transform: translateY(1px) scale(0.985) !important; }
+
+/* End normalization block */

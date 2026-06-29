@@ -14,43 +14,80 @@
             padding-bottom: 85px; /* বটম ন্যাভের জন্য জায়গা */
         }
 
+        /* --- Color Theme (Orange / Gold) --- */
+        :root {
+            --primary: #ea580c;
+            --primary-dark: #c2410c;
+            --primary-light: #fb923c;
+            --gradient-orange: linear-gradient(120deg, #f7931e 0%, #ff7e00 45%, #ffb144 100%);
+        }
+
         /* --- Header --- */
         .header {
-            background: linear-gradient(135deg, #3f51b5, #5c6bc0);
+            background: var(--gradient-orange);
             color: white;
             display: flex;
             align-items: center;
             justify-content: space-between;
-            padding: 15px 20px;
-            box-shadow: 0 4px 12px rgba(63, 81, 181, 0.2);
-            border-bottom-left-radius: 10px;
-            border-bottom-right-radius: 10px;
+            padding: 9px 16px;
+            box-shadow: 0 4px 12px rgba(234,88,12, 0.25);
         }
 
         .header-left { display: flex; align-items: center; }
-        .icon-btn { background: none; border: none; color: white; font-size: 22px; cursor: pointer; padding: 5px; }
+        .icon-btn { background: none; border: none; color: white; font-size: 19px; cursor: pointer; padding: 5px; }
         
-        .header-title { margin-left: 15px; font-size: 22px; font-weight: 700; line-height: 1.1; }
-        .header-title .slogan { font-size: 11px; display: block; font-weight: 400; opacity: 0.9; letter-spacing: 1px; }
+        .header-title { margin-left: 12px; font-size: 17px; font-weight: 700; line-height: 1.1; }
+        .header-title .slogan { font-size: 9px; display: block; font-weight: 400; opacity: 0.95; letter-spacing: 0.8px; color: #fff7ec; }
 
-        /* --- Search Bar --- */
-        .search-container { padding: 20px 15px 10px; }
+        /* --- Banner Slider (Full Bleed, sits right under header) --- */
+        .banner-container { padding: 0; margin: 0; background: var(--gradient-orange); }
+        .banner-slider { width: 100%; position: relative; overflow: hidden; }
+        .mySlides { display: none; width: 100%; height: 190px; object-fit: cover; object-position: top center; animation: fadeEffect 1.5s; }
+        @keyframes fadeEffect { from {opacity: .4} to {opacity: 1} }
+
+        /* --- Search Bar (floats slightly over the banner's bottom edge) --- */
+        .search-container { padding: 0 16px; margin-top: -10px; position: relative; z-index: 20; }
         .search-bar {
-            background-color: white; border: 1px solid #e0e0e0;
-            border-radius: 10px; padding: 12px 20px;
+            background-color: white; border: 1px solid #ffe0c2;
+            border-radius: 50px; padding: 9px 8px 9px 20px;
             display: flex; align-items: center;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+            box-shadow: 0 6px 18px rgba(234, 88, 12, 0.22);
             transition: 0.3s;
         }
-        .search-bar:focus-within { border-color: #3f51b5; box-shadow: 0 4px 15px rgba(63, 81, 181, 0.15); }
-        .search-bar input { border: none; outline: none; flex-grow: 1; font-size: 15px; background: transparent; padding: 0 10px; }
-        .search-icon-btn { background: #3f51b5; color: white; border: none; padding: 8px 12px; border-radius: 50%; cursor: pointer; }
+        .search-bar:focus-within { border-color: var(--primary); box-shadow: 0 6px 18px rgba(234, 88, 12, 0.3); }
+        .search-bar input { border: none; outline: none; flex-grow: 1; font-size: 14px; background: transparent; padding: 0 8px; }
+        .search-icon-btn { background: var(--gradient-orange); color: white; border: none; width: 36px; height: 36px; flex-shrink:0; border-radius: 50%; cursor: pointer; display:flex; align-items:center; justify-content:center; }
+        .search-container { position: relative; }
+        .search-suggestions {
+            position: absolute; top: calc(100% + 6px); left: 16px; right: 16px; background: white; border: 1px solid #ffe0c2; border-radius: 16px; box-shadow: 0 10px 24px rgba(234,88,12,0.16); max-height: 220px; overflow-y: auto; z-index: 30; display: none;
+        }
+        .search-suggestions.show { display: block; }
+        .search-suggestion-item {
+            display: flex; align-items: center; justify-content: space-between; gap: 10px; padding: 10px 12px; cursor: pointer; border-bottom: 1px solid #fff2e5; font-size: 13px; color: #374151;
+        }
+        .search-suggestion-item:last-child { border-bottom: none; }
+        .search-suggestion-item:hover { background: #fff7ed; }
+        .suggestion-label { display: flex; flex-direction: column; gap: 2px; }
+        .suggestion-label strong { font-size: 13px; color: #111827; }
+        .suggestion-label span { font-size: 11px; color: #6b7280; }
+        .suggestion-badge { font-size: 10px; padding: 4px 8px; border-radius: 999px; background: #fff7ed; color: var(--primary); font-weight: 700; }
 
-        /* --- Banner Slider --- */
-        .banner-container { padding: 10px 15px; }
-        .banner-slider { width: 100%; position: relative; border-radius: 8px; overflow: hidden; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
-        .mySlides { display: none; width: 100%; height: 180px; object-fit: cover; animation: fadeEffect 1.5s; }
-        @keyframes fadeEffect { from {opacity: .4} to {opacity: 1} }
+        /* --- Quick Event / Offer Chips --- */
+        .event-chip-section { padding: 14px 16px 4px; display: flex; gap: 10px; overflow-x: auto; scrollbar-width: none; }
+        .event-chip-section::-webkit-scrollbar { display: none; }
+        .event-chip {
+            flex-shrink: 0; display: inline-flex; align-items: center; gap: 6px;
+            padding: 8px 14px; border-radius: 50px; font-size: 12.5px; font-weight: 700;
+            white-space: nowrap; cursor: pointer; transition: transform 180ms cubic-bezier(.2,.9,.3,1), box-shadow 180ms, background-color 160ms;
+            text-decoration: none; -webkit-tap-highlight-color: transparent; will-change: transform, box-shadow;
+        }
+        .event-chip.pressed { transform: translateY(1px) scale(0.995); box-shadow: 0 6px 12px rgba(15,23,42,0.06); }
+        .event-chip.tap-pop { transform: translateY(-8px) scale(1.02); box-shadow: 0 20px 48px rgba(15,23,42,0.10); transition: transform 300ms cubic-bezier(.2,.9,.3,1), box-shadow 300ms; }
+        .event-chip i { font-size: 13px; }
+        .chip-flash { background: linear-gradient(135deg, #ff5f6d, #ff9f43); color: white; box-shadow: 0 3px 8px rgba(255,95,109,0.3); }
+        .chip-free { background: #fff4e6; color: var(--primary-dark); border: 1px solid #ffd9ad; }
+        .chip-new { background: #fff4e6; color: var(--primary-dark); border: 1px solid #ffd9ad; }
+        .chip-offer { background: #fff4e6; color: var(--primary-dark); border: 1px solid #ffd9ad; }
 
         /* --- Shortcut Menu (Replaced Category) --- */
         .shortcut-section { padding: 10px 15px; }
@@ -58,20 +95,48 @@
         
         .shortcut-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; }
         .shortcut-item {
-            text-align: center; background-color: white; padding: 12px 5px;
-            border-radius: 8px; box-shadow: 0 4px 10px rgba(63, 81, 181, 0.08);
-            border: 1px solid #e0e6ed; cursor: pointer; transition: transform 0.2s;
+            text-align: center; background-color: white; padding: 12px 6px;
+            border-radius: 12px; box-shadow: 0 8px 20px rgba(15,23,42,0.06);
+            border: 1px solid rgba(16,24,40,0.04); cursor: pointer;
             text-decoration: none; display: flex; flex-direction: column; align-items: center; justify-content: center;
+            transition: transform 220ms cubic-bezier(.2,.9,.3,1), box-shadow 220ms ease, background-color 160ms;
+            -webkit-tap-highlight-color: transparent;
+            will-change: transform, box-shadow;
         }
-        .shortcut-item:active { transform: scale(0.95); box-shadow: 0 2px 5px rgba(63, 81, 181, 0.15); }
+        .shortcut-item:hover {
+            transform: translateY(-6px);
+            box-shadow: 0 18px 40px rgba(15,23,42,0.08);
+            background-color: #fffdf8;
+        }
+        .shortcut-item:active {
+            transform: translateY(1px) scale(0.995);
+            box-shadow: 0 6px 16px rgba(15,23,42,0.06);
+        }
+        /* pressed: when pointerdown; tap-pop: short upward pop after release */
+        .shortcut-item.pressed {
+            transform: translateY(1px) scale(0.994) !important;
+            box-shadow: 0 6px 12px rgba(15,23,42,0.05) !important;
+            transition: transform 120ms ease-out, box-shadow 120ms ease-out;
+        }
+        .shortcut-item.tap-pop {
+            transform: translateY(-10px) scale(1.02) !important;
+            box-shadow: 0 26px 60px rgba(15,23,42,0.12) !important;
+            transition: transform 320ms cubic-bezier(.2,.9,.3,1), box-shadow 320ms ease;
+        }
+        .shortcut-item:focus-visible { outline: 3px solid rgba(63,81,181,0.12); outline-offset: 4px; }
         .shortcut-icon {
-            font-size: 26px;
-            margin-bottom: 8px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
+            width: 56px; height: 56px; border-radius: 12px; display: flex;
+            align-items: center; justify-content: center; margin-bottom: 8px;
+            font-size: 22px; color: white;
+            box-shadow: 0 8px 18px rgba(15,23,42,0.06);
+            transition: transform 220ms, box-shadow 220ms, background 220ms;
         }
+        .shortcut-item:hover .shortcut-icon { transform: translateY(-3px) scale(1.03); box-shadow: 0 18px 40px rgba(15,23,42,0.09); }
         .shortcut-item p { margin: 0; font-size: 11.5px; color: #333; font-weight: 700; line-height: 1.3; }
+        .all-products-section { padding: 10px 15px 20px; }
+        .section-header { display: flex; justify-content: space-between; align-items: flex-start; gap: 10px; margin-bottom: 12px; }
+        .section-subtitle { margin: 4px 0 0; font-size: 12px; color: #6b7280; }
+        .view-all-link { text-decoration: none; color: var(--primary); font-size: 12px; font-weight: 700; display: flex; align-items: center; gap: 4px; }
         
         /* আইকনের সুন্দর কালার (স্ক্রিনশটের মত আকর্ষণীয় করার জন্য) */
         .icon-order { color: #d32f2f; }
@@ -97,7 +162,9 @@
     overflow: hidden; /* keeps the card shape clean */
 }
 
-        .product-card:active { transform: scale(0.98); box-shadow: 0 1px 4px rgba(0,0,0,0.08); }
+          /* Neutralize default active style to avoid conflicting opacity/press visuals
+              Use the JS-driven .pressed and .tap-pop classes for consistent feedback */
+          .product-card:active { transform: none !important; box-shadow: 0 2px 8px rgba(0,0,0,0.06) !important; opacity: 1 !important; }
         .product-card .badge {
             position: absolute; top: 10px; left: 10px;
             background: #ff4081; color: white; padding: 4px 10px;
@@ -107,21 +174,70 @@
         .product-rating { display: flex; align-items: center; gap: 4px; font-size: 11.5px; color: #f59e0b; font-weight: 700; margin-bottom: 4px; }
         .product-rating span { color: #9aa3af; font-weight: 600; }
         .product-name { font-size: 14px; color: #333; font-weight: 600; margin: 0 0 6px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-        .product-price { color: #3f51b5; font-weight: 700; margin: 0 0 12px; font-size: 16px; }
+        .product-price { color: var(--primary); font-weight: 700; margin: 0 0 12px; font-size: 16px; }
         .buy-btn {
-            background: #e8eaf6; color: #3f51b5; border: none; padding: 10px;
+            background: #fff0e1; color: var(--primary-dark); border: none; padding: 10px;
             border-radius: 6px; width: 100%; font-weight: 700; font-size: 13px;
             cursor: pointer; transition: 0.2s; display: flex; justify-content: center; align-items: center; gap: 5px;
         }
-        .buy-btn:active { background: #3f51b5; color: white; }
+        .buy-btn:active { background: var(--gradient-orange); color: white; }
+
+        /* --- Marketing Banner --- */
+        .marketing-banner {
+            margin: 8px 15px 0; padding: 16px; border-radius: 16px;
+            background: linear-gradient(135deg, #fff7ed 0%, #ffedd5 100%);
+            border: 1px solid #ffd8b3; box-shadow: 0 6px 16px rgba(234,88,12,0.10);
+            display: flex; flex-direction: column; gap: 12px;
+        }
+        .marketing-tag {
+            display: inline-flex; align-self: flex-start; padding: 5px 10px; border-radius: 999px;
+            background: #fff; color: var(--primary); font-size: 11px; font-weight: 800; letter-spacing: 0.3px;
+        }
+        .marketing-title { margin: 0; font-size: 17px; font-weight: 800; color: #9a2c00; }
+        .marketing-text { margin: 0; font-size: 13px; color: #6b7280; line-height: 1.5; }
+        .marketing-btn {
+            display: inline-flex; align-items: center; justify-content: center; gap: 6px;
+            width: fit-content; padding: 9px 14px; border-radius: 999px; background: var(--gradient-orange);
+            color: white; text-decoration: none; font-size: 13px; font-weight: 700;
+        }
+        .marketing-row {
+            display: flex; align-items: center; justify-content: space-between; gap: 12px;
+        }
+        .marketing-badge {
+            flex-shrink: 0; width: 54px; height: 54px; border-radius: 16px;
+            background: white; display: flex; align-items: center; justify-content: center;
+            font-size: 24px; box-shadow: 0 4px 10px rgba(234,88,12,0.12);
+        }
+
+        /* --- Hot & Trending Products --- */
+        .trending-section { padding: 8px 15px 18px; }
+        .trending-section .product-grid { padding: 0; gap: 12px; }
+        .trending-section .product-card {
+            box-shadow: 0 6px 14px rgba(234,88,12,0.10);
+            border: 1px solid #ffd8b3;
+            background: linear-gradient(180deg, #fff 0%, #fffaf5 100%);
+        }
+        .trending-section .product-card .badge {
+            background: linear-gradient(135deg, #ff7a00, #ff4d6d);
+            border-radius: 999px; padding: 5px 10px; font-size: 10px;
+        }
+        .trending-section .product-card .product-name {
+            font-size: 13px; font-weight: 700; color: #111827; white-space: normal; height: auto;
+        }
+        .trending-section .product-card .product-price {
+            font-size: 15px; margin-bottom: 10px;
+        }
 
         /* --- Drawer Menu --- */
         .drawer {
-            height: 100%; width: 0; position: fixed; z-index: 200; top: 0; left: 0;
-            background-color: white; overflow-x: hidden; transition: 0.3s;
+            height: 100%; width: 260px; position: fixed; z-index: 200; top: 0; left: 0;
+            background-color: white; overflow-x: hidden;
+            transform: translateX(-100%);
+            transition: transform 0.35s cubic-bezier(0.22, 1, 0.36, 1);
             box-shadow: 4px 0 15px rgba(0,0,0,0.1);
         }
-        .drawer-header { background: linear-gradient(135deg, #3f51b5, #5c6bc0); color: white; padding: 40px 20px 30px; text-align: center; position: relative; }
+        .drawer.open { transform: translateX(0); }
+        .drawer-header { background: var(--gradient-orange); color: white; padding: 40px 20px 30px; text-align: center; position: relative; }
         .drawer-logo img { width: 80px; height: 80px; border-radius: 50%; border: 3px solid white; margin-bottom: 10px; object-fit: cover; background: white; }
         .drawer-title { font-size: 22px; font-weight: bold; }
         .close-btn { position: absolute; top: 15px; right: 20px; font-size: 28px; color: white; cursor: pointer; }
@@ -129,23 +245,36 @@
         .drawer-links a {
             padding: 16px 20px; text-decoration: none; font-size: 16px; color: #444;
             display: flex; align-items: center; border-bottom: 1px solid #f5f5f5; font-weight: 500;
+            transition: background-color 0.2s, padding-left 0.2s;
         }
-        .drawer-links a i { width: 30px; color: #3f51b5; font-size: 18px; }
-        .drawer-links a:hover { background-color: #f9f9f9; }
+        .drawer-links a i { width: 30px; color: var(--primary); font-size: 18px; }
+        .drawer-links a:hover, .drawer-links a:active { background-color: #fff4e6; padding-left: 26px; }
 
-        .overlay { display: none; position: fixed; width: 100%; height: 100%; top: 0; left: 0; background-color: rgba(0,0,0,0.5); z-index: 150; backdrop-filter: blur(2px); }
+        .overlay {
+            position: fixed; width: 100%; height: 100%; top: 0; left: 0;
+            background-color: rgba(0,0,0,0.5); z-index: 150; backdrop-filter: blur(2px);
+            opacity: 0; visibility: hidden; transition: opacity 0.35s ease;
+        }
+        .overlay.show { opacity: 1; visibility: visible; }
 
         /* --- Bottom Navigation --- */
         .bottom-nav {
             position: fixed; bottom: 0; left: 0; width: 100%;
             background-color: white; display: flex; justify-content: space-around;
-            padding: 12px 0; box-shadow: 0 -4px 15px rgba(0,0,0,0.05); z-index: 100;
-            border-top-left-radius: 10px; border-top-right-radius: 10px;
+            padding: 8px 0 10px; box-shadow: 0 -4px 15px rgba(0,0,0,0.05); z-index: 100;
         }
-        .nav-item { text-align: center; color: #9e9e9e; text-decoration: none; flex-grow: 1; transition: 0.3s; }
-        .nav-item.active { color: #3f51b5; transform: translateY(-2px); }
-        .nav-item i { font-size: 22px; margin-bottom: 4px; }
-        .nav-item p { margin: 0; font-size: 12px; font-weight: 600; }
+        .nav-item { text-align: center; color: #b0b0b0; text-decoration: none; flex-grow: 1; transition: 0.25s; position: relative; }
+        .nav-item.active { color: var(--primary); transform: translateY(-1px); }
+        .nav-item i { font-size: 19px; margin-bottom: 3px; transition: transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1); display: block; }
+        .nav-item p { margin: 0; font-size: 11px; font-weight: 500; }
+        .nav-item.active p { font-weight: 700; }
+        .nav-item:active i { transform: scale(0.8); }
+        .nav-item.active i { animation: navPop 0.35s ease; }
+        @keyframes navPop {
+            0% { transform: scale(0.8); }
+            60% { transform: scale(1.25); }
+            100% { transform: scale(1); }
+        }
 
         /* --- Cart Notification Red Dot --- */
         .nav-icon-wrap { position: relative; display: inline-block; }
@@ -239,7 +368,7 @@
             border: 1px solid #e2e8f0; margin-bottom: 20px;
         }
         .pdetail-specs-box h4 {
-            margin: 0 0 10px 0; font-size: 14.5px; color: #3f51b5; font-weight: 700;
+            margin: 0 0 10px 0; font-size: 14.5px; color: var(--primary); font-weight: 700;
             display: flex; align-items: center; gap: 6px;
         }
         .pdetail-specs-list { display: flex; flex-direction: column; gap: 8px; }
@@ -452,28 +581,37 @@
                 <span class="slogan">MAKE LIFE MEANINGFUL</span>
             </div>
         </div>
-        <button class="icon-btn" onclick="focusSearch()"><a href="profile.html" class="header-profile-link">
-    <img src="profile0.jpg" id="headerProfilePic" alt="Profile" class="header-profile-img">
-</a>
+        <a href="profile.html" class="header-profile-link">
+            <img src="profile0.jpg" id="headerProfilePic" alt="Profile" class="header-profile-img">
+        </a>
 
     </header>
 
     <main>
-        <!-- Smart Search Bar -->
-        <div class="search-container">
-            <div class="search-bar">
-                <input type="text" id="searchInput" placeholder="What are you looking for? (e.g. shirt, watch)..." onkeypress="handleSearchKeyPress(event)">
-                <button class="search-icon-btn" onclick="executeSearch()"><i class="fas fa-search"></i></button>
-            </div>
-        </div>
-
-        <!-- Banner Slider -->
+        <!-- Banner Slider (full width, edge-to-edge, right under header) -->
         <div class="banner-container">
             <div class="banner-slider">
                 <img class="mySlides" src="https://res.cloudinary.com/dykw2sacb/image/upload/f_auto,q_auto/banner1_gpesej" alt="Banner 1" onerror="this.src='https://placehold.co/600x200?text=Banner+1'">
                 <img class="mySlides" src="https://res.cloudinary.com/dykw2sacb/image/upload/v1782056977/banner2_qhiszb.jpg" alt="Banner 2" onerror="this.src='https://placehold.co/600x200?text=Banner+2'">
                 <img class="mySlides" src="https://res.cloudinary.com/dykw2sacb/image/upload/v1782056977/banner3_q6bbte.jpg" alt="Banner 3" onerror="this.src='https://placehold.co/600x200?text=Banner+3'">
             </div>
+        </div>
+
+        <!-- Smart Search Bar (floats over banner edge) -->
+        <div class="search-container">
+            <div class="search-bar">
+                <input type="text" id="searchInput" placeholder="What are you looking for? (e.g. shirt, watch)..." onkeypress="handleSearchKeyPress(event)">
+                <button class="search-icon-btn" onclick="executeSearch()"><i class="fas fa-search"></i></button>
+            </div>
+            <div class="search-suggestions" id="homeSearchSuggestions"></div>
+        </div>
+
+        <!-- Quick Event / Offer Chips -->
+        <div class="event-chip-section">
+            <a class="event-chip chip-flash" onclick="quickSearch('Flash Sale')"><i class="fas fa-bolt"></i> Flash Sale</a>
+            <a class="event-chip chip-free" onclick="quickSearch('Free Delivery')"><i class="fas fa-truck"></i> Free Delivery</a>
+            <a class="event-chip chip-new" onclick="quickSearch('New Products')"><i class="fas fa-star"></i> New Products</a>
+            <a class="event-chip chip-offer" onclick="quickSearch('Best Offers')"><i class="fas fa-tags"></i> Best Offers</a>
         </div>
 
                <section class="shortcut-section">
@@ -503,88 +641,39 @@
             </div>
         </section>
 
-
-        <!-- Trending Products Section -->
-        <div class="trending-section">
-            <h2 class="section-title">Trending Products 🔥</h2>
-            <div class="product-grid">
-<div class="product-card" onclick="openProductModal('Amazing Wall-boards', 200, ['https://res.cloudinary.com/dzuwta6lc/image/upload/v1782296291/1000018460_ifdjp3.webp','https://res.cloudinary.com/dzuwta6lc/image/upload/v1782296291/1000018458_yhmjlz.webp','https://res.cloudinary.com/dzuwta6lc/image/upload/v1782296292/1000018461_x6ipvm.webp','https://res.cloudinary.com/dzuwta6lc/image/upload/v1782296291/1000018457_mqqkga.webp'], '', 'An attractive and beautiful premium quality wall board to decorate your home walls.', ['Material: PVC', 'Size: 40 x 60 cm', 'Installation: Easy DIY Fitting', 'Warranty: 6 Months'])">
-    <div class="badge">Trending</div>
-    <img src="https://res.cloudinary.com/dzuwta6lc/image/upload/v1782296292/1000018461_x6ipvm.webp" alt="Product" class="product-img" onerror="this.src='https://placehold.co/150'">
-    <div class="product-rating"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star-half-alt"></i> <span>(4.5)</span></div>
-    <h3 class="product-name">Amazing Wall-boards</h3>
-    <p class="product-price">৳200</p>
-    <button class="buy-btn"><i class="fas fa-shopping-cart"></i> Buy Now</button>
-</div>
-
-<div class="product-card" onclick="openProductModal('Exam Success Guide', 350, ['https://placehold.co/150?text=Book+Front', 'https://placehold.co/150?text=Book+Back'], 'G-BOOK-02', 'A special guidebook to help you achieve great exam results and improve study focus.', ['Language: Bengali', 'Pages: 120', 'Cover: Paperback', 'Publisher: Ideas Publication'])">
-    <div class="badge" style="background: #ff9800;">Hot</div>
-    <img src="https://placehold.co/150" alt="Product" class="product-img">
-    <div class="product-rating"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star-half-alt"></i> <span>(4.5)</span></div>
-    <h3 class="product-name">Exam Success Guide</h3>
-    <p class="product-price">৳350</p>
-    <button class="buy-btn"><i class="fas fa-shopping-cart"></i> Buy Now</button>
-</div>
-
-<div class="product-card" onclick="openProductModal('Casual Gabardine Pants', 580, ['https://placehold.co/150?text=Pant+1', 'https://placehold.co/150?text=Pant+2'], 'G-PANT-03', 'Stylish casual gabardine pants made with extremely comfortable and durable fabric.', ['Fabric: Gabardine Cotton', 'Size: M, L, XL, XXL', 'Fit: Regular Fit', 'Color Options: Black, Navy, Grey'])">
-    <img src="https://placehold.co/150" alt="Product" class="product-img">
-    <div class="product-rating"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star-half-alt"></i> <span>(4.5)</span></div>
-    <h3 class="product-name">Casual Gabardine Pants</h3>
-    <p class="product-price">৳580</p>
-    <button class="buy-btn"><i class="fas fa-shopping-cart"></i> Buy Now</button>
-</div>
-
-<div class="product-card" onclick="openProductModal('Formal Full Sleeve Shirt', 750, ['https://placehold.co/150?text=Shirt+1', 'https://placehold.co/150?text=Shirt+2'], 'G-SHIRT-01', 'A comfortable casual shirt made with 100% premium cotton fabric. Perfect for office or any occasion.', ['Fabric: 100% Premium Cotton', 'Size: M, L, XL, XXL', 'Sleeve: Full Sleeve', 'Color Options: White, Sky Blue'])">
-    <img src="https://placehold.co/150" alt="Product" class="product-img">
-    <div class="product-rating"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star-half-alt"></i> <span>(4.5)</span></div>
-    <h3 class="product-name">Formal Full Sleeve Shirt</h3>
-    <p class="product-price">৳750</p>
-    <button class="buy-btn"><i class="fas fa-shopping-cart"></i> Buy Now</button>
-</div>
-
+        <section class="marketing-banner">
+            <span class="marketing-tag">🔥 Hot Deal This Week</span>
+            <div class="marketing-row">
+                <div>
+                    <h3 class="marketing-title">Trending picks for your next order</h3>
+                    <p class="marketing-text">Explore the most loved products and grab amazing offers before they are gone.</p>
+                    <a href="category.html" class="marketing-btn">Shop Now <i class="fas fa-arrow-right"></i></a>
+                </div>
+                <div class="marketing-badge"><i class="fas fa-fire"></i></div>
             </div>
-        </div>
+        </section>
 
-        <!-- Recommend Products Section -->
-        <div class="trending-section" style="padding-bottom: 20px;">
-            <h2 class="section-title">Recommended 💝</h2>
-            <div class="product-grid">
-               <div class="product-card" onclick="openProductModal('Amazing Wall-boards', 200, ['products flyer.png', 'https://placehold.co/150?text=Wall-board+2'], 'G-BOARD-01', 'An attractive and beautiful premium quality wall board to decorate your home walls.', ['Material: PVC', 'Size: 40 x 60 cm', 'Installation: Easy DIY Fitting', 'Warranty: 6 Months'])">
-    <div class="badge">Trending</div>
-    <img src="products flyer.png" alt="Product" class="product-img" onerror="this.src='https://placehold.co/150'">
-    <div class="product-rating"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star-half-alt"></i> <span>(4.5)</span></div>
-    <h3 class="product-name">Amazing Wall-boards</h3>
-    <p class="product-price">৳200</p>
-    <button class="buy-btn"><i class="fas fa-shopping-cart"></i> Buy Now</button>
-</div>
-
-<div class="product-card" onclick="openProductModal('Exam Success Guide', 350, ['https://placehold.co/150?text=Book+Front', 'https://placehold.co/150?text=Book+Back'], 'G-BOOK-02', 'A special guidebook to help you achieve great exam results and improve study focus.', ['Language: Bengali', 'Pages: 120', 'Cover: Paperback', 'Publisher: Ideas Publication'])">
-    <div class="badge" style="background: #ff9800;">Hot</div>
-    <img src="https://placehold.co/150" alt="Product" class="product-img">
-    <div class="product-rating"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star-half-alt"></i> <span>(4.5)</span></div>
-    <h3 class="product-name">Exam Success Guide</h3>
-    <p class="product-price">৳350</p>
-    <button class="buy-btn"><i class="fas fa-shopping-cart"></i> Buy Now</button>
-</div>
-
-<div class="product-card" onclick="openProductModal('Casual Gabardine Pants', 580, ['https://placehold.co/150?text=Pant+1', 'https://placehold.co/150?text=Pant+2'], 'G-PANT-03', 'Stylish casual gabardine pants made with extremely comfortable and durable fabric.', ['Fabric: Gabardine Cotton', 'Size: M, L, XL, XXL', 'Fit: Regular Fit', 'Color Options: Black, Navy, Grey'])">
-    <img src="https://placehold.co/150" alt="Product" class="product-img">
-    <div class="product-rating"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star-half-alt"></i> <span>(4.5)</span></div>
-    <h3 class="product-name">Casual Gabardine Pants</h3>
-    <p class="product-price">৳580</p>
-    <button class="buy-btn"><i class="fas fa-shopping-cart"></i> Buy Now</button>
-</div>
-
-<div class="product-card" onclick="openProductModal('Formal Full Sleeve Shirt', 750, ['https://placehold.co/150?text=Shirt+1', 'https://placehold.co/150?text=Shirt+2'], 'G-SHIRT-01', 'A comfortable casual shirt made with 100% premium cotton fabric. Perfect for office or any occasion.', ['Fabric: 100% Premium Cotton', 'Size: M, L, XL, XXL', 'Sleeve: Full Sleeve', 'Color Options: White, Sky Blue'])">
-    <img src="https://placehold.co/150" alt="Product" class="product-img">
-    <div class="product-rating"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star-half-alt"></i> <span>(4.5)</span></div>
-    <h3 class="product-name">Formal Full Sleeve Shirt</h3>
-    <p class="product-price">৳750</p>
-    <button class="buy-btn"><i class="fas fa-shopping-cart"></i> Buy Now</button>
-</div>
-
+        <section class="trending-section">
+            <div class="section-header">
+                <div>
+                    <h2 class="section-title">Hot & Trending Products</h2>
+                    <p class="section-subtitle">Best-selling items customers love right now</p>
+                </div>
+                <a href="category.html" class="view-all-link">See all <i class="fas fa-arrow-right"></i></a>
             </div>
-        </div>
+            <div class="product-grid" id="homeTrendingProductsGrid"></div>
+        </section>
+
+        <section class="all-products-section">
+            <div class="section-header">
+                <div>
+                    <h2 class="section-title">All Products</h2>
+                    <p class="section-subtitle">Synced with the category page in real time</p>
+                </div>
+                <a href="category.html" class="view-all-link">See all <i class="fas fa-arrow-right"></i></a>
+            </div>
+            <div class="product-grid" id="homeAllProductsGrid"></div>
+        </section>
     </main>
 
     <!-- Product Details Modal Window (Full-Screen) -->
@@ -640,7 +729,7 @@
             <div class="drawer-title">Ideas SHOP</div>
         </div>
         <div class="drawer-links">
-            <a href="home.html" style="color:#3f51b5; font-weight:bold;"><i class="fas fa-home"></i>Home</a>
+            <a href="home.html" style="color:#ea580c; font-weight:bold;"><i class="fas fa-home"></i>Home</a>
             <a href="category.html"><i class="fas fa-th-large"></i>Category</a>
             <a href="order.html"><i class="fas fa-shopping-bag"></i>My Order</a>
             <a href="IdeasSHOPChat.html"><i class="far fa-comments" style="color: #ff5722;"></i> IdeasSHOP Chat</a>
@@ -651,7 +740,7 @@
         <div style="position: absolute; bottom: 20px; left: 0; width: 100%; text-align: center;">
             <p style="margin: 0; font-size: 12px; color: #aaa;">Version 1.1.1</p>
             <p style="margin: 5px 0 0; font-size: 13px; color: #666; font-weight: 500;">
-                Developed by <span style="color: #3f51b5; font-weight: bold;">MD Nabil</span>
+                Developed by <span style="color: #ea580c; font-weight: bold;">MD Nabil</span>
             </p>
         </div>
     </div>
@@ -707,18 +796,253 @@
     <script>
         // Drawer Logic
         function openDrawer() {
-            document.getElementById("myDrawer").style.width = "260px";
-            document.getElementById("overlay").style.display = "block";
+            document.getElementById("myDrawer").classList.add("open");
+            document.getElementById("overlay").classList.add("open");
+            document.body.classList.add('drawer-open');
         }
         function closeDrawer() {
-            document.getElementById("myDrawer").style.width = "0";
-            document.getElementById("overlay").style.display = "none";
+            document.getElementById("myDrawer").classList.remove("open");
+            document.getElementById("overlay").classList.remove("open");
+            document.body.classList.remove('drawer-open');
         }
 
         // Search Focus Logic
         function focusSearch() {
             document.getElementById("searchInput").focus();
             window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        const fallbackProducts = [
+            {
+                code: 'G-SHIRT-01',
+                title: 'Premium Cotton Shirt',
+                price: '৳758',
+                images: ['https://images.unsplash.com/photo-1596755094514-f87e34085b2c?w=400'],
+                desc: 'Comfortable premium cotton shirt suitable for daily wear and office use.',
+                specs: ['Fabric: 100% Premium Cotton', 'Sizes: M, L, XL, XXL'],
+                category: 'gents'
+            },
+            {
+                code: 'E-EARBUD-01',
+                title: 'Wireless Earbuds',
+                price: '৳990',
+                images: ['https://images.unsplash.com/photo-1590658268037-6bf12165a8df?w=400'],
+                desc: 'Rich sound quality with a sleek and lightweight design.',
+                specs: ['Backup: 4-5 hours', 'Waterproof: IPX5'],
+                category: 'electronics'
+            },
+            {
+                code: 'W-WATCH-01',
+                title: 'Stylish Smart Watch',
+                price: '৳1200',
+                images: ['https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=400'],
+                desc: 'Full touch display with health tracking features and premium look.',
+                specs: ['Display: 1.69 inch HD', 'Battery: 7-10 days'],
+                category: 'watch'
+            },
+            {
+                code: 'L-BAG-01',
+                title: 'Vanity Bag',
+                price: '৳1250',
+                images: ['https://images.unsplash.com/photo-1584917865442-de89df76afd3?w=400'],
+                desc: 'Elegant ladies vanity bag with premium finish and multiple pockets.',
+                specs: ['Material: Premium PU Leather', 'Chamber: 3 large pockets'],
+                category: 'ladies'
+            }
+        ];
+
+        function getSharedProducts() {
+            try {
+                const storedProducts = JSON.parse(localStorage.getItem('megaProductList') || 'null');
+                if (Array.isArray(storedProducts) && storedProducts.length) {
+                    return storedProducts;
+                }
+            } catch (error) {
+                console.log('No shared product list found yet.', error);
+            }
+
+            localStorage.setItem('megaProductList', JSON.stringify(fallbackProducts));
+            localStorage.setItem('megaProductListVersion', 'home-seed-v1');
+            return fallbackProducts;
+        }
+
+        function normalizePriceValue(value) {
+            if (typeof value === 'number') return value;
+            if (!value) return 0;
+            const bengaliToEnglish = { '০': '0', '১': '1', '২': '2', '৩': '3', '৪': '4', '৫': '5', '৬': '6', '৭': '7', '৮': '8', '৯': '9' };
+            const normalized = String(value).replace(/[০-৯]/g, ch => bengaliToEnglish[ch] || ch);
+            const parsed = parseInt(normalized.replace(/[^0-9]/g, ''), 10);
+            return Number.isNaN(parsed) ? 0 : parsed;
+        }
+
+        function resolveProductImage(product) {
+            const image = Array.isArray(product.images) && product.images.length ? product.images[0] : '';
+            if (!image || /^\d+$/.test(String(image).trim())) {
+                return 'https://placehold.co/300x300?text=Ideas+SHOP';
+            }
+            return image;
+        }
+
+        function getBadgeText(product, index) {
+            if (product && (product.badgeText || product.badgeType)) {
+                return product.badgeText || product.badgeType;
+            }
+
+            const badgeList = ['New', 'Hot', 'Offer'];
+            return badgeList[index] || '';
+        }
+
+        function renderHomeTrendingProducts() {
+            const grid = document.getElementById('homeTrendingProductsGrid');
+            if (!grid) return;
+
+            const products = getSharedProducts().slice(0, 2);
+            grid.innerHTML = '';
+
+            products.forEach((product, index) => {
+                const card = document.createElement('article');
+                card.className = 'product-card';
+                card.tabIndex = 0; // make focusable for keyboard activation
+                card.setAttribute('role', 'button');
+                card.onclick = () => openProductModal(
+                    product.title || 'Ideas SHOP Product',
+                    normalizePriceValue(product.price),
+                    [resolveProductImage(product)],
+                    product.code || 'IDEAS-001',
+                    product.desc || 'Premium product from Ideas SHOP.',
+                    Array.isArray(product.specs) ? product.specs : []
+                );
+
+                const badgeText = index === 0 ? 'New' : 'Hot';
+                card.innerHTML = `
+                    <div class="badge">${badgeText}</div>
+                    <img src="${resolveProductImage(product)}" alt="${product.title || 'Product'}" class="product-img" onerror="this.src='https://placehold.co/150'">
+                    <div class="product-rating"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star-half-alt"></i> <span>(4.5)</span></div>
+                    <h3 class="product-name">${product.title || 'Ideas SHOP Product'}</h3>
+                    <p class="product-price">${product.price || '৳0'}</p>
+                    <button class="buy-btn"><i class="fas fa-shopping-bag"></i> Buy Now</button>
+                `;
+                grid.appendChild(card);
+            });
+        }
+
+        function renderHomeAllProducts() {
+            const grid = document.getElementById('homeAllProductsGrid');
+            if (!grid) return;
+
+            const products = getSharedProducts();
+            grid.innerHTML = '';
+
+            if (!products.length) {
+                grid.innerHTML = '<div style="grid-column: 1 / -1; text-align:center; padding:16px; color:#6b7280;">No products available yet. Add one from the category page to see it here.</div>';
+                return;
+            }
+
+            products.slice(0, 8).forEach((product, index) => {
+                const card = document.createElement('div');
+                card.className = 'product-card';
+                card.tabIndex = 0; // make focusable for keyboard activation
+                card.setAttribute('role', 'button');
+                card.onclick = () => openProductModal(
+                    product.title || 'Ideas SHOP Product',
+                    normalizePriceValue(product.price),
+                    [resolveProductImage(product)],
+                    product.code || 'IDEAS-001',
+                    product.desc || 'Premium product from Ideas SHOP.',
+                    Array.isArray(product.specs) ? product.specs : []
+                );
+
+                const badgeText = getBadgeText(product, index);
+                const badgeHtml = badgeText ? `<div class="badge">${badgeText}</div>` : '';
+
+                card.innerHTML = `
+                    ${badgeHtml}
+                    <img src="${resolveProductImage(product)}" alt="${product.title || 'Product'}" class="product-img" onerror="this.src='https://placehold.co/150'">
+                    <div class="product-rating"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star-half-alt"></i> <span>(4.5)</span></div>
+                    <h3 class="product-name">${product.title || 'Ideas SHOP Product'}</h3>
+                    <p class="product-price">${product.price || '৳0'}</p>
+                    <button class="buy-btn"><i class="fas fa-shopping-cart"></i> Buy Now</button>
+                `;
+                grid.appendChild(card);
+            });
+        }
+
+        function addProductFromForm(event) {
+            event.preventDefault();
+
+            const name = document.getElementById('productNameInput').value.trim();
+            const price = document.getElementById('productPriceInput').value.trim();
+            const image = document.getElementById('productImageInput').value.trim();
+            const category = document.getElementById('productCategoryInput').value.trim() || 'general';
+            const desc = document.getElementById('productDescInput').value.trim() || 'Newly added product from Ideas SHOP.';
+            const msgBox = document.getElementById('quickAddMessage');
+
+            if (!name || !price) {
+                if (msgBox) {
+                    msgBox.textContent = 'অনুগ্রহ করে নাম ও দাম লিখুন.';
+                }
+                return;
+            }
+
+            const products = getSharedProducts();
+            const newProduct = {
+                code: `ADD-${Date.now()}`,
+                title: name,
+                price: price,
+                images: image ? [image] : ['https://placehold.co/300x300?text=Ideas+SHOP'],
+                desc: desc,
+                specs: ['Added from quick form', 'Ready to view on home page'],
+                category: category
+            };
+
+            products.unshift(newProduct);
+            localStorage.setItem('megaProductList', JSON.stringify(products));
+            renderHomeAllProducts();
+
+            document.getElementById('quickAddProductForm').reset();
+            if (msgBox) {
+                msgBox.textContent = 'Product added successfully.';
+            }
+        }
+
+        function renderHomeSearchSuggestions(query) {
+            const suggestionsBox = document.getElementById('homeSearchSuggestions');
+            if (!suggestionsBox) return;
+            const value = (query || '').trim().toLowerCase();
+            if (!value) {
+                suggestionsBox.innerHTML = '';
+                suggestionsBox.classList.remove('show');
+                return;
+            }
+
+            const products = getSharedProducts().filter((product) => {
+                const haystack = `${product.title || ''} ${product.code || ''} ${product.desc || ''} ${product.category || ''}`.toLowerCase();
+                return haystack.includes(value);
+            }).slice(0, 5);
+
+            if (!products.length) {
+                suggestionsBox.innerHTML = '<div class="search-suggestion-item"><span>No matching products found</span></div>';
+                suggestionsBox.classList.add('show');
+                return;
+            }
+
+            suggestionsBox.innerHTML = products.map((product) => `
+                <div class="search-suggestion-item" onclick="selectHomeSuggestion('${(product.title || '').replace(/'/g, "\\'")}')">
+                    <div class="suggestion-label">
+                        <strong>${product.title || 'Product'}</strong>
+                        <span>${product.code || ''}</span>
+                    </div>
+                    <span class="suggestion-badge">${product.category || 'product'}</span>
+                </div>
+            `).join('');
+            suggestionsBox.classList.add('show');
+        }
+
+        function selectHomeSuggestion(title) {
+            const input = document.getElementById('searchInput');
+            if (input) input.value = title;
+            localStorage.setItem('userSearchQuery', title);
+            window.location.href = 'category.html';
         }
 
         // --- Smart Search Logic ---
@@ -738,6 +1062,34 @@
             localStorage.setItem('userSearchQuery', keyword);
             window.location.href = "category.html";
         }
+
+        document.addEventListener('DOMContentLoaded', function () {
+            getSharedProducts();
+            renderHomeTrendingProducts();
+            renderHomeAllProducts();
+            const searchInput = document.getElementById('searchInput');
+            if (searchInput) {
+                searchInput.addEventListener('input', () => renderHomeSearchSuggestions(searchInput.value));
+                searchInput.addEventListener('focus', () => renderHomeSearchSuggestions(searchInput.value));
+            }
+        });
+
+        if (window.BroadcastChannel) {
+            const sharedChannel = new BroadcastChannel('ideas-shop-products');
+            sharedChannel.onmessage = (event) => {
+                if (event.data && event.data.type === 'product-list-updated') {
+                    renderHomeTrendingProducts();
+                    renderHomeAllProducts();
+                }
+            };
+        }
+
+        window.addEventListener('storage', function (event) {
+            if (event.key === 'megaProductList') {
+                renderHomeTrendingProducts();
+                renderHomeAllProducts();
+            }
+        });
 
         // Banner Slider Logic
         let slideIndex = 0;
@@ -827,7 +1179,7 @@
             // ফুল-স্ক্রিন মডাল খোলা (নিচ থেকে স্লাইড করে উপরে আসবে)
             document.getElementById('productModalOverlay').classList.add('active');
             document.getElementById('productModal').classList.add('active');
-            document.body.style.overflow = 'hidden';
+            document.body.classList.add('no-scroll');
         }
 
         function changeModalSlide(direction) {
@@ -852,7 +1204,7 @@
         function closeProductModal() {
             document.getElementById('productModalOverlay').classList.remove('active');
             document.getElementById('productModal').classList.remove('active');
-            document.body.style.overflow = 'auto';
+            document.body.classList.remove('no-scroll');
         }
 
         // কার্ট ডেটা লোকাল স্টোরেজে সেভ করার ফাংশন
@@ -930,3 +1282,78 @@ if (savedImg) {
     </script>
 </body>
 </html>
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+    const items = document.querySelectorAll('.shortcut-item, .event-chip');
+    items.forEach(el => {
+        // pointerdown => immediate pressed feedback
+        el.addEventListener('pointerdown', (e) => {
+            el.classList.add('pressed');
+        });
+        // pointerup => remove pressed, trigger pop animation
+        el.addEventListener('pointerup', (e) => {
+            el.classList.remove('pressed');
+            // small delay to allow pointerup visual -> then pop
+            window.requestAnimationFrame(() => {
+                el.classList.add('tap-pop');
+                // remove after animation
+                setTimeout(() => el.classList.remove('tap-pop'), 360);
+            });
+        });
+        // cancel or leave
+        el.addEventListener('pointercancel', () => el.classList.remove('pressed'));
+        el.addEventListener('pointerleave', () => el.classList.remove('pressed'));
+
+        // keyboard activation support: Spacebar triggers animation+prevents scrolling, Enter should still activate links
+        el.addEventListener('keydown', (e) => {
+            if (e.key === ' ' || e.key === 'Spacebar') {
+                e.preventDefault();
+                el.classList.add('tap-pop');
+                setTimeout(() => el.classList.remove('tap-pop'), 360);
+            } else if (e.key === 'Enter') {
+                // allow default (navigation) but show the animation briefly
+                el.classList.add('tap-pop');
+                setTimeout(() => el.classList.remove('tap-pop'), 360);
+            }
+        });
+    });
+    // Product card delegated press/pop handlers (works for dynamically created cards)
+    let activeCard = null;
+    document.addEventListener('pointerdown', (e) => {
+        const card = e.target.closest && e.target.closest('.product-card');
+        if (card) {
+            activeCard = card;
+            card.classList.add('pressed');
+        }
+    });
+    document.addEventListener('pointerup', (e) => {
+        const card = (e.target && e.target.closest && e.target.closest('.product-card')) || activeCard;
+        if (card) {
+            card.classList.remove('pressed');
+            window.requestAnimationFrame(() => {
+                card.classList.add('tap-pop');
+                setTimeout(() => card.classList.remove('tap-pop'), 360);
+            });
+        }
+        activeCard = null;
+    });
+    document.addEventListener('pointercancel', () => { if (activeCard) { activeCard.classList.remove('pressed'); activeCard = null; } });
+    document.addEventListener('pointerleave', (e) => { const c = e.target && e.target.closest && e.target.closest('.product-card'); if (c) c.classList.remove('pressed'); });
+
+    // keyboard support for focused product-card
+    document.addEventListener('keydown', (e) => {
+        const el = document.activeElement;
+        if (el && el.classList && el.classList.contains('product-card')) {
+            if (e.key === ' ' || e.key === 'Spacebar') {
+                e.preventDefault();
+                el.classList.add('tap-pop');
+                setTimeout(() => el.classList.remove('tap-pop'), 360);
+            } else if (e.key === 'Enter') {
+                el.classList.add('tap-pop');
+                setTimeout(() => el.classList.remove('tap-pop'), 360);
+                // let the existing click handler execute
+            }
+        }
+    });
+});
+</script>
