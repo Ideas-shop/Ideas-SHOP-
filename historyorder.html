@@ -89,6 +89,9 @@
             display: inline-block; font-size: 12px; font-weight: 700; padding: 4px 12px;
             border-radius: 20px; background: #e8f5e9; color: #2e7d32; margin-bottom: 12px;
         }
+        .oh-status.canceled {
+            background: #fdecea; color: #c92a2a;
+        }
 
         .oh-item-row {
             display: flex; justify-content: space-between; align-items: center;
@@ -277,7 +280,16 @@
                         `;
                     });
 
-                    let statusUI = order.status ? `<span class="oh-status"><i class="fas fa-check-circle"></i> ${order.status}</span>` : `<span class="oh-status" style="background:#fff3cd; color:#b8860b;"><i class="fas fa-clock"></i> Pending</span>`;
+                    let normalizedStatus = (order.status || '').trim().toLowerCase();
+                    let isCanceled = normalizedStatus === 'canceled' || normalizedStatus === 'cancelled';
+                    let statusUI;
+                    if (isCanceled) {
+                        statusUI = `<span class="oh-status canceled"><i class="fas fa-times-circle"></i> বাতিল হয়েছে</span>`;
+                    } else if (order.status) {
+                        statusUI = `<span class="oh-status"><i class="fas fa-check-circle"></i> ${order.status}</span>`;
+                    } else {
+                        statusUI = `<span class="oh-status" style="background:#fff3cd; color:#b8860b;"><i class="fas fa-clock"></i> Pending</span>`;
+                    }
 
                     let cardHtml = `
                         <div class="order-history-card">
