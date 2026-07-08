@@ -1,43 +1,5 @@
 [
   {
-    "code": "F-fan-02",
-    "title": "Fan MINI N15 ইন্টেলিজেন্ট পোর্টেবল হ্যান্ডহেল্ড ফ্যান",
-    "price": "৳479",
-    "stock": 100,
-    "images": [
-      "https://res.cloudinary.com/qzvdcf3q/image/upload/v1783173525/738206310_3438660569647980_8579368170292673282_n_zrrybi.jpg",
-      "https://res.cloudinary.com/qzvdcf3q/image/upload/v1783173461/735981358_2294665464678201_3467681435934442743_n_fzcdav.jpg"
-    ],
-    "desc": "গরমের দিনে স্বস্তি পেতে এবং যেকোনো জায়গায় সহজে বহন করার জন্য এটি একটি চমৎকার ও আধুনিক গ্যাজেট। এর অন্যতম আকর্ষণীয় ফিচার হলো এর LED ডিসপ্লে, যা রিয়েল-টাইমে ফ্যানের ব্যাটারি লাইফ কত শতাংশ আছে তা নিখুঁতভাবে প্রদর্শন করে। এতে রয়েছে ইন্টেলিজেন্ট ৫ম গিয়ার (Intelligent 5th gear) স্পিড কন্ট্রোল ব্যবস্থা, যার মাধ্যমে আপনি আপনার প্রয়োজন মতো বাতাসের গতি নিয়ন্ত্রণ করতে পারবেন।",
-    "specs": [
-      "Model:N15",
-      "Power: 2.5W",
-      "Battery Voltage:3.7V",
-      "Battery Model:18650 Lithium battery",
-      "Product Material:ABS / PC / Circuit board",
-      "Product Color:Available",
-      "Display: LED Charge display",
-      "warranty:NO",
-      "Easy Return"
-    ],
-    "types": [
-      {
-        "name": "Snow Peak White",
-        "hex": "#e6dbdb"
-      },
-      {
-        "name": "Dark Night blue",
-        "hex": "#29253a"
-      },
-      {
-        "name": "Green",
-        "hex": "#213f29"
-      }
-    ],
-    "category": "electronics",
-    "storeId": "store1"
-  },
-  {
     "code": "E-buds-01",
     "title": "Earbuds--Premium Open-Ear Clip-On Wireless Earbuds",
     "price": "৳720",
