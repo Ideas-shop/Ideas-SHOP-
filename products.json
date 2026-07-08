@@ -1,37 +1,5 @@
 [
   {
-    "code": "E-buds-01",
-    "title": "Earbuds--Premium Open-Ear Clip-On Wireless Earbuds",
-    "price": "৳720",
-    "stock": 100,
-    "images": [
-      "https://res.cloudinary.com/qzvdcf3q/image/upload/v1783067676/736539833_2223846871487112_4429880891205553273_n_nuwe6p.webp",
-      "https://res.cloudinary.com/qzvdcf3q/image/upload/v1783067681/734022764_2334091573666708_3375908280164155002_n_lnfuae.webp",
-      "https://res.cloudinary.com/qzvdcf3q/image/upload/v1783067684/733911629_2083530512196674_2666240690349998062_n_kobpfb.webp",
-      "https://res.cloudinary.com/qzvdcf3q/image/upload/v1783067668/733673940_1004837652432525_1543700386985033341_n_ulwka6.webp"
-    ],
-    "desc": "Non-In-Ear Comfort Clip Design. 360° Panoramic Sound / Hi-Fi Sound Effect",
-    "specs": [
-      "Bluetooth Version 5.0",
-      "Driver Unit 14mm Titanium",
-      "Audio Technology 360° Panoramic Sound",
-      "Noise Cancellation ENC",
-      "Charging Interface Type-C"
-    ],
-    "types": [
-      {
-        "name": "baby Pink",
-        "hex": "#fdf1e5"
-      },
-      {
-        "name": "Black",
-        "hex": "#000000"
-      }
-    ],
-    "category": "electronics",
-    "storeId": "store1"
-  },
-  {
     "code": "F-tur-01",
     "title": "Turbo Fan high speed Fan with display",
     "price": "৳580",
