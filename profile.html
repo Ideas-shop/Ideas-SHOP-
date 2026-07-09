@@ -367,6 +367,160 @@
         .toast.success { background-color: #2e7d32; }
         .toast.error { background-color: #c62828; }
         .toast i { font-size: 18px; flex-shrink: 0; }
+
+        /* --- Auth Screen (Login / Sign Up) --- */
+        .auth-screen {
+            min-height: 100vh;
+            background: linear-gradient(160deg, #c62828 0%, #8e1414 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 30px 20px;
+            box-sizing: border-box;
+        }
+        .auth-box {
+            background: #fff;
+            width: 100%;
+            max-width: 380px;
+            border-radius: 22px;
+            padding: 32px 26px 26px;
+            box-shadow: 0 20px 45px rgba(0,0,0,0.25);
+            animation: slideUp 0.35s ease-out;
+        }
+        .auth-logo {
+            text-align: center;
+            margin-bottom: 18px;
+        }
+        .auth-logo i {
+            font-size: 44px;
+            color: #c62828;
+        }
+        .auth-logo h2 {
+            margin: 8px 0 2px;
+            font-size: 20px;
+            font-weight: 800;
+            color: #222;
+        }
+        .auth-logo p {
+            margin: 0;
+            font-size: 13px;
+            color: #888;
+        }
+        .auth-tabs {
+            display: flex;
+            background: #f1f3f4;
+            border-radius: 12px;
+            padding: 4px;
+            margin-bottom: 22px;
+        }
+        .auth-tab {
+            flex: 1;
+            text-align: center;
+            padding: 10px 0;
+            font-size: 14px;
+            font-weight: 700;
+            color: #888;
+            border-radius: 9px;
+            cursor: pointer;
+            transition: 0.25s;
+            user-select: none;
+        }
+        .auth-tab.active {
+            background: #c62828;
+            color: #fff;
+            box-shadow: 0 4px 10px rgba(198,40,40,0.3);
+        }
+        .auth-field {
+            margin-bottom: 14px;
+            position: relative;
+        }
+        .auth-field label {
+            display: block;
+            font-size: 12.5px;
+            font-weight: 700;
+            color: #555;
+            margin-bottom: 6px;
+        }
+        .auth-field input {
+            width: 100%;
+            padding: 12px 14px 12px 42px;
+            border: 1px solid #e0e0e0;
+            border-radius: 11px;
+            font-size: 14.5px;
+            box-sizing: border-box;
+            background: #f9f9f9;
+            transition: border-color 0.25s;
+        }
+        .auth-field input:focus {
+            outline: none;
+            border-color: #c62828;
+            background: #fff;
+        }
+        .auth-field i.field-icon {
+            position: absolute;
+            left: 15px;
+            top: 37px;
+            color: #bbb;
+            font-size: 15px;
+        }
+        .auth-field .toggle-eye {
+            position: absolute;
+            right: 14px;
+            top: 37px;
+            color: #999;
+            cursor: pointer;
+            font-size: 15px;
+        }
+        .auth-submit-btn {
+            width: 100%;
+            padding: 14px;
+            background: linear-gradient(135deg, #c62828, #e53935);
+            color: #fff;
+            border: none;
+            border-radius: 12px;
+            font-size: 15.5px;
+            font-weight: 700;
+            cursor: pointer;
+            box-shadow: 0 6px 15px rgba(198,40,40,0.35);
+            margin-top: 6px;
+            transition: transform 0.15s;
+        }
+        .auth-submit-btn:active { transform: scale(0.98); }
+        .auth-submit-btn:disabled { opacity: 0.6; cursor: not-allowed; }
+        .auth-secure-note {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            margin-top: 18px;
+            font-size: 11.5px;
+            color: #9aa;
+        }
+        .auth-secure-note i { color: #10b981; }
+        .auth-form { display: none; }
+        .auth-form.active { display: block; }
+        .auth-error {
+            background: #fdecea;
+            color: #c62828;
+            font-size: 12.5px;
+            font-weight: 600;
+            padding: 9px 12px;
+            border-radius: 9px;
+            margin-bottom: 14px;
+            display: none;
+        }
+        .auth-error.show { display: block; }
+        .btn-spinner {
+            display: inline-block;
+            width: 15px; height: 15px;
+            border: 2px solid rgba(255,255,255,0.4);
+            border-top-color: #fff;
+            border-radius: 50%;
+            animation: spin 0.7s linear infinite;
+            vertical-align: middle;
+            margin-right: 6px;
+        }
+        @keyframes spin { to { transform: rotate(360deg); } }
     </style>
 </head>
 
@@ -390,6 +544,73 @@
             </div>
         </div>
     </div>
+
+    <div id="toastNotification" class="toast">
+        <i class="fas fa-check-circle"></i>
+        <span id="toastMessage"></span>
+    </div>
+
+    <!-- ================= AUTH SCREEN (Login / Sign Up) ================= -->
+    <div id="authScreen" class="auth-screen" style="display:none;">
+        <div class="auth-box">
+            <div class="auth-logo">
+                <i class="fas fa-lightbulb"></i>
+                <h2>Ideas SHOP</h2>
+                <p>কেনাকাটা করতে সাইন ইন করুন</p>
+            </div>
+
+            <div class="auth-tabs">
+                <div class="auth-tab active" id="tabLogin" onclick="switchAuthTab('login')">লগইন</div>
+                <div class="auth-tab" id="tabSignup" onclick="switchAuthTab('signup')">সাইন আপ</div>
+            </div>
+
+            <div id="authErrorBox" class="auth-error"></div>
+
+            <!-- Login Form -->
+            <form id="loginForm" class="auth-form active" onsubmit="return handleLogin(event)">
+                <div class="auth-field">
+                    <label>মোবাইল নম্বর</label>
+                    <i class="fas fa-phone-alt field-icon"></i>
+                    <input type="tel" id="loginPhone" placeholder="01XXXXXXXXX" required inputmode="numeric" maxlength="11">
+                </div>
+                <div class="auth-field">
+                    <label>পাসওয়ার্ড</label>
+                    <i class="fas fa-lock field-icon"></i>
+                    <input type="password" id="loginPassword" placeholder="আপনার পাসওয়ার্ড" required>
+                    <i class="fas fa-eye toggle-eye" onclick="togglePw('loginPassword', this)"></i>
+                </div>
+                <button type="submit" class="auth-submit-btn" id="loginBtn">সাইন ইন করুন</button>
+            </form>
+
+            <!-- Sign Up Form -->
+            <form id="signupForm" class="auth-form" onsubmit="return handleSignup(event)">
+                <div class="auth-field">
+                    <label>পুরো নাম</label>
+                    <i class="fas fa-user field-icon"></i>
+                    <input type="text" id="signupName" placeholder="আপনার নাম লিখুন" required>
+                </div>
+                <div class="auth-field">
+                    <label>মোবাইল নম্বর</label>
+                    <i class="fas fa-phone-alt field-icon"></i>
+                    <input type="tel" id="signupPhone" placeholder="01XXXXXXXXX" required inputmode="numeric" maxlength="11">
+                </div>
+                <div class="auth-field">
+                    <label>পাসওয়ার্ড</label>
+                    <i class="fas fa-lock field-icon"></i>
+                    <input type="password" id="signupPassword" placeholder="কমপক্ষে ৬ ডিজিট/অক্ষর" required minlength="4">
+                    <i class="fas fa-eye toggle-eye" onclick="togglePw('signupPassword', this)"></i>
+                </div>
+                <button type="submit" class="auth-submit-btn" id="signupBtn">অ্যাকাউন্ট তৈরি করুন</button>
+            </form>
+
+            <div class="auth-secure-note">
+                <i class="fas fa-shield-alt"></i> আপনার তথ্য নিরাপদে এনক্রিপ্টেড থাকে
+            </div>
+        </div>
+    </div>
+
+    <!-- ================= MAIN APP CONTENT (visible after login) ================= -->
+    <div id="appContent" style="display:none;">
 
     <header class="header">
         <button type="button" class="back-btn" onclick="window.history.back()">
@@ -455,7 +676,7 @@
                 <i class="fas fa-exclamation-triangle"></i>
             </div>
             <h3>একাউন্ট ডিলিট করবেন?</h3>
-            <p>আপনি লগআউট করার সাথে সাথে এই ডিভাইসে সেভ থাকা আপনার প্রোফাইল তথ্য (নাম, নম্বর, ছবি) এবং <strong>সম্পূর্ণ অর্ডার হিস্ট্রি</strong> স্থায়ীভাবে মুছে যাবে।</p>
+            <p>এই ডিভাইসে সেভ থাকা আপনার প্রোফাইল তথ্য (নাম, নম্বর, ছবি) এবং <strong>সম্পূর্ণ অর্ডার হিস্ট্রি</strong> স্থায়ীভাবে মুছে যাবে এবং আপনি লগ আউট হয়ে যাবেন।</p>
             <div class="delete-warning-box">
                 <i class="fas fa-info-circle"></i>
                 <span>এই অ্যাকশনটি সম্পূর্ণরূপে অপরিবর্তনীয় — একবার মুছে গেলে এই তথ্য আর কোনোভাবেই ফিরিয়ে আনা সম্ভব হবে ঘন।</span>
@@ -465,11 +686,6 @@
                 <button class="btn btn-danger" onclick="confirmClearProfileData()">Delete</button>
             </div>
         </div>
-    </div>
-
-    <div id="toastNotification" class="toast">
-        <i class="fas fa-check-circle"></i>
-        <span id="toastMessage"></span>
     </div>
 
     <div class="menu-container">
@@ -500,10 +716,17 @@
         </div>
 
         <div class="menu-group">
-            <div class="menu-item logout" onclick="clearProfileData()">
+            <div class="menu-item logout" onclick="logoutSessionOnly()">
                 <div class="menu-item-left">
                     <i class="fas fa-sign-out-alt"></i>
                     <span>Logout</span>
+                </div>
+                <div class="menu-item-right"><i class="fas fa-chevron-right"></i></div>
+            </div>
+            <div class="menu-item logout" onclick="clearProfileData()">
+                <div class="menu-item-left">
+                    <i class="fas fa-trash-alt"></i>
+                    <span>Delete Account Data</span>
                 </div>
                 <div class="menu-item-right"><i class="fas fa-chevron-right"></i></div>
             </div>
@@ -517,24 +740,238 @@
         <a href="profile.html" class="nav-item active"><i class="fas fa-user"></i> <p>Profile</p></a>
     </footer>
 
+    </div><!-- /#appContent -->
 
     <script>
         const defaultImage = "profile0.jpg";
-        
+
+        // ================= CONFIG =================
+        // এখানে তোমার ডিপ্লয় করা Google Apps Script Web App URL বসাবে
+        const AUTH_API_URL = "https://script.google.com/macros/s/AKfycbx7mkiRN7CftYVY6-fKnWRbKItef6YLtWh7flczWbqHQvmO54Op7KBBbB5v6Zy_dFr25A/exec";
+
+        // ================= INIT (Auth Gate) =================
         window.onload = function() {
-            let savedName = localStorage.getItem('userProfileName');
-            let savedPhone = localStorage.getItem('userProfilePhone');
+            checkAuthAndInit();
+        };
+
+        function checkAuthAndInit() {
+            let session = getSession();
+            if (session && session.phone) {
+                showApp(session);
+            } else {
+                showAuthScreen();
+            }
+        }
+
+        function getSession() {
+            try {
+                return JSON.parse(localStorage.getItem('loggedInUser'));
+            } catch (e) {
+                return null;
+            }
+        }
+
+        function showAuthScreen() {
+            document.getElementById('authScreen').style.display = 'flex';
+            document.getElementById('appContent').style.display = 'none';
+        }
+
+        function showApp(session) {
+            document.getElementById('authScreen').style.display = 'none';
+            document.getElementById('appContent').style.display = 'block';
+
+            let savedName = session.name || localStorage.getItem('userProfileName');
+            let savedPhone = session.phone || localStorage.getItem('userProfilePhone');
             let savedImg = localStorage.getItem('userProfileImage');
 
             if (savedName) document.getElementById('displayTitle').innerText = savedName;
             if (savedPhone) document.getElementById('displayPhone').innerHTML = '<i class="fas fa-phone-alt"></i> ' + savedPhone;
-            
-            if (savedImg) {
-                document.getElementById('profilePic').src = savedImg;
+
+            document.getElementById('profilePic').src = savedImg || defaultImage;
+
+            // লগইন করা ইউজারের নাম/নম্বর localStorage এ ও সিঙ্ক রাখা (পুরনো ফিচারগুলোর সাথে compatibility রাখতে)
+            localStorage.setItem('userProfileName', savedName || "");
+            localStorage.setItem('userProfilePhone', savedPhone || "");
+
+            syncDeliveredCancelledOrders();
+        }
+
+        // ================= AUTH TABS =================
+        function switchAuthTab(tab) {
+            document.getElementById('tabLogin').classList.toggle('active', tab === 'login');
+            document.getElementById('tabSignup').classList.toggle('active', tab === 'signup');
+            document.getElementById('loginForm').classList.toggle('active', tab === 'login');
+            document.getElementById('signupForm').classList.toggle('active', tab === 'signup');
+            hideAuthError();
+        }
+
+        function togglePw(id, iconEl) {
+            let input = document.getElementById(id);
+            if (input.type === 'password') {
+                input.type = 'text';
+                iconEl.classList.remove('fa-eye');
+                iconEl.classList.add('fa-eye-slash');
             } else {
-                document.getElementById('profilePic').src = defaultImage;
+                input.type = 'password';
+                iconEl.classList.remove('fa-eye-slash');
+                iconEl.classList.add('fa-eye');
             }
-        };
+        }
+
+        function showAuthError(msg) {
+            let box = document.getElementById('authErrorBox');
+            box.innerText = msg;
+            box.classList.add('show');
+        }
+
+        function hideAuthError() {
+            document.getElementById('authErrorBox').classList.remove('show');
+        }
+
+        function validPhone(phone) {
+            return /^01[0-9]{9}$/.test(phone);
+        }
+
+        // ================= PASSWORD HASH (client-side, plain text কখনো পাঠানো হয় না) =================
+        async function sha256Hash(text) {
+            const enc = new TextEncoder().encode(text);
+            const buf = await crypto.subtle.digest('SHA-256', enc);
+            return Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2, '0')).join('');
+        }
+
+        // ================= SIGN UP =================
+        async function handleSignup(e) {
+            e.preventDefault();
+            hideAuthError();
+
+            let name = document.getElementById('signupName').value.trim();
+            let phone = document.getElementById('signupPhone').value.trim();
+            let password = document.getElementById('signupPassword').value;
+
+            if (!name || !validPhone(phone) || password.length < 4) {
+                showAuthError("সঠিক নাম, ১১ ডিজিটের মোবাইল নম্বর এবং কমপক্ষে ৪ ক্যারেক্টারের পাসওয়ার্ড দিন।");
+                return false;
+            }
+
+            let btn = document.getElementById('signupBtn');
+            btn.disabled = true;
+            btn.innerHTML = '<span class="btn-spinner"></span> তৈরি হচ্ছে...';
+
+            try {
+                let passwordHash = await sha256Hash(password);
+                let res = await fetch(AUTH_API_URL, {
+                    method: 'POST',
+                    body: JSON.stringify({ action: 'signup', name, phone, passwordHash })
+                });
+                let data = await res.json();
+
+                if (data.success) {
+                    setSession(name, phone);
+                    showToast('স্বাগতম, ' + name + '! আপনার অ্যাকাউন্ট তৈরি হয়েছে।', 'success');
+                    showApp(getSession());
+                } else {
+                    showAuthError(data.message || "এই নম্বর দিয়ে আগেই অ্যাকাউন্ট আছে। লগইন করুন।");
+                }
+            } catch (err) {
+                showAuthError("সার্ভারের সাথে সংযোগ করা যাচ্ছে না। ইন্টারনেট চেক করে আবার চেষ্টা করুন।");
+            }
+
+            btn.disabled = false;
+            btn.innerHTML = 'অ্যাকাউন্ট তৈরি করুন';
+            return false;
+        }
+
+        // ================= LOGIN =================
+        async function handleLogin(e) {
+            e.preventDefault();
+            hideAuthError();
+
+            let phone = document.getElementById('loginPhone').value.trim();
+            let password = document.getElementById('loginPassword').value;
+
+            if (!validPhone(phone) || !password) {
+                showAuthError("সঠিক মোবাইল নম্বর ও পাসওয়ার্ড দিন।");
+                return false;
+            }
+
+            let btn = document.getElementById('loginBtn');
+            btn.disabled = true;
+            btn.innerHTML = '<span class="btn-spinner"></span> যাচাই হচ্ছে...';
+
+            try {
+                let passwordHash = await sha256Hash(password);
+                let res = await fetch(AUTH_API_URL, {
+                    method: 'POST',
+                    body: JSON.stringify({ action: 'login', phone, passwordHash })
+                });
+                let data = await res.json();
+
+                if (data.success) {
+                    setSession(data.name, phone);
+                    showToast('স্বাগতম ফিরে আসার জন্য, ' + data.name + '!', 'success');
+                    showApp(getSession());
+                } else {
+                    showAuthError(data.message || "নম্বর অথবা পাসওয়ার্ড ভুল হয়েছে।");
+                }
+            } catch (err) {
+                showAuthError("সার্ভারের সাথে সংযোগ করা যাচ্ছে না। ইন্টারনেট চেক করে আবার চেষ্টা করুন।");
+            }
+
+            btn.disabled = false;
+            btn.innerHTML = 'সাইন ইন করুন';
+            return false;
+        }
+
+        function setSession(name, phone) {
+            localStorage.setItem('loggedInUser', JSON.stringify({ name, phone }));
+        }
+
+        function logoutSessionOnly() {
+            localStorage.removeItem('loggedInUser');
+            showAuthScreen();
+        }
+
+        // ================= ORDER STATUS SYNC (Delivered/Cancelled -> Google Sheet) =================
+        async function syncDeliveredCancelledOrders() {
+            let session = getSession();
+            if (!session || !session.phone) return;
+
+            let orderHistory = JSON.parse(localStorage.getItem('orderHistory')) || [];
+            let changed = false;
+
+            for (let order of orderHistory) {
+                let status = (order.status || '').toLowerCase();
+                let isFinal = status.includes('delivered') || status.includes('cancel') || status.includes('বাতিল') || status.includes('ডেলিভার');
+
+                if (isFinal && !order.syncedToSheet) {
+                    try {
+                        let res = await fetch(AUTH_API_URL, {
+                            method: 'POST',
+                            body: JSON.stringify({
+                                action: 'syncOrder',
+                                phone: session.phone,
+                                name: session.name,
+                                orderId: order.orderId,
+                                status: order.status,
+                                grandTotal: order.grandTotal,
+                                date: order.date
+                            })
+                        });
+                        let data = await res.json();
+                        if (data.success) {
+                            order.syncedToSheet = true;
+                            changed = true;
+                        }
+                    } catch (err) {
+                        // ইন্টারনেট না থাকলে চুপচাপ স্কিপ করবে, পরের বার পেজ লোডে আবার চেষ্টা হবে
+                    }
+                }
+            }
+
+            if (changed) {
+                localStorage.setItem('orderHistory', JSON.stringify(orderHistory));
+            }
+        }
 
         function openEditModal() {
             document.getElementById('editModal').style.display = 'flex';
@@ -693,6 +1130,7 @@
             localStorage.removeItem('userProfilePhone');
             localStorage.removeItem('userProfileImage');
             localStorage.removeItem('orderHistory');
+            localStorage.removeItem('loggedInUser');
 
             closeModal('deleteConfirmModal');
             showToast('আপনার সকল তথ্য ও অর্ডার হিস্ট্রি স্থায়ীভাবে মুছে ফেলা হয়েছে।', 'success');
