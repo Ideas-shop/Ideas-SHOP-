@@ -162,5 +162,46 @@
     "types": [],
     "category": "decor",
     "storeId": "store1"
+  },
+  {
+    "code": "M-mou-01",
+    "title": "RGB Mouse",
+    "price": "358",
+    "stock": 10,
+    "category": "electronics",
+    "storeId": "store1",
+    "desc": "nbmabcbsdbc'[;p]0=9o=095432[].././.\"kojkdlskshfhkdsrhskhkjfhkdjbvmbdmbvfhkhfdehklghkhkfpojldifoncknckhsofueogvocklxnvxcnk,nxkcjhvbkxjhn,vjbn,jxvbkhxkgihyikhojnfehkjwfwoku[prtjkbohkhegghnjio",
+    "specs": [
+      "Brand: Thailand",
+      "Model:E42",
+      "LIGHT:RGB"
+    ],
+    "types": [
+      {
+        "name": "jdbd",
+        "hex": "#c8102e"
+      },
+      {
+        "name": "dfsbfgdn",
+        "hex": "#c8102e"
+      },
+      {
+        "name": "ghmndxty",
+        "hex": "#c8102e"
+      },
+      {
+        "name": "sdfhbgf",
+        "hex": "#c8102e"
+      },
+      {
+        "name": "fgb fg",
+        "hex": "#c8102e"
+      }
+    ],
+    "images": [
+      "http",
+      "http",
+      "http"
+    ]
   }
 ]
