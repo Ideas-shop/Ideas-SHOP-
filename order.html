@@ -1697,10 +1697,11 @@ const roadReceivePointsByUpazila = {
             orderBtn.disabled = true;
             orderBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> অর্ডার প্রসেস হচ্ছে...';
 
-            // প্রোডাক্ট ডিটেইলস শুধু প্রোডাক্ট কোড এবং কোয়ান্টিটি দিয়ে সাজানো (কমা দিয়ে আলাদা করা)
-            let orderDetailsString = selectedItems
-                .map((item, i) => `${item.code || (premiumOrderID + "-" + (i + 1))} (Qty: ${item.qty})`)
-                .join(", ");
+            // প্রোডাক্ট ডিটেইলস সুন্দর করে এক লাইনে সাজানো
+            let orderDetailsString = "";
+            selectedItems.forEach((item, i) => {
+                orderDetailsString += `${i+1}. ${item.name} (Qty: ${item.qty}) \n`;
+            });
 
             // গুগল শিটের কলামের নাম অনুযায়ী ডাটা অবজেক্ট তৈরি (eb6aa186-08a9-4b93-a7f8-d9be661fb964 স্ক্রিনশট ম্যাচিং)
             let orderData = {
