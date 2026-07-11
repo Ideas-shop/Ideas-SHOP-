@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
-    <title>TashUra App</title>
+    <title>Ideas SHOP</title>
     <!-- Font Awesome Icon Library -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
@@ -14,28 +14,30 @@
             padding-bottom: 85px; /* বটম ন্যাভের জন্য জায়গা */
         }
 
-        /* --- Color Theme (TashUrA Red / Navy / Blue) --- */
+        /* --- Color Theme (Ideas SHOP — Dark Orange / Amber / Navy) --- */
         :root {
-            --primary: #E31E24;
-            --primary-dark: #B3151A;
-            --primary-light: #FF5A5F;
-            --navy: #0D1B2A;
-            --navy-light: #15324d;
-            --accent-blue: #1976D2;
-            --accent-blue-dark: #115293;
-            --gradient-orange: linear-gradient(120deg, #E31E24 0%, #B3151A 60%, #8a0f12 100%);
-            --gradient-navy: linear-gradient(120deg, #15324d 0%, #0D1B2A 70%, #060e16 100%);
+            --primary: #D9791A;
+            --primary-dark: #A85C0E;
+            --primary-light: #F5A623;
+            --navy: #26313C;
+            --navy-light: #3B4A56;
+            --accent-blue: #26313C;
+            --accent-blue-dark: #1B242C;
+            --gradient-orange: linear-gradient(120deg, #F5A623 0%, #D9791A 55%, #A85C0E 100%);
+            --gradient-navy: linear-gradient(120deg, #3B4A56 0%, #26313C 70%, #141b21 100%);
+            --shadow-orange: 0 8px 20px rgba(217,121,26,0.35);
+            --shadow-orange-lg: 0 10px 28px rgba(217,121,26,0.45);
         }
 
         /* --- Header --- */
        .header {
-    background: var(--primary);
+    background: var(--gradient-orange);
     color: white;
     display: flex;
     align-items: center;
     justify-content: space-between;
     padding: 12px 18px;
-    box-shadow: 0 4px 16px rgba(13,27,42, 0.25);
+    box-shadow: 0 4px 18px rgba(168,92,14, 0.4);
     position: sticky;
     top: 0;
     z-index: 220;
@@ -48,7 +50,7 @@
         .header-title .slogan { font-size: 9px; display: block; font-weight: 400; opacity: 0.95; letter-spacing: 0.8px; color: #eef3f8; }
 
         /* --- Banner Slider (Full Bleed, sits right under header) --- */
-        .banner-container { padding: 0; margin: 0; background: #ffe5e8; }
+        .banner-container { padding: 0; margin: 0; background: #fdece0; }
         .banner-slider { width: 100%; position: relative; overflow: hidden; border-radius: 0 0 24px 24px; margin-top: 0; min-height: 320px; height: auto; }
         .banner-slider img { display: block; width: 100%; height: 100%; object-fit: cover; object-position: top center; }
         .mySlides { display: none; width: 100%; height: 100%; min-height: 320px; object-fit: cover; object-position: top center; animation: fadeEffect 1.5s; }
@@ -63,7 +65,7 @@
         /* --- Search Bar (floats slightly over the banner's bottom edge) --- */
         .search-container { padding: 0 16px; margin-top: 0; position: relative; z-index: 20; }
         .search-bar {
-            background-color: white; border: 1px solid #bcd4ea;
+            background-color: white; border: 1px solid #f0dcc0;
             border-radius: 50px; padding: 9px 8px 9px 20px;
             display: flex; align-items: center;
             box-shadow: 0 6px 18px rgba(13, 27, 42, 0.22);
@@ -71,21 +73,21 @@
         }
         .search-bar:focus-within { border-color: var(--primary); box-shadow: 0 6px 18px rgba(13, 27, 42, 0.3); }
         .search-bar input { border: none; outline: none; flex-grow: 1; font-size: 14px; background: transparent; padding: 0 8px; }
-        .search-icon-btn { background: var(--gradient-orange); color: white; border: none; width: 36px; height: 36px; flex-shrink:0; border-radius: 50%; cursor: pointer; display:flex; align-items:center; justify-content:center; }
+        .search-icon-btn { background: var(--gradient-orange); color: white; border: none; width: 36px; height: 36px; flex-shrink:0; border-radius: 50%; cursor: pointer; display:flex; align-items:center; justify-content:center; box-shadow: var(--shadow-orange); }
         .search-container { position: relative; }
         .search-suggestions {
-            position: absolute; top: calc(100% + 6px); left: 16px; right: 16px; background: white; border: 1px solid #bcd4ea; border-radius: 16px; box-shadow: 0 10px 24px rgba(13,27,42,0.16); max-height: 220px; overflow-y: auto; z-index: 30; display: none;
+            position: absolute; top: calc(100% + 6px); left: 16px; right: 16px; background: white; border: 1px solid #f0dcc0; border-radius: 16px; box-shadow: 0 10px 24px rgba(13,27,42,0.16); max-height: 220px; overflow-y: auto; z-index: 30; display: none;
         }
         .search-suggestions.show { display: block; }
         .search-suggestion-item {
-            display: flex; align-items: center; justify-content: space-between; gap: 10px; padding: 10px 12px; cursor: pointer; border-bottom: 1px solid #eaf2fb; font-size: 13px; color: #374151;
+            display: flex; align-items: center; justify-content: space-between; gap: 10px; padding: 10px 12px; cursor: pointer; border-bottom: 1px solid #fdf3e6; font-size: 13px; color: #374151;
         }
         .search-suggestion-item:last-child { border-bottom: none; }
-        .search-suggestion-item:hover { background: #f3f7fb; }
+        .search-suggestion-item:hover { background: #fdf6ee; }
         .suggestion-label { display: flex; flex-direction: column; gap: 2px; }
         .suggestion-label strong { font-size: 13px; color: #111827; }
         .suggestion-label span { font-size: 11px; color: #6b7280; }
-        .suggestion-badge { font-size: 10px; padding: 4px 8px; border-radius: 999px; background: #f3f7fb; color: var(--primary); font-weight: 700; }
+        .suggestion-badge { font-size: 10px; padding: 4px 8px; border-radius: 999px; background: #fdf6ee; color: var(--primary); font-weight: 700; }
 
         /* --- Quick Event / Offer Chips --- */
         .event-chip-section { padding: 14px 16px 4px; display: flex; gap: 10px; overflow-x: auto; scrollbar-width: none; }
@@ -99,10 +101,10 @@
         .event-chip.pressed { transform: translateY(1px) scale(0.995); box-shadow: 0 6px 12px rgba(15,23,42,0.06); }
         .event-chip.tap-pop { transform: translateY(-8px) scale(1.02); box-shadow: 0 20px 48px rgba(15,23,42,0.10); transition: transform 300ms cubic-bezier(.2,.9,.3,1), box-shadow 300ms; }
         .event-chip i { font-size: 13px; }
-        .chip-flash { background: linear-gradient(135deg, #E31E24, #ff5f6d); color: white; box-shadow: 0 3px 8px rgba(227,30,36,0.3); }
-        .chip-free { background: #eaf2fb; color: var(--accent-blue-dark); border: 1px solid #bcd4ea; }
-        .chip-new { background: #eaf2fb; color: var(--accent-blue-dark); border: 1px solid #bcd4ea; }
-        .chip-offer { background: #eaf2fb; color: var(--accent-blue-dark); border: 1px solid #bcd4ea; }
+        .chip-flash { background: var(--gradient-orange); color: white; box-shadow: 0 3px 10px rgba(217,121,26,0.4); }
+        .chip-free { background: #fdf3e6; color: var(--accent-blue-dark); border: 1px solid #f0dcc0; }
+        .chip-new { background: #fdf3e6; color: var(--accent-blue-dark); border: 1px solid #f0dcc0; }
+        .chip-offer { background: #fdf3e6; color: var(--accent-blue-dark); border: 1px solid #f0dcc0; }
 
         /* --- Shortcut Menu (Replaced Category) --- */
         .shortcut-section { padding: 10px 15px; }
@@ -154,9 +156,9 @@
         .view-all-link { text-decoration: none; color: var(--primary); font-size: 12px; font-weight: 700; display: flex; align-items: center; gap: 4px; }
         
         /* আইকনের সুন্দর কালার (স্ক্রিনশটের মত আকর্ষণীয় করার জন্য) */
-        .icon-order { color: #E31E24; }
-        .icon-track { color: #0D1B2A; }
-        .icon-chat { color: #1976D2; }
+        .icon-order { color: #D9791A; }
+        .icon-track { color: #26313C; }
+        .icon-chat { color: #C2570C; }
         .icon-account { color: #4527a0; }
 
       
@@ -182,8 +184,8 @@
           .product-card:active { transform: none !important; box-shadow: 0 2px 8px rgba(0,0,0,0.06) !important; opacity: 1 !important; }
         .product-card .badge {
             position: absolute; top: 10px; left: 10px;
-            background: #1976D2; color: white; padding: 4px 10px;
-            border-radius: 4px; font-size: 10px; font-weight: bold; z-index: 10; letter-spacing: 0.3px;
+            background: var(--gradient-orange); color: white; padding: 4px 10px;
+            border-radius: 4px; font-size: 10px; font-weight: bold; z-index: 10; letter-spacing: 0.3px; box-shadow: 0 3px 8px rgba(217,121,26,0.35);
         }
         .product-img { width: 100%; height: 130px; object-fit: cover; border-radius: 6px; margin-bottom: 10px; }
         .product-rating { display: flex; align-items: center; gap: 4px; font-size: 11.5px; color: #f59e0b; font-weight: 700; margin-bottom: 4px; }
@@ -191,29 +193,30 @@
         .product-name { font-size: 14px; color: #333; font-weight: 600; margin: 0 0 6px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
         .product-price { color: var(--primary); font-weight: 700; margin: 0 0 12px; font-size: 16px; }
         .buy-btn {
-            background: #e8f0fb; color: var(--primary-dark); border: none; padding: 10px;
+            background: #fdf0e0; color: var(--primary-dark); border: none; padding: 10px;
             border-radius: 6px; width: 100%; font-weight: 700; font-size: 13px;
             cursor: pointer; transition: 0.2s; display: flex; justify-content: center; align-items: center; gap: 5px;
         }
-        .buy-btn:active { background: var(--gradient-orange); color: white; }
+        .buy-btn:active { background: var(--gradient-orange); color: white; box-shadow: var(--shadow-orange); }
 
         /* --- Marketing Banner --- */
         .marketing-banner {
             margin: 8px 15px 0; padding: 16px; border-radius: 16px;
-            background: linear-gradient(135deg, #f3f7fb 0%, #dbe9fb 100%);
-            border: 1px solid #bcd4ea; box-shadow: 0 6px 16px rgba(13,27,42,0.10);
+            background: linear-gradient(135deg, #fdf6ee 0%, #fbe4c8 100%);
+            border: 1px solid #f0dcc0; box-shadow: 0 6px 16px rgba(13,27,42,0.10);
             display: flex; flex-direction: column; gap: 12px;
         }
         .marketing-tag {
             display: inline-flex; align-self: flex-start; padding: 5px 10px; border-radius: 999px;
             background: #fff; color: var(--primary); font-size: 11px; font-weight: 800; letter-spacing: 0.3px;
         }
-        .marketing-title { margin: 0; font-size: 17px; font-weight: 800; color: #0D1B2A; }
+        .marketing-title { margin: 0; font-size: 17px; font-weight: 800; color: #26313C; }
         .marketing-text { margin: 0; font-size: 13px; color: #6b7280; line-height: 1.5; }
         .marketing-btn {
             display: inline-flex; align-items: center; justify-content: center; gap: 6px;
             width: fit-content; padding: 9px 14px; border-radius: 999px; background: var(--gradient-orange);
             color: white; text-decoration: none; font-size: 13px; font-weight: 700;
+            box-shadow: var(--shadow-orange);
         }
         .marketing-row {
             display: flex; align-items: center; justify-content: space-between; gap: 12px;
@@ -229,11 +232,11 @@
         .trending-section .product-grid { padding: 0; gap: 12px; }
         .trending-section .product-card {
             box-shadow: 0 6px 14px rgba(13,27,42,0.10);
-            border: 1px solid #bcd4ea;
+            border: 1px solid #f0dcc0;
             background: linear-gradient(180deg, #fff 0%, #f7faff 100%);
         }
         .trending-section .product-card .badge {
-            background: linear-gradient(135deg, #1976D2, #0D1B2A);
+            background: var(--gradient-navy);
             border-radius: 999px; padding: 5px 10px; font-size: 10px;
         }
         .trending-section .product-card .product-name {
@@ -252,7 +255,7 @@
             box-shadow: 4px 0 15px rgba(0,0,0,0.1);
         }
         .drawer.open { transform: translateX(0); }
-        .drawer-header { background: var(--gradient-orange); color: white; padding: 40px 20px 30px; text-align: center; position: relative; }
+        .drawer-header { background: var(--gradient-orange); color: white; padding: 40px 20px 30px; text-align: center; position: relative; box-shadow: 0 6px 18px rgba(168,92,14,0.35); }
         .drawer-logo img { width: 80px; height: 80px; border-radius: 50%; border: 3px solid white; margin-bottom: 10px; object-fit: cover; background: white; }
         .drawer-title { font-size: 22px; font-weight: bold; }
         .close-btn { position: absolute; top: 15px; right: 20px; font-size: 28px; color: white; cursor: pointer; }
@@ -263,7 +266,7 @@
             transition: background-color 0.2s, padding-left 0.2s;
         }
         .drawer-links a i { width: 30px; color: var(--primary); font-size: 18px; }
-        .drawer-links a:hover, .drawer-links a:active { background-color: #eaf2fb; padding-left: 26px; }
+        .drawer-links a:hover, .drawer-links a:active { background-color: #fdf3e6; padding-left: 26px; }
 
         .overlay {
             position: fixed; width: 100%; height: 100%; top: 0; left: 0;
@@ -378,7 +381,7 @@
         .pdetail-dot.active { background: white; width: 14px; border-radius: 4px; }
 
         .pdetail-title { font-size: 21px; color: #1e293b; margin: 4px 0 6px 0; font-weight: 700; }
-        .pdetail-price { font-size: 18px; color: #ef4444; font-weight: 700; margin-bottom: 10px; }
+        .pdetail-price { font-size: 18px; color: var(--primary-dark); font-weight: 700; margin-bottom: 10px; }
         .pdetail-desc { font-size: 14px; color: #475569; line-height: 1.6; margin-bottom: 18px; }
 
         /* --- Product Type Selector --- */
@@ -397,7 +400,7 @@
         .pdetail-type-trigger i.fa-tag { color: var(--primary); font-size: 13px; }
         .pdetail-type-trigger i.fa-chevron-down { margin-left: auto; color: var(--primary); font-size: 12px; transition: transform .2s ease; }
         .pdetail-type-trigger.invalid {
-            border-color: var(--primary); box-shadow: 0 0 0 3px rgba(227,30,36,0.12);
+            border-color: var(--primary); box-shadow: 0 0 0 3px rgba(217,121,26,0.15);
             animation: typeShake .35s ease;
         }
         @keyframes typeShake {
@@ -458,12 +461,12 @@
             cursor: pointer; display: flex; align-items: center; gap: 8px;
         }
         .pdetail-cart-btn {
-            background: linear-gradient(135deg, #1976D2, #0D1B2A);
-            box-shadow: 0 4px 10px rgba(13,27,42,0.25);
+            background: var(--gradient-navy);
+            box-shadow: 0 4px 12px rgba(38,49,60,0.3);
         }
         .pdetail-order-btn {
-            background: linear-gradient(135deg, #ef4444, #b91c1c);
-            box-shadow: 0 4px 10px rgba(185,28,28,0.25);
+            background: var(--gradient-orange);
+            box-shadow: 0 6px 16px rgba(217,121,26,0.5);
         }
 
         /* --- New Features: Toast Notification --- */
@@ -731,7 +734,7 @@
 
 
 .more-products-btn {
-    background-color: #c62828; /* তোমার থিমের লাল কালার */
+    background: var(--gradient-orange); /* Ideas SHOP থিমের গারো কমলা কালার */
     color: white;
     border: none;
     padding: 12px 30px;
@@ -739,7 +742,7 @@
     font-size: 16px;
     font-weight: 600;
     cursor: pointer;
-    box-shadow: 0 4px 15px rgba(198, 40, 40, 0.3);
+    box-shadow: 0 6px 18px rgba(168, 92, 14, 0.4);
     transition: all 0.3s ease;
     display: inline-flex;
     align-items: center;
@@ -748,8 +751,8 @@
 
 .more-products-btn:hover {
     transform: scale(1.05);
-    background-color: #b71c1c;
-    box-shadow: 0 6px 20px rgba(198, 40, 40, 0.4);
+    background: linear-gradient(120deg, #F5A623 0%, #C2570C 55%, #8f4a0b 100%);
+    box-shadow: 0 8px 24px rgba(168, 92, 14, 0.5);
 }
 
 .more-products-btn:active {
@@ -758,13 +761,32 @@
 .brand-name {
     font-weight: 800;
     font-size: 1.4rem;
+    display: inline-flex;
+    align-items: center;
     filter: drop-shadow(0 0 2px rgba(255,255,255,0.9)) 
             drop-shadow(0 1px 1px rgba(255,255,255,0.9));
 }
 
-.c-red  { color: #E4002B; }
-.c-blue { color: #1E63C4; }
-.c-navy { color: #0A1F44; }
+.brand-text {
+    background: linear-gradient(120deg, #FFE7C2 0%, #FFFFFF 45%, #FFE7C2 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    letter-spacing: 0.3px;
+}
+
+.brand-bulb {
+    font-size: 0.85em;
+    margin: 0 1px;
+    color: #FFD873;
+    filter: drop-shadow(0 0 4px rgba(255,216,115,0.9));
+    animation: bulbGlow 2.2s ease-in-out infinite;
+}
+
+@keyframes bulbGlow {
+    0%, 100% { filter: drop-shadow(0 0 3px rgba(255,216,115,0.6)); transform: translateY(0); }
+    50% { filter: drop-shadow(0 0 8px rgba(255,216,115,1)); transform: translateY(-1px); }
+}
 
      </style>
 </head>
@@ -793,9 +815,9 @@
         <button class="icon-btn" onclick="openDrawer()"><i class="fas fa-bars"></i></button>
         <div class="header-title">
             <span class="brand-name">
-    <span class="c-red">Tash</span><span class="c-blue">U</span><span class="c-navy">rA</span>
+    <span class="brand-text">Ideas SH</span><i class="fas fa-lightbulb brand-bulb"></i><span class="brand-text">P</span>
 </span>
-            <span class="slogan">-GADGET & LIFESTYLE-</span>
+            <span class="slogan">-MAKE LIFE MEANINGFUL-</span>
         </div>
     </div>
         <a href="profile.html" class="header-profile-link">
@@ -846,7 +868,7 @@
                 
                 <a href="IdeasSHOPChat.html" class="shortcut-item">
                     <div class="shortcut-icon icon-chat"><i class="fas fa-comments"></i></div>
-                    <p>TashUra<br>Chat</p>
+                    <p>Ideas SHOP<br>Chat</p>
                 </a>
                 
                 <a href="profile.html" class="shortcut-item">
@@ -969,13 +991,13 @@
             <div class="drawer-logo">
                 <img src="logo.png" alt="Logo" onerror="this.src='https://placehold.co/80'">
             </div>
-            <div class="drawer-title">TashUra</div>
+            <div class="drawer-title">Ideas SHOP</div>
         </div>
         <div class="drawer-links">
-            <a href="home.html" style="color:#E31E24; font-weight:bold;"><i class="fas fa-home"></i>Home</a>
+            <a href="home.html" style="color:#D9791A; font-weight:bold;"><i class="fas fa-home"></i>Home</a>
             <a href="category.html"><i class="fas fa-th-large"></i>Category</a>
             <a href="order.html"><i class="fas fa-shopping-bag"></i>My Order</a>
-            <a href="IdeasSHOPChat.html"><i class="far fa-comments" style="color: #1976D2;"></i> TashUraChat</a>
+            <a href="IdeasSHOPChat.html"><i class="far fa-comments" style="color: #C2570C;"></i> Ideas SHOP Chat</a>
             <a href="Orderpageinfo (1).html"><i class="fas fa-map-marker-alt" style="color: #4caf50;"></i>Track My order </a>
             <a href="https://www.facebook.com/share/1AnjaBD55p/" target="_blank"><i class="fab fa-facebook" style="color: #1877F2;"></i> Facebook Page</a>
             <a href="help.html"><i class="fas fa-question-circle"></i>Customer care</a>
@@ -983,7 +1005,7 @@
         <div style="position: absolute; bottom: 20px; left: 0; width: 100%; text-align: center;">
             <p style="margin: 0; font-size: 12px; color: #aaa;">Version 1.1.1</p>
             <p style="margin: 5px 0 0; font-size: 13px; color: #666; font-weight: 500;">
-                Developed by <span style="color: #E31E24; font-weight: bold;">MD Nabil</span>
+                Developed by <span style="color: #D9791A; font-weight: bold;">MD Nabil</span>
             </p>
         </div>
     </div>
