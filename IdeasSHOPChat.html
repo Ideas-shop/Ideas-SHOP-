@@ -2,7 +2,7 @@
 <html lang="bn">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
 <title>Ideas SHOP Chat</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -29,14 +29,18 @@
     background:var(--bg);
     font-family:'Hind Siliguri', sans-serif;
     color:var(--ink);
+    overflow:hidden; /* পুরো পেজ যেন স্ক্রল না হয়, শুধু মেসেজ এরিয়া স্ক্রল হবে */
+    overscroll-behavior:none;
   }
 
   .chat-shell{
     max-width:520px;
     margin:0 auto;
     height:100vh;
+    height:100dvh; /* মোবাইলে ব্রাউজারের অ্যাড্রেস বার লুকানো/দেখানোর সাথে ঠিকমতো মানিয়ে নেয় */
     display:flex;
     flex-direction:column;
+    overflow:hidden;
   }
 
   /* ---------- Header ---------- */
@@ -47,6 +51,7 @@
     padding:16px 18px;
     border-bottom:1px solid var(--hairline);
     background:var(--bg);
+    flex-shrink:0; /* হেডার যেন কখনো ছোট হয়ে না যায় বা স্ক্রল না হয় */
   }
 
   .chat-header .avatar{
@@ -103,7 +108,9 @@
   /* ---------- Messages ---------- */
   .chat-messages{
     flex:1;
+    min-height:0; /* Safari/মোবাইলে flex স্ক্রল ঠিকমতো কাজ করার জন্য জরুরি */
     overflow-y:auto;
+    -webkit-overflow-scrolling:touch;
     padding:20px 16px;
     display:flex;
     flex-direction:column;
@@ -162,6 +169,7 @@
     flex-wrap:wrap;
     gap:8px;
     padding:0 16px 14px;
+    flex-shrink:0;
   }
   .quick-reply{
     border:1px solid var(--gold);
@@ -183,6 +191,7 @@
     padding:12px 14px;
     border-top:1px solid var(--hairline);
     background:var(--bg);
+    flex-shrink:0; /* ইনপুট বার যেন কখনো উপরে সরে না যায় বা ছোট না হয় */
   }
 
   #chat-input{
