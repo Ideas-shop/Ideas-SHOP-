@@ -90,6 +90,16 @@
     padding:6px;
   }
 
+  .chat-header .back-arrow{
+    color:var(--ink);
+    font-size:18px;
+    text-decoration:none;
+    padding:6px;
+    margin-right:2px;
+    flex-shrink:0;
+  }
+  .chat-header .back-arrow:hover{ color:var(--gold); }
+
   /* ---------- Messages ---------- */
   .chat-messages{
     flex:1;
@@ -213,6 +223,7 @@
 <div class="chat-shell">
 
   <div class="chat-header">
+    <a href="home.html" class="back-arrow" aria-label="হোমে ফিরে যান"><i class="fas fa-arrow-left"></i></a>
     <div class="avatar">
       <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
         <path d="M12 2C8.13 2 5 5.13 5 9c0 2.38 1.19 4.47 3 5.74V17a1 1 0 001 1h6a1 1 0 001-1v-2.26c1.81-1.27 3-3.36 3-5.74 0-3.87-3.13-7-7-7z" fill="#fff"/>
