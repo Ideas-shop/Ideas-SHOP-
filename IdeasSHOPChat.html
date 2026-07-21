@@ -1,267 +1,334 @@
 <!DOCTYPE html>
 <html lang="bn">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ideas Shop Support</title>
-    <style>
-        /* বেসিক স্টাইলিং */
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: #f4f7f6;
-            margin: 0;
-            padding: 0;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-        }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ideas SHOP Chat</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,700&family=Hind+Siliguri:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<style>
+  :root{
+    --bg: #ffffff;
+    --ink: #22242a;
+    --muted: #6f7480;
+    --gold: #e3a83b;
+    --gold-light: #f4c863;
+    --gold-pale: #fbf1dd;
+    --hairline: #ece6d8;
+    --bubble-user: #22242a;
+    --bubble-bot: #fbf1dd;
+  }
 
-        /* চ্যাটবক্সের মূল কন্টেইনার */
-        #chat-container {
-            width: 100%;
-            max-width: 400px;
-            background: #fff;
-            border-radius: 10px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
-            display: flex;
-            flex-direction: column;
-            height: 95vh;
-            overflow: hidden;
-        }
+  *{ box-sizing:border-box; }
 
-        /* হেডার ও প্রোফাইল ছবি */
-        .chat-header {
-            background-color: #007bff;
-            color: white;
-            padding: 12px 15px;
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            font-size: 18px;
-            font-weight: bold;
-        }
+  html, body{
+    height:100%;
+    margin:0;
+    background:var(--bg);
+    font-family:'Hind Siliguri', sans-serif;
+    color:var(--ink);
+  }
 
-        .profile-pic {
-            width: 45px;
-            height: 45px;
-            border-radius: 50%;
-            object-fit: cover;
-            border: 2px solid white;
-        }
+  .chat-shell{
+    max-width:520px;
+    margin:0 auto;
+    height:100vh;
+    display:flex;
+    flex-direction:column;
+  }
 
-        /* চ্যাটের মেসেজ দেখানোর জায়গা */
-        #chat-box {
-            flex: 1;
-            padding: 15px;
-            overflow-y: auto;
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-            background-color: #ece5dd;
-        }
+  /* ---------- Header ---------- */
+  .chat-header{
+    display:flex;
+    align-items:center;
+    gap:12px;
+    padding:16px 18px;
+    border-bottom:1px solid var(--hairline);
+    background:var(--bg);
+  }
 
-        /* মেসেজ বাবল ডিজাইন */
-        .msg-bubble {
-            max-width: 80%;
-            padding: 10px 15px;
-            border-radius: 15px;
-            font-size: 15px;
-            line-height: 1.4;
-            animation: fadeIn 0.3s ease-in-out;
-        }
+  .chat-header .avatar{
+    width:42px;
+    height:42px;
+    border-radius:50%;
+    background: radial-gradient(circle at 50% 40%, var(--gold-light), var(--gold) 72%);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    flex-shrink:0;
+  }
+  .chat-header .avatar svg{ width:20px; height:20px; }
 
-        .bot-msg {
-            background-color: #fff;
-            color: #333;
-            align-self: flex-start;
-            border-bottom-left-radius: 0;
-            box-shadow: 0 1px 2px rgba(0,0,0,0.1);
-        }
+  .chat-header .title{
+    font-family:'Fraunces', serif;
+    font-weight:700;
+    font-size:17px;
+    color:var(--ink);
+    margin:0;
+  }
+  .chat-header .subtitle{
+    font-size:12.5px;
+    color:var(--muted);
+    margin:0;
+    display:flex;
+    align-items:center;
+    gap:6px;
+  }
+  .status-dot{
+    width:7px; height:7px; border-radius:50%;
+    background:#4caf50;
+    display:inline-block;
+  }
 
-        .user-msg {
-            background-color: #dcf8c6;
-            color: #333;
-            align-self: flex-end;
-            border-bottom-right-radius: 0;
-            box-shadow: 0 1px 2px rgba(0,0,0,0.1);
-        }
+  .chat-header .back{
+    margin-left:auto;
+    color:var(--muted);
+    font-size:18px;
+    text-decoration:none;
+    padding:6px;
+  }
 
-        /* সাজেস্টেড প্রশ্নের বাটন */
-        #question-area {
-            padding: 10px 15px;
-            background: #f8f9fa;
-            display: flex;
-            overflow-x: auto;
-            gap: 10px;
-            white-space: nowrap;
-            border-top: 1px solid #ddd;
-        }
+  /* ---------- Messages ---------- */
+  .chat-messages{
+    flex:1;
+    overflow-y:auto;
+    padding:20px 16px;
+    display:flex;
+    flex-direction:column;
+    gap:14px;
+  }
 
-        /* স্ক্রলবার হাইড করার জন্য */
-        #question-area::-webkit-scrollbar {
-            display: none;
-        }
+  .msg{
+    max-width:80%;
+    padding:11px 15px;
+    border-radius:16px;
+    font-size:14.5px;
+    line-height:1.6;
+    white-space:pre-wrap;
+    word-wrap:break-word;
+  }
 
-        .faq-btn {
-            background-color: #fff;
-            border: 1px solid #007bff;
-            padding: 8px 15px;
-            border-radius: 20px;
-            cursor: pointer;
-            font-size: 13px;
-            color: #007bff;
-            transition: 0.2s;
-        }
+  .msg.bot{
+    align-self:flex-start;
+    background:var(--bubble-bot);
+    border:1px solid var(--hairline);
+    border-bottom-left-radius:4px;
+    color:var(--ink);
+  }
 
-        .faq-btn:hover {
-            background-color: #007bff;
-            color: white;
-        }
+  .msg.user{
+    align-self:flex-end;
+    background:var(--bubble-user);
+    color:#fff;
+    border-bottom-right-radius:4px;
+  }
 
-        /* কাস্টম টাইপিং এরিয়া (কিবোর্ড সাপোর্ট) */
-        #input-area {
-            display: flex;
-            padding: 10px;
-            background: #fff;
-            border-top: 1px solid #ddd;
-            align-items: center;
-            gap: 10px;
-        }
+  .msg.typing{
+    align-self:flex-start;
+    background:var(--bubble-bot);
+    border:1px solid var(--hairline);
+    border-bottom-left-radius:4px;
+    padding:14px 18px;
+    display:flex;
+    gap:4px;
+  }
+  .msg.typing span{
+    width:6px; height:6px; border-radius:50%;
+    background:var(--gold);
+    display:inline-block;
+    animation: bounce 1.2s infinite ease-in-out;
+  }
+  .msg.typing span:nth-child(2){ animation-delay:0.15s; }
+  .msg.typing span:nth-child(3){ animation-delay:0.3s; }
+  @keyframes bounce{
+    0%, 60%, 100% { transform:translateY(0); opacity:0.5; }
+    30% { transform:translateY(-5px); opacity:1; }
+  }
 
-        #user-input {
-            flex: 1;
-            padding: 12px 15px;
-            border: 1px solid #ccc;
-            border-radius: 25px;
-            font-size: 15px;
-            outline: none;
-            background-color: #f4f4f4;
-        }
+  .quick-replies{
+    display:flex;
+    flex-wrap:wrap;
+    gap:8px;
+    padding:0 16px 14px;
+  }
+  .quick-reply{
+    border:1px solid var(--gold);
+    color:#a9781f;
+    background:var(--gold-pale);
+    padding:7px 13px;
+    border-radius:999px;
+    font-size:13px;
+    cursor:pointer;
+    font-family:inherit;
+  }
+  .quick-reply:hover{ background:var(--gold-light); }
 
-        #send-btn {
-            background-color: #007bff;
-            color: white;
-            border: none;
-            width: 45px;
-            height: 45px;
-            border-radius: 50%;
-            cursor: pointer;
-            font-size: 18px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            transition: 0.2s;
-        }
+  /* ---------- Input bar ---------- */
+  .chat-input-bar{
+    display:flex;
+    align-items:flex-end;
+    gap:10px;
+    padding:12px 14px;
+    border-top:1px solid var(--hairline);
+    background:var(--bg);
+  }
 
-        #send-btn:hover {
-            background-color: #0056b3;
-        }
+  #chat-input{
+    flex:1;
+    border:1px solid var(--hairline);
+    border-radius:22px;
+    padding:11px 16px;
+    font-size:14.5px;
+    font-family:inherit;
+    resize:none;
+    max-height:110px;
+    outline:none;
+  }
+  #chat-input:focus{ border-color:var(--gold); }
 
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-    </style>
+  #send-btn{
+    width:42px; height:42px;
+    border-radius:50%;
+    background:var(--gold);
+    border:none;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    color:#fff;
+    font-size:16px;
+    cursor:pointer;
+    flex-shrink:0;
+  }
+  #send-btn:active{ transform:scale(0.94); }
+  #send-btn:disabled{ opacity:0.5; cursor:default; }
+
+  .chat-messages::-webkit-scrollbar{ width:6px; }
+  .chat-messages::-webkit-scrollbar-thumb{ background:var(--hairline); border-radius:3px; }
+</style>
 </head>
 <body>
 
-    <div id="chat-container">
-        <div class="chat-header">
-            <img src="logo.png" alt="Logo" class="profile-pic" id="shop-logo">
-            <span>Ideas Shop সাপোর্ট</span>
-        </div>
-        
-        <div id="chat-box">
-            <div class="msg-bubble bot-msg">
-                হ্যালো! Ideas Shop-এ আপনাকে স্বাগতম। নিচে থেকে আপনার প্রশ্নটি বেছে নিন অথবা মেসেজ টাইপ করুন।
-            </div>
-        </div>
+<div class="chat-shell">
 
-        <div id="question-area">
-            <button class="faq-btn" onclick="askQuestion('freedelivery', 'আপনারা কি ফ্রি ডেলিভারি দিয়ে থাকেন?')">আপনারা কি ফ্রী ডেলিভারি দিয়ে থাকেন?</button>
-            <button class="faq-btn" onclick="askQuestion('delivery', 'ডেলিভারি চার্জ কত?')">ডেলিভারি চার্জ কত?</button>
-            <button class="faq-btn" onclick="askQuestion('wholesale', 'পাইকারি বিক্রি করেন?')">পাইকারি বিক্রি করেন?</button>
-            <button class="faq-btn" onclick="askQuestion('return', 'রিটার্ন পলিসি কী?')">রিটার্ন পলিসি কী?</button>
-            <button class="faq-btn" onclick="askQuestion('location', 'আপনাদের দোকানের লোকেশন কোথায়?')">আপনাদের দোকানের লোকেশন কোথায়?</button>
-            <button class="faq-btn" onclick="askQuestion('order', 'অর্ডার করবো কিভাবে বুঝিনা?')">অর্ডার করবো কিভাবে বুঝিনা?</button>
-            <button class="faq-btn" onclick="askQuestion('contact', 'সরাসরি যোগাযোগ করব কিভাবে?')">সরাসরি যোগাযোগ করব কিভাবে?</button>
-       
- </div>
-
-        <div id="input-area">
-            <input type="text" id="user-input" placeholder="আপনার মেসেজ লিখুন..." onkeypress="handleKeyPress(event)">
-            <button id="send-btn" onclick="sendCustomMessage()">➤</button>
-        </div>
+  <div class="chat-header">
+    <div class="avatar">
+      <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M12 2C8.13 2 5 5.13 5 9c0 2.38 1.19 4.47 3 5.74V17a1 1 0 001 1h6a1 1 0 001-1v-2.26c1.81-1.27 3-3.36 3-5.74 0-3.87-3.13-7-7-7z" fill="#fff"/>
+      </svg>
     </div>
+    <div>
+      <p class="title">Ideas SHOP Chat</p>
+      <p class="subtitle"><span class="status-dot"></span> সবসময় সাড়া দিতে প্রস্তুত</p>
+    </div>
+    <a href="home.html" class="back"><i class="fas fa-times"></i></a>
+  </div>
 
-    <script>
-        const answers = {
-            'freedelivery':'জি,✨ কুষ্টিয়া সদরে কিছু বিশেষ জায়গায়📦 আমরা ফ্রী ডেলিভারি🚚👈 দিয়ে থাকি। এছাড়াও বিভিন্ন ইভেন্ট এবং অফারেও অথবা বান্ডিল অফারও আমরা ফ্রি ডেলিভারি দিয়ে থাকি🤗।',
-            'delivery': 'কুষ্টিয়া জেলার ভেতর ৬০ টাকা এবং কুষ্টিয়ার বাহিরে ১২০ টাকা ডেলিভারি চার্জ ।১-৩দিনে ডেলিভারি সম্ভব 🚚া💵👈।',
-            'wholesale': 'জি, আমরা যেকোনো পরিমাণের পাইকারি বা হোলসেল অর্ডারের সুবিধা দিয়ে থাকি। বিস্তারিত রেট জানতে আমাদের ইনবক্স করুন📥।',
-            'return': 'পণ্য হাতে পাওয়ার পর কোনো সমস্যা থাকলে ২৪ ঘণ্টার মধ্যে জানালে আমরা রিপ্লেস করে দেব📦🚚👈।',
-            'location':'প্রিয় গ্রাহক, Ideas SHOP 💡🙂 হলো আমাদের ঠিকানা',
-            'order': 'ক্যাটাগরির পয়েন্টে যান গিয়ে আপনার পছন্দমত প্রোডাক্ট সিলেক্ট করুন। যে কোন প্রোডাক্ট এর উপর ট্যাপ করলে কার্ডে এড করা দেখাবে কার্ডে এড করে অর্ডার পয়েন্টে যান গিয়ে নাম নাম্বার ঠিকানা দিয়ে অর্ডার কনফার্ম করুন। ধন্যবাদ 💝',
-            'contact':'আইডিয়া শপের হোম এ গিয়ে উপরে বামে থাকা থ্রি ডট আইকনে ঢুকে হেল্প মেনুতে যান। গিয়ে যোগাযোগ করার দুটি মাধ্যম রয়েছে একটি whatsapp আরেকটি সরাসরি কল। যেকোনো একটিতে চেপে যোগাযোগ করুন💝।',
-};
+  <div class="chat-messages" id="chat-messages">
+    <div class="msg bot">
+      আসসালামু আলাইকুম! 👋 আমি Ideas SHOP-এর AI Assistant। প্রোডাক্ট, দাম, ডেলিভারি বা অর্ডার নিয়ে যেকোনো প্রশ্ন করতে পারেন।
+    </div>
+  </div>
 
-        const chatBox = document.getElementById('chat-box');
-        const userInputBox = document.getElementById('user-input');
+  <div class="quick-replies" id="quick-replies">
+    <button class="quick-reply" onclick="sendQuickReply('ডেলিভারি চার্জ কত?')">ডেলিভারি চার্জ কত?</button>
+    <button class="quick-reply" onclick="sendQuickReply('রিটার্ন পলিসি কী?')">রিটার্ন পলিসি</button>
+    <button class="quick-reply" onclick="sendQuickReply('কী কী প্রোডাক্ট আছে?')">প্রোডাক্ট দেখতে চাই</button>
+  </div>
 
-        // বাটনে ক্লিক করে প্রশ্ন করার ফাংশন
-        function askQuestion(questionKey, questionText) {
-            appendUserMessage(questionText);
-            
-            setTimeout(() => {
-                appendBotMessage(answers[questionKey]);
-            }, 500);
-        }
+  <div class="chat-input-bar">
+    <textarea id="chat-input" rows="1" placeholder="মেসেজ লিখুন..."></textarea>
+    <button id="send-btn" aria-label="পাঠান"><i class="fas fa-paper-plane"></i></button>
+  </div>
 
-        // নিজে টাইপ করে মেসেজ পাঠানোর ফাংশন
-        function sendCustomMessage() {
-            const text = userInputBox.value.trim();
-            if (text !== "") {
-                appendUserMessage(text);
-                userInputBox.value = ''; // ইনপুট বক্স ফাঁকা করা
+</div>
 
-                // কাস্টম মেসেজের জন্য বটের অটো-রিপ্লাই
-                setTimeout(() => {
-                    appendBotMessage("দুঃখিত! 😓আমাদের অনলাইন সেবা বড় পরিসরে না হওয়ায় আপনাদের আকাঙ্ক্ষিত প্রশ্নের উত্তর দিতে পারছি না। তাই দয়া করে মেসেজের উপরে নির্দিষ্ট মেনু থেকে প্রশ্ন করুন।");
-                }, 1000);
-            }
-        }
+<script>
+  // ⚠️ আপনার Render ব্যাকএন্ডের URL এখানে বসান
+  const API_URL = "https://ai-agent-hg0l.onrender.com/api/chat";
 
-        // কিবোর্ডের Enter চাপলে মেসেজ সেন্ড হবে
-        function handleKeyPress(event) {
-            if (event.key === 'Enter') {
-                sendCustomMessage();
-            }
-        }
+  const messagesEl = document.getElementById("chat-messages");
+  const inputEl = document.getElementById("chat-input");
+  const sendBtn = document.getElementById("send-btn");
+  const quickRepliesEl = document.getElementById("quick-replies");
 
-        // ইউজারের মেসেজ স্ক্রিনে দেখানোর ফাংশন
-        function appendUserMessage(text) {
-            const msgDiv = document.createElement('div');
-            msgDiv.className = 'msg-bubble user-msg';
-            msgDiv.innerText = text;
-            chatBox.appendChild(msgDiv);
-            chatBox.scrollTop = chatBox.scrollHeight;
-        }
+  // ব্রাউজারে সেশন আইডি সংরক্ষণ করা হচ্ছে, যাতে পেজ রিফ্রেশ করলেও কথোপকথন চলতে থাকে
+  let sessionId = localStorage.getItem("ideasshop_chat_session") || null;
 
-        // বটের মেসেজ স্ক্রিনে দেখানোর ফাংশন
-        function appendBotMessage(text) {
-            const msgDiv = document.createElement('div');
-            msgDiv.className = 'msg-bubble bot-msg';
-            msgDiv.innerText = text;
-            chatBox.appendChild(msgDiv);
-            chatBox.scrollTop = chatBox.scrollHeight;
-        }
- 
+  function addMessage(text, sender){
+    const div = document.createElement("div");
+    div.className = "msg " + sender;
+    div.textContent = text;
+    messagesEl.appendChild(div);
+    messagesEl.scrollTop = messagesEl.scrollHeight;
+  }
 
+  function showTyping(){
+    const div = document.createElement("div");
+    div.className = "msg typing";
+    div.id = "typing-indicator";
+    div.innerHTML = "<span></span><span></span><span></span>";
+    messagesEl.appendChild(div);
+    messagesEl.scrollTop = messagesEl.scrollHeight;
+  }
 
+  function hideTyping(){
+    const el = document.getElementById("typing-indicator");
+    if (el) el.remove();
+  }
 
+  async function sendMessage(text){
+    if (!text.trim()) return;
 
-   </script>
+    quickRepliesEl.style.display = "none";
+    addMessage(text, "user");
+    inputEl.value = "";
+    inputEl.style.height = "auto";
+    sendBtn.disabled = true;
+    showTyping();
+
+    try {
+      const res = await fetch(API_URL, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ message: text, sessionId })
+      });
+      const data = await res.json();
+
+      hideTyping();
+      addMessage(data.reply || "দুঃখিত, একটু সমস্যা হচ্ছে।", "bot");
+
+      if (data.sessionId) {
+        sessionId = data.sessionId;
+        localStorage.setItem("ideasshop_chat_session", sessionId);
+      }
+    } catch (err) {
+      hideTyping();
+      addMessage("দুঃখিত, সার্ভারের সাথে যোগাযোগ করা যাচ্ছে না। একটু পরে আবার চেষ্টা করুন 🙏", "bot");
+    } finally {
+      sendBtn.disabled = false;
+    }
+  }
+
+  function sendQuickReply(text){
+    sendMessage(text);
+  }
+
+  sendBtn.addEventListener("click", () => sendMessage(inputEl.value));
+
+  inputEl.addEventListener("keydown", (e) => {
+    if (e.key === "Enter" && !e.shiftKey) {
+      e.preventDefault();
+      sendMessage(inputEl.value);
+    }
+  });
+
+  inputEl.addEventListener("input", () => {
+    inputEl.style.height = "auto";
+    inputEl.style.height = Math.min(inputEl.scrollHeight, 110) + "px";
+  });
+</script>
 
 </body>
 </html>
